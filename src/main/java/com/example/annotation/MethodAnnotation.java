@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodAnnotation {
-    String value();
+    //设置默认值的时候，在使用注解的时候不用@MethodAnnotation("") 或 @MethodAnnotation(value="")
+    String value() default "";
 }
