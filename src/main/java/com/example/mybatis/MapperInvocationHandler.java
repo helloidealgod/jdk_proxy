@@ -25,7 +25,8 @@ public class MapperInvocationHandler implements InvocationHandler {
         if (annotationPresent) {
             Select select = method.getAnnotation(Select.class);
             System.out.println("执行SQL查询语句 " + select.value());
-            return 0;
+            JdbcConfig jdbcConfig = new JdbcConfig();
+            return jdbcConfig.excuteQuery(select.value(),new Handler(),null);
         }
         return null;
     }
