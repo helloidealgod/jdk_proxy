@@ -29,6 +29,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!--视频文件获取截屏-->
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv</artifactId>
+			<version>0.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>
