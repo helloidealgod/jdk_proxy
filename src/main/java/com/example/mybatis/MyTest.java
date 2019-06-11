@@ -6,5 +6,10 @@ public class MyTest {
         UserMapper mapper = mySqlSession.getMapper(UserMapper.class);
         String count = mapper.selectUserCount(1);
         System.out.println("count = "+count);
+        UserInfo userInfo = new UserInfo(1,
+                "jiang xiankun",
+                "15675266052",
+                "123456");
+        UserInfo result = mapper.selectUserCountByObj(userInfo);
     }
 }

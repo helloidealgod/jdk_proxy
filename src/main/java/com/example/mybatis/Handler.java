@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class Handler implements ResultSetHandler<String> {
     @Override
-    public String callback(ResultSet resultSet) {
+    public String callback(ResultSet resultSet,String className) {
         try {
             while (resultSet.next())
                 return resultSet.getString("user_name");

@@ -68,7 +68,7 @@ public class JdbcConfig {
      * sql: 要执行的sql语句 <br/>
      * handler：自定义接口 obj：可变参数列表 <br/>
      */
-    public <T> T excuteQuery(String sql, ResultSetHandler<T> handler, Object... obj) {
+    public <T> T excuteQuery(String sql, ResultSetHandler<T> handler,String className, Object... obj) {
         Connection conn = getConnection(); // 获得连接
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -80,7 +80,7 @@ public class JdbcConfig {
             // 获得ResultSet结果集
             rs = ps.executeQuery();
             // 返回对象
-            return handler.callback(rs);
+            return handler.callback(rs,className);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -109,7 +109,7 @@ public class JdbcConfig {
             // 获得ResultSet结果集
             rs = ps.executeQuery();
             // 返回对象
-            return handler.callback(rs);
+            return handler.callback(rs,null);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
