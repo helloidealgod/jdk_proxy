@@ -33,7 +33,7 @@ public class MyTest {
 
         String sql = "select del_flag from user_info where del_flag = false and uid = #{uid} and user_name = #{userName}";
         List<String> stringList = new ArrayList<String>();
-        String regex = "#\\{.*\\}";
+        String regex = "#\\{.*?\\}";
         Pattern p = Pattern.compile(regex);
         Matcher matcher = p.matcher(sql);
         while (matcher.find()){
