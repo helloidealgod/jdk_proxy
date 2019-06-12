@@ -1,4 +1,6 @@
-package com.example.mybatis;
+package com.example.mybatis.config;
+
+import com.example.mybatis.binding.ResultSetHandler;
 
 import java.sql.*;
 
@@ -68,7 +70,7 @@ public class JdbcConfig {
      * sql: 要执行的sql语句 <br/>
      * handler：自定义接口 obj：可变参数列表 <br/>
      */
-    public <T> T excuteQuery(String sql, ResultSetHandler<T> handler,String className, Object... obj) {
+    public <T> T excuteQuery(String sql, ResultSetHandler<T> handler, String className, Object... obj) {
         Connection conn = getConnection(); // 获得连接
         PreparedStatement ps = null;
         ResultSet rs = null;
