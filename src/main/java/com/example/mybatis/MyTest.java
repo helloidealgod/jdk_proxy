@@ -3,8 +3,11 @@ package com.example.mybatis;
 import com.example.mybatis.dao.UserMapper;
 import com.example.mybatis.model.UserInfo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MyTest {
     public static void main(String[] argv) {
@@ -27,5 +30,17 @@ public class MyTest {
         List<Boolean> delFlagList = mapper.selectDelFlagList(1);
         List<Date> createTimeList = mapper.selectCreateTimeList(1);
         System.out.println("UserInfoList = " + userInfoList.size());
+
+        String sql = "select del_flag from user_info where del_flag = false and uid = #{uid} and user_name = #{userName}";
+        List<String> stringList = new ArrayList<String>();
+        String regex = "#\\{.*\\}";
+        Pattern p = Pattern.compile(regex);
+        Matcher matcher = p.matcher(sql);
+        while (matcher.find()){
+            stringList.add(matcher.group());
+        }
+        System.out.println("");
     }
+
+
 }
