@@ -35,6 +35,12 @@
 			<artifactId>javacv</artifactId>
 			<version>0.8</version>
 		</dependency>
+		<!--reflections-->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>
