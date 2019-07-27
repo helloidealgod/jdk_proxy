@@ -1,9 +1,9 @@
 package com.example.idu;
 
 import java.io.*;
+import java.lang.reflect.Array;
 
-import static com.example.idu.ByteUtil.bytes2Int;
-import static com.example.idu.ByteUtil.inverted;
+import static com.example.idu.ByteUtil.*;
 
 /**
  * @Description:
@@ -12,24 +12,10 @@ import static com.example.idu.ByteUtil.inverted;
  */
 public class IDUFileUtils {
     public static void main(String[] argv) {
-//        int array1[] = new int[10];
-//        int array2[][] = new int[10][10];
-//        int array3[][][] = new int[10][10][10];
-//        int array4[][][][] = new int[10][10][10][10];
-//        String s = "abc";
-//        String s1[] = new String[2];
-//        String s2[][] = new String[2][2];
         IDUFileUtils iduFileUtils = new IDUFileUtils();
-//        iduFileUtils.write(array1);
-//        iduFileUtils.write(array2);
-//        iduFileUtils.write(array3);
-//        iduFileUtils.write(array4);
-//        iduFileUtils.write(s);
-//        iduFileUtils.write(s1);
-//        iduFileUtils.write(s2);
-        iduFileUtils.read("C:\\Users\\aorise\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
-        iduFileUtils.read("C:\\Users\\aorise\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
-
+        Object images = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
+        Object labels = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
+        System.out.println("");
     }
 
     /**
@@ -53,17 +39,76 @@ public class IDUFileUtils {
             System.out.printf("magic number = %02x %02x\n", bytes[0], bytes[1]);
             //读取数据类型
             fis.read(bytes, 0, 1);
+            byte data_type = bytes[0];
             System.out.printf("data type = %02x\n", bytes[0]);
             //读取数据维度
             fis.read(bytes, 0, 1);
             System.out.printf("dimension = %02x ", bytes[0]);
             System.out.println(bytes2Int(bytes));
             int dimension = bytes[0];
-            for (int i = 1; i <= dimension; i++) {
+            int[] dimensions = new int[dimension];
+            int array_length = 1;
+            for (int i = 0; i < dimension; i++) {
                 fis.read(bytes);
-                System.out.printf("dimension %d = %02x %02x %02x %02x ", i, bytes[0], bytes[1], bytes[2], bytes[3]);
-                System.out.println(bytes2Int(inverted(bytes)));
+                System.out.printf("dimension %d = %02x %02x %02x %02x ", i + 1, bytes[0], bytes[1], bytes[2], bytes[3]);
+                dimensions[i] = bytes2Int(inverted(bytes));
+                System.out.println(dimensions[i]);
+                array_length *= dimensions[i];
             }
+
+            Object return_array = Array.newInstance(Integer.TYPE, dimensions);
+            ArrayUtil arrayUtil = new ArrayUtil(dimensions);
+            Object array = null;
+            switch (data_type) {
+                case 0x08://0x08: unsigned byte
+                    array = new byte[array_length];
+                    fis.read((byte[]) array, 0, array_length);
+                    array = bytes2Unsigned((byte[]) array);
+                    arrayUtil.reshape((int[]) array, return_array);
+                    break;
+                case 0x09://0x09: signed byte
+                    array = new byte[array_length];
+                    fis.read((byte[]) array, 0, array_length);
+                    arrayUtil.reshape((byte[]) array, return_array);
+                    break;
+                case 0x0B://0x0B: short (2 bytes)
+                    bytes = new byte[2];
+                    array = new short[array_length];
+                    for (int i = 0; i < array_length; i++) {
+                        if (-1 == fis.read(bytes)) break;
+                        ((short[]) array)[i] = bytes2Short(inverted(bytes));
+                    }
+                    arrayUtil.reshape((short[]) array, return_array);
+                    break;
+                case 0x0C://0x0C: int (4 bytes)
+                    array = new int[array_length];
+                    for (int i = 0; i < array_length; i++) {
+                        if (-1 == fis.read(bytes)) break;
+                        ((int[]) array)[i] = bytes2Int(inverted(bytes));
+                    }
+                    arrayUtil.reshape((int[]) array, return_array);
+                    break;
+                case 0x0D://0x0D: float (4 bytes)
+                    array = new float[array_length];
+                    for (int i = 0; i < array_length; i++) {
+                        if (-1 == fis.read(bytes)) break;
+                        ((float[]) array)[i] = bytes2Float(inverted(bytes));
+                    }
+                    arrayUtil.reshape((float[]) array, return_array);
+                    break;
+                case 0x0E://0x0E: double (8 bytes)
+                    bytes = new byte[8];
+                    array = new double[array_length];
+                    for (int i = 0; i < array_length; i++) {
+                        if (-1 == fis.read(bytes)) break;
+                        ((double[]) array)[i] = bytes2Double(inverted(bytes));
+                    }
+                    arrayUtil.reshape((double[]) array, return_array);
+                    break;
+                default:
+                    break;
+            }
+            return return_array;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -75,7 +120,6 @@ public class IDUFileUtils {
                 e.printStackTrace();
             }
         }
-
         return null;
     }
 

@@ -8,6 +8,7 @@ package com.example.idu;
 public class ByteUtil {
     /**
      * 字节数据倒序
+     *
      * @param data
      * @return
      */
@@ -16,6 +17,15 @@ public class ByteUtil {
         byte bytes[] = new byte[length];
         for (int i = 0; i < length; i++) {
             bytes[i] = data[length - 1 - i];
+        }
+        return bytes;
+    }
+
+    public static int[] bytes2Unsigned(byte[] data) {
+        int length = data.length;
+        int bytes[] = new int[length];
+        for (int i = 0; i < length; i++) {
+            bytes[i] = data[i] & 0xFF;
         }
         return bytes;
     }
