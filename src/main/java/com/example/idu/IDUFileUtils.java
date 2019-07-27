@@ -2,6 +2,8 @@ package com.example.idu;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 import static com.example.idu.ByteUtil.*;
 
@@ -15,6 +17,10 @@ public class IDUFileUtils {
         IDUFileUtils iduFileUtils = new IDUFileUtils();
         Object images = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
         Object labels = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
+//        iduFileUtils.write(images, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images-test.idx3-ubyte");
+//        iduFileUtils.write(labels, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels-test.idx1-ubyte");
+        Integer data[] = new Integer[10000];
+        iduFileUtils.write(data, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images-test.idx3-ubyte");
         System.out.println("");
     }
 
@@ -123,13 +129,52 @@ public class IDUFileUtils {
         return null;
     }
 
-    public Boolean write(Object object) {
+    public Boolean write(Object object, String filePath) {
         if (!object.getClass().isArray()) {
             System.out.println("this object is not a array");
             return false;
         }
+        String typeName = object.getClass().getTypeName();
+        try {
+            Class clazz = Class.forName(typeName);
+            Field[] fields = clazz.getDeclaredFields();
+            for(Field field : fields){
+                System.out.println(field.getType());
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Type type = object.getClass().getComponentType();
         int dimension = object.getClass().getName().lastIndexOf("[") + 1;
+        byte dimens[] = inverted(int2Bytes(dimension));
+        byte[] bytes = new byte[8];
+        for (int i = 4; i < 8; i++)
+            bytes[i] = dimens[i - 4];
         System.out.println(dimension);
+        File file = new File(filePath);
+        FileOutputStream fos = null;
+        try {
+            if (!file.exists()) file.createNewFile();
+            fos = new FileOutputStream(file);
+            //读取 magic number 2 bytes
+            fos.write(bytes, 0, 2);
+            //写取数据类型 1 byte
+            fos.write(bytes, 0, 1);
+            //写取数据维度 1 byte
+            fos.write(bytes, 0, 1);
+            //具体每一个维度 4bytes/个
+            fos.write(bytes, 0, 4);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return true;
     }
 }
