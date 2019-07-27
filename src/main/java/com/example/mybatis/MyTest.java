@@ -36,10 +36,14 @@ public class MyTest {
         String regex = "#\\{.*?\\}";
         Pattern p = Pattern.compile(regex);
         Matcher matcher = p.matcher(sql);
-        while (matcher.find()){
+        while (matcher.find()) {
             stringList.add(matcher.group());
         }
-        System.out.println("");
+
+        for (String s : stringList)
+            sql = sql.replace(s, "\'uid\'");
+
+        System.out.println(sql);
     }
 
 
