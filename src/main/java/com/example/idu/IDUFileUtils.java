@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import static com.example.idu.ByteUtil.*;
+import static com.example.idu.ImageUtils.writeImageFromArray;
 
 /**
  * @Description:
@@ -11,120 +12,127 @@ import static com.example.idu.ByteUtil.*;
  * @Date: 2019/7/27 09:55
  */
 public class IDUFileUtils {
-    //    public static void main(String[] argv) {
-//        IDUFileUtils iduFileUtils = new IDUFileUtils();
-////        Object images = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
-//        byte[] labels = (byte[]) iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
-////        int[] dimensions = {10000, 28, 28};
-////        iduFileUtils.write(images, dimensions, (byte) 0x08, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\test.idx3-ubyte");
-////        Object test = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\test.idx3-ubyte");
-////        iduFileUtils.write(labels, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels-test.idx1-ubyte");
-////        Integer data[] = new Integer[10000];
-//        int[] dimensions = {10000};
-//        iduFileUtils.write(labels, dimensions, (byte) 0x08, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\test1.idx1-ubyte");
-//        byte[] test = (byte[]) iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\test1.idx1-ubyte");
-//        int count = 0;
-//        for (int i = 0; i < 10000; i++) {
-//            if (labels[i] != test[i]) {
-//                System.out.println("不匹配：" + i);
-//            }
-//        }
-//        System.out.println("不匹配个数：" + count + " 匹配个数：" + (10000 - count));
-//    }
     public static void main(String[] argv) {
         IDUFileUtils iduFileUtils = new IDUFileUtils();
-        //byte
-        byte[][][] dbyte = {
-                {
-                        {0x01, 0x02},
-                        {0x03, 0x04}
-                },
-                {
-                        {0x05, 0x06},
-                        {0x07, 0x08}
-                },
-                {
-                        {0x09, 0x0a},
-                        {0x0b, 0x0c}
-                }
-        };
-        //short
-        short[][][] dshort = {
-                {
-                        {0x01, 0x02},
-                        {0x03, 0x04}
-                },
-                {
-                        {0x05, 0x06},
-                        {0x07, 0x08}
-                },
-                {
-                        {0x09, 0x0a},
-                        {0x0b, 0x0c}
-                }
-        };
-        //int
-        int[][][] dint = {
-                {
-                        {0x01, 0x02},
-                        {0x03, 0x04}
-                },
-                {
-                        {0x05, 0x06},
-                        {0x07, 0x08}
-                },
-                {
-                        {0x09, 0x0a},
-                        {0x0b, 0x0c}
-                }
-        };
-        //float
-        float[][][] dfloat = {
-                {
-                        {0x01, 0x02},
-                        {0x03, 0x04}
-                },
-                {
-                        {0x05, 0x06},
-                        {0x07, 0x08}
-                },
-                {
-                        {0x09, 0x0a},
-                        {0x0b, 0x0c}
-                }
-        };
-        //double
-        double[][][] ddouble = {
-                {
-                        {0x01, 0x02},
-                        {0x03, 0x04}
-                },
-                {
-                        {0x05, 0x06},
-                        {0x07, 0x08}
-                },
-                {
-                        {0x09, 0x0a},
-                        {0x0b, 0x0c}
-                }
-        };
-        int[] db = {3,2,2};
-        iduFileUtils.write(dbyte,db,(byte)0x08,"F:/db.idx3-ubyte");
-        Object d1 = iduFileUtils.read("F:/db.idx3-ubyte");
-        //short
-        iduFileUtils.write(dshort,db,(byte)0x0B,"F:/ds.idx3-ubyte");
-        Object d2 = iduFileUtils.read("F:/ds.idx3-ubyte");
-        //int
-        iduFileUtils.write(dint,db,(byte)0x0C,"F:/di.idx3-ubyte");
-        Object d3 = iduFileUtils.read("F:/di.idx3-ubyte");
-        //float
-        iduFileUtils.write(dfloat,db,(byte)0x0D,"F:/df.idx3-ubyte");
-        Object d4 = iduFileUtils.read("F:/df.idx3-ubyte");
-        //double
-        iduFileUtils.write(ddouble,db,(byte)0x0E,"F:/dd.idx3-ubyte");
-        Object d5 = iduFileUtils.read("F:/dd.idx3-ubyte");
-        System.out.println("");
+        byte[][][] images = (byte[][][]) iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
+        int[][] image = null;
+        for (int i = 0; i < 100; i++) {
+            image = byte2int(images[i]);
+            //输出图片到指定文件
+            writeImageFromArray("F:\\images\\" + i + ".bmp", "bmp", image);//输出绝对路径+文件名
+        }
+//            byte[] labels = (byte[]) iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
+//        int[] dimensions = {10000, 28, 28};
+//        iduFileUtils.write(images, dimensions, (byte) 0x08, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\test.idx3-ubyte");
+//        Object test = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\test.idx3-ubyte");
+//        iduFileUtils.write(labels, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels-test.idx1-ubyte");
+//        Integer data[] = new Integer[10000];
+//            int[] dimensions = {10000};
+//            iduFileUtils.write(labels, dimensions, (byte) 0x08, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\test1.idx1-ubyte");
+//            byte[] test = (byte[]) iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\test1.idx1-ubyte");
+//            int count = 0;
+//            for (int i = 0; i < 10000; i++) {
+//                if (labels[i] != test[i]) {
+//                    System.out.println("不匹配：" + i);
+//                }
+//            }
+//            System.out.println("不匹配个数：" + count + " 匹配个数：" + (10000 - count));
     }
+
+//    public static void main(String[] argv) {
+//        IDUFileUtils iduFileUtils = new IDUFileUtils();
+//        //byte
+//        byte[][][] dbyte = {
+//                {
+//                        {0x01, 0x02},
+//                        {0x03, 0x04}
+//                },
+//                {
+//                        {0x05, 0x06},
+//                        {0x07, 0x08}
+//                },
+//                {
+//                        {0x09, 0x0a},
+//                        {0x0b, 0x0c}
+//                }
+//        };
+//        //short
+//        short[][][] dshort = {
+//                {
+//                        {0x01, 0x02},
+//                        {0x03, 0x04}
+//                },
+//                {
+//                        {0x05, 0x06},
+//                        {0x07, 0x08}
+//                },
+//                {
+//                        {0x09, 0x0a},
+//                        {0x0b, 0x0c}
+//                }
+//        };
+//        //int
+//        int[][][] dint = {
+//                {
+//                        {0x01, 0x02},
+//                        {0x03, 0x04}
+//                },
+//                {
+//                        {0x05, 0x06},
+//                        {0x07, 0x08}
+//                },
+//                {
+//                        {0x09, 0x0a},
+//                        {0x0b, 0x0c}
+//                }
+//        };
+//        //float
+//        float[][][] dfloat = {
+//                {
+//                        {0x01, 0x02},
+//                        {0x03, 0x04}
+//                },
+//                {
+//                        {0x05, 0x06},
+//                        {0x07, 0x08}
+//                },
+//                {
+//                        {0x09, 0x0a},
+//                        {0x0b, 0x0c}
+//                }
+//        };
+//        //double
+//        double[][][] ddouble = {
+//                {
+//                        {0x01, 0x02},
+//                        {0x03, 0x04}
+//                },
+//                {
+//                        {0x05, 0x06},
+//                        {0x07, 0x08}
+//                },
+//                {
+//                        {0x09, 0x0a},
+//                        {0x0b, 0x0c}
+//                }
+//        };
+//        int[] db = {3,2,2};
+//        iduFileUtils.write(dbyte,db,(byte)0x08,"F:/db.idx3-ubyte");
+//        Object d1 = iduFileUtils.read("F:/db.idx3-ubyte");
+//        //short
+//        iduFileUtils.write(dshort,db,(byte)0x0B,"F:/ds.idx3-ubyte");
+//        Object d2 = iduFileUtils.read("F:/ds.idx3-ubyte");
+//        //int
+//        iduFileUtils.write(dint,db,(byte)0x0C,"F:/di.idx3-ubyte");
+//        Object d3 = iduFileUtils.read("F:/di.idx3-ubyte");
+//        //float
+//        iduFileUtils.write(dfloat,db,(byte)0x0D,"F:/df.idx3-ubyte");
+//        Object d4 = iduFileUtils.read("F:/df.idx3-ubyte");
+//        //double
+//        iduFileUtils.write(ddouble,db,(byte)0x0E,"F:/dd.idx3-ubyte");
+//        Object d5 = iduFileUtils.read("F:/dd.idx3-ubyte");
+//        System.out.println("");
+//    }
 
 
     /**

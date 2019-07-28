@@ -99,4 +99,14 @@ public class ByteUtil {
                 | (0xff000000000000L & ((long) bytes[6] << 48))
                 | (0xff00000000000000L & ((long) bytes[7] << 56));
     }
+
+    public static int[][] byte2int(byte[][] b) {
+        int[][] out = new int[b.length][b[0].length];
+        for (int i = 0; i < b.length; i++) {
+            for (int j = 0; j < b[0].length; j++) {
+                out[i][j] = b[i][j] & 0xFF;
+            }
+        }
+        return out;
+    }
 }
