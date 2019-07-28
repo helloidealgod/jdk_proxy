@@ -17,8 +17,8 @@ public class IDUFileUtils {
         IDUFileUtils iduFileUtils = new IDUFileUtils();
         Object images = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images.idx3-ubyte");
         Object labels = iduFileUtils.read("C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels.idx1-ubyte");
-//        iduFileUtils.write(images, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images-test.idx3-ubyte");
-//        iduFileUtils.write(labels, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels-test.idx1-ubyte");
+        iduFileUtils.write(images, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images-test.idx3-ubyte");
+        iduFileUtils.write(labels, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-labels-test.idx1-ubyte");
         Integer data[] = new Integer[10000];
         iduFileUtils.write(data, "C:\\Users\\Administrator\\Desktop\\octave\\resource\\t10k-images-test.idx3-ubyte");
         System.out.println("");
@@ -62,19 +62,21 @@ public class IDUFileUtils {
                 array_length *= dimensions[i];
             }
 
-            Object return_array = Array.newInstance(Integer.TYPE, dimensions);
+            Object return_array = null;
             ArrayUtil arrayUtil = new ArrayUtil(dimensions);
             Object array = null;
             switch (data_type) {
                 case 0x08://0x08: unsigned byte
                     array = new byte[array_length];
                     fis.read((byte[]) array, 0, array_length);
-                    array = bytes2Unsigned((byte[]) array);
-                    arrayUtil.reshape((int[]) array, return_array);
+//                    array = bytes2Unsigned((byte[]) array);
+                    return_array = Array.newInstance(Byte.TYPE, dimensions);
+                    arrayUtil.reshape((byte[]) array, return_array);
                     break;
                 case 0x09://0x09: signed byte
                     array = new byte[array_length];
                     fis.read((byte[]) array, 0, array_length);
+                    return_array = Array.newInstance(Byte.TYPE, dimensions);
                     arrayUtil.reshape((byte[]) array, return_array);
                     break;
                 case 0x0B://0x0B: short (2 bytes)
@@ -84,6 +86,7 @@ public class IDUFileUtils {
                         if (-1 == fis.read(bytes)) break;
                         ((short[]) array)[i] = bytes2Short(inverted(bytes));
                     }
+                    return_array = Array.newInstance(Short.TYPE, dimensions);
                     arrayUtil.reshape((short[]) array, return_array);
                     break;
                 case 0x0C://0x0C: int (4 bytes)
@@ -92,6 +95,7 @@ public class IDUFileUtils {
                         if (-1 == fis.read(bytes)) break;
                         ((int[]) array)[i] = bytes2Int(inverted(bytes));
                     }
+                    return_array = Array.newInstance(Integer.TYPE, dimensions);
                     arrayUtil.reshape((int[]) array, return_array);
                     break;
                 case 0x0D://0x0D: float (4 bytes)
@@ -100,6 +104,7 @@ public class IDUFileUtils {
                         if (-1 == fis.read(bytes)) break;
                         ((float[]) array)[i] = bytes2Float(inverted(bytes));
                     }
+                    return_array = Array.newInstance(Float.TYPE, dimensions);
                     arrayUtil.reshape((float[]) array, return_array);
                     break;
                 case 0x0E://0x0E: double (8 bytes)
@@ -109,6 +114,7 @@ public class IDUFileUtils {
                         if (-1 == fis.read(bytes)) break;
                         ((double[]) array)[i] = bytes2Double(inverted(bytes));
                     }
+                    return_array = Array.newInstance(Double.TYPE, dimensions);
                     arrayUtil.reshape((double[]) array, return_array);
                     break;
                 default:
