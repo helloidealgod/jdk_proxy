@@ -9,6 +9,14 @@ public class ArrayUtil {
         this.dimensions = dimensions;
     }
 
+    public ArrayUtil(int dimension) {
+        this.dimensions = new int[dimension];
+    }
+
+    public void rest() {
+        this.current_index = 0;
+    }
+
     public static void main(String[] argv) {
         int[] date = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         int[][][] target = new int[3][2][2];
@@ -16,7 +24,8 @@ public class ArrayUtil {
         ArrayUtil arrayUtil = new ArrayUtil(dimension);
         arrayUtil.reshape(date, target);
         int[] test = new int[12];
-        arrayUtil.reshape(target,test);
+        arrayUtil.rest();
+        arrayUtil.reshape(target, test);
         System.out.println("");
     }
 
@@ -112,7 +121,7 @@ public class ArrayUtil {
         int dimension = data.getClass().getName().lastIndexOf("[") + 1;
         if (data.getClass().isArray() && 1 < dimension) {
             for (int i = 0; i < max; i++) {
-                reshape( ((Object[]) data)[i],target);
+                reshape(((Object[]) data)[i], target);
             }
         } else {
             for (int i = 0; i < max; i++) {
@@ -129,7 +138,7 @@ public class ArrayUtil {
         int dimension = data.getClass().getName().lastIndexOf("[") + 1;
         if (data.getClass().isArray() && 1 < dimension) {
             for (int i = 0; i < max; i++) {
-                reshape( ((Object[]) data)[i],target);
+                reshape(((Object[]) data)[i], target);
             }
         } else {
             for (int i = 0; i < max; i++) {
@@ -146,7 +155,7 @@ public class ArrayUtil {
         int dimension = data.getClass().getName().lastIndexOf("[") + 1;
         if (data.getClass().isArray() && 1 < dimension) {
             for (int i = 0; i < max; i++) {
-                reshape( ((Object[]) data)[i],target);
+                reshape(((Object[]) data)[i], target);
             }
         } else {
             for (int i = 0; i < max; i++) {
@@ -163,7 +172,7 @@ public class ArrayUtil {
         int dimension = data.getClass().getName().lastIndexOf("[") + 1;
         if (data.getClass().isArray() && 1 < dimension) {
             for (int i = 0; i < max; i++) {
-                reshape( ((Object[]) data)[i],target);
+                reshape(((Object[]) data)[i], target);
             }
         } else {
             for (int i = 0; i < max; i++) {
@@ -180,7 +189,7 @@ public class ArrayUtil {
         int dimension = data.getClass().getName().lastIndexOf("[") + 1;
         if (data.getClass().isArray() && 1 < dimension) {
             for (int i = 0; i < max; i++) {
-                reshape( ((Object[]) data)[i],target);
+                reshape(((Object[]) data)[i], target);
             }
         } else {
             for (int i = 0; i < max; i++) {
