@@ -244,10 +244,10 @@ public class IDUFileUtils {
     }
 
     /**
-     * @param object   多维数组（数据）
-     * @param filePath 保存路径
-     *                 //     * @param dimensions 一维数组保存多维数组每一维的长度
-     *                 //     * @param data_type  数据保存类型 byte,short,int,double,float..
+     * @param object     多维数组（数据）
+     * @param filePath   保存路径
+     * @param dimensions 一维数组保存多维数组每一维的长度
+     * @param data_type  数据保存类型 byte,short,int,double,float..
      * @return
      */
     public Boolean write(Object object, int[] dimensions, byte data_type, String filePath) {
