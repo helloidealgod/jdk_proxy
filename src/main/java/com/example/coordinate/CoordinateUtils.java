@@ -55,7 +55,7 @@ public class CoordinateUtils {
      * @author: xiankun.jiang
      * @date: 2019/12/2 15:17
      */
-    public Coordinate WGS84ToMars(Coordinate wgs84Coordinate) {
+    public Coordinate wgs84ToMars(Coordinate wgs84Coordinate) {
         Coordinate marsCoordinate = new Coordinate();
         double wgLon = wgs84Coordinate.getLongitude();
         double wgLat = wgs84Coordinate.getLatitude();
