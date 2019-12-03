@@ -125,7 +125,9 @@ public class CoordinateUtils {
         return ret;
     }
 
-    public static void main(String[] argv){
-
+    public static void main(String[] argv) {
+        Coordinate coordinate = new Coordinate(	109.79706568444735,27.51359010961966);
+        CoordinateUtils utils = new CoordinateUtils();
+        Coordinate gaode =  utils.wgs84ToMars(coordinate);
     }
 }
