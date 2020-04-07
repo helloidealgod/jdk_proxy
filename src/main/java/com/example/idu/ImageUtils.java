@@ -26,7 +26,7 @@ public class ImageUtils {
 //        System.out.println("图片输出完毕！");
 //    }
 
-    private static BufferedImage readImage(String imageFile) {
+    public static BufferedImage readImage(String imageFile) {
         File file = new File(imageFile);
         BufferedImage bf = null;
         try {
