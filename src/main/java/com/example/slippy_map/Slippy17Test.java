@@ -11,17 +11,17 @@ import static com.example.idu.ImageUtils.*;
  * @Author: xiankun.jiang
  * @Date: 2020/4/7 13:49
  */
-public class Slippy18 {
+public class Slippy17Test {
     public static void main(String[] args) {
-        int zoom = 18;
-        int deltax = 858;
-        int deltay = 756;
+        int zoom = 17;
+        int deltax = 434;
+        int deltay = 376;
         String rootPath = "E:/root/service/file_service/" + zoom;
         String desPath = "E:/root/service/file_service/" + zoom + "_change_thread";
         long startTime = System.currentTimeMillis();
         File file = new File(rootPath);
         if (file.isDirectory()) {
-            String paths[] = file.list();
+            String paths[] = {"105804","105805","105806","105807","105808","105809"};
 
             for (String s : paths) {
                 int x = Integer.valueOf(s);

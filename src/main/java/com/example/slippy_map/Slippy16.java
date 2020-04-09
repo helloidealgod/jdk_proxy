@@ -14,8 +14,8 @@ import static com.example.idu.ImageUtils.*;
 public class Slippy16 {
     public static void main(String[] args) {
         int zoom = 16;
-        int deltax = 222;
-        int deltay = 174;
+        int deltax = 218;
+        int deltay = 184;
         String rootPath = "E:/root/service/file_service/" + zoom;
         String desPath = "E:/root/service/file_service/" + zoom + "_change";
         long startTime = System.currentTimeMillis();

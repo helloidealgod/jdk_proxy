@@ -11,7 +11,7 @@ import static com.example.idu.ImageUtils.*;
  * @Author: xiankun.jiang
  * @Date: 2020/4/7 13:49
  */
-public class Slippy18 {
+public class Slippy18Test {
     public static void main(String[] args) {
         int zoom = 18;
         int deltax = 858;
@@ -21,7 +21,7 @@ public class Slippy18 {
         long startTime = System.currentTimeMillis();
         File file = new File(rootPath);
         if (file.isDirectory()) {
-            String paths[] = file.list();
+            String paths[] = {"211610", "211611", "211612", "211613", "211614", "211615", "211616", "211617"};
 
             for (String s : paths) {
                 int x = Integer.valueOf(s);
