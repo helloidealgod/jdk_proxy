@@ -20,22 +20,17 @@ public class Slippy18 {
         long startTime = System.currentTimeMillis();
         File file = new File(rootPath);
         if (file.isDirectory()) {
-//            String paths[] = file.list();
-//            String paths[] = {"211614","211615","211616","211617","211618"};
-            String paths[] = {"211616"};
-
+            String paths[] = file.list();
             for (String s : paths) {
                 int x = Integer.valueOf(s);
                 File file1 = new File(rootPath + "/" + s);
-//                String names[] = file1.list();
-                String names[] = {"109756.png"};
+                String names[] = file1.list();
                 for (String n : names) {
                     int y = Integer.valueOf(n.substring(0, n.lastIndexOf(".")));
                     BufferedImage bufferedImage = readImage(rootPath + "/" + s + "/" + n);
                     //获取瓦片图片信息
                     int[][] image = convertImageToArray(bufferedImage);
-//                    for (int i = 0; i < 256; i++) {
-//                        for (int j = 0; j < 256; j++) {
+
                     //像素点转经纬度
                     Coordinate coordinate = tileUtils.pixelToLnglat(0, 0, x, y, zoom);
                     //经纬度坐标转换
@@ -43,8 +38,6 @@ public class Slippy18 {
                     //经纬度转像素、瓦片
                     Pixel pixel = tileUtils.lnglatToPixel(gps.getWgLon(), gps.getWgLat(), zoom);
                     Tile tile = tileUtils.lnglatToTile(gps.getWgLon(), gps.getWgLat(), zoom);
-//                        }
-//                    }
 
                     int[][][] newImage = new int[4][256][256];
                     for (int i = 0; i < 4; i++) {
@@ -73,14 +66,24 @@ public class Slippy18 {
 
                     for (int i = 0; i < 256; i++) {
                         for (int j = 0; j < 256; j++) {
+                            int py = (i + pixel.pixelY) % 256;
+                            int px = (j + pixel.pixelX) % 256;
                             if (i + pixel.pixelY < 256 && j + pixel.pixelX < 256) {
-                                newImage[0][(i + pixel.pixelY) % 256][(j + pixel.pixelX) % 256] = image[i][j];
+                                newImage[0][py][px] = image[i][j];
+                                //判断前面一列是白的，用当前列的像素填充
+                                updateBlankLine(newImage[0], px, py, image[i][j]);
                             } else if (i + pixel.pixelY >= 256 && j + pixel.pixelX < 256) {
-                                newImage[2][(i + pixel.pixelY) % 256][(j + pixel.pixelX) % 256] = image[i][j];
+                                newImage[2][py][px] = image[i][j];
+                                //判断前面一列是白的，用当前列的像素填充
+                                updateBlankLine(newImage[2], px, py, image[i][j]);
                             } else if (i + pixel.pixelY < 256 && j + pixel.pixelX >= 256) {
-                                newImage[1][(i + pixel.pixelY) % 256][(j + pixel.pixelX) % 256] = image[i][j];
+                                newImage[1][py][px] = image[i][j];
+                                //判断前面一列是白的，用当前列的像素填充
+                                updateBlankLine(newImage[1], px, py, image[i][j]);
                             } else if (i + pixel.pixelY >= 256 && j + pixel.pixelX >= 256) {
-                                newImage[3][(i + pixel.pixelY) % 256][(j + pixel.pixelX) % 256] = image[i][j];
+                                newImage[3][py][px] = image[i][j];
+                                //判断前面一列是白的，用当前列的像素填充
+                                updateBlankLine(newImage[3], px, py, image[i][j]);
                             }
                         }
                     }
@@ -104,4 +107,16 @@ public class Slippy18 {
         System.out.println("耗时：" + (endTime - startTime) / 60000 + " m");
     }
 
+    public static void updateBlankLine(int[][] image, int x, int y, int pixelValue) {
+        if (x >= 2) {
+            int pix2 = image[y][x - 2];
+            int pix1 = image[y][x - 1];
+            if (pix2 != 16777215 && pix1 == 16777215) {
+                image[y][x - 1] = pixelValue;
+            }
+            if (pix2 != -1 && pix1 == -1) {
+                image[y][x - 1] = pixelValue;
+            }
+        }
+    }
 }
