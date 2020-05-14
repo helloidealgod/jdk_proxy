@@ -13,9 +13,9 @@ import static com.example.idu.ImageUtils.*;
  */
 public class Slippy18 {
     public static void main(String[] args) {
-        int zoom = 18;
+        int zoom = 14;
         String rootPath = "E:/root/service/file_service/" + zoom;
-        String desPath = "E:/root/service/file_service/" + zoom + "_change_math";
+        String desPath = "E:/root/service/file_service/gaodeTile/" + zoom;
         TileUtils tileUtils = new TileUtils();
         long startTime = System.currentTimeMillis();
         File file = new File(rootPath);
