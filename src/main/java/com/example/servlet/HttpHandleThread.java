@@ -21,16 +21,16 @@ public class HttpHandleThread implements Runnable {
     public void run() {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            BufferedReader bw = new BufferedReader(new InputStreamReader(System.in));
-//            OutputStream os = socket.getOutputStream();
+            OutputStream outputStream = socket.getOutputStream();
             String line = null;
             while ((line = br.readLine()) != null) {
-                System.out.println("Client \t" + line);
-//                os.write(bw.readLine().getBytes());
+                System.out.println(line);
             }
-//            os.flush();
-
-//            socket.close();
+            socket.shutdownInput();
+            outputStream.write("hao".getBytes());
+            outputStream.flush();
+            socket.shutdownOutput();
+            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
