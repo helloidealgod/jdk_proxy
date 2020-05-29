@@ -2,6 +2,8 @@ package com.example.servlet;
 
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @Description:
@@ -9,109 +11,40 @@ import java.net.Socket;
  * @Date: 2020/5/29 16:16
  */
 public class HttpHandleThread implements Runnable {
-    private Socket socket;
+    private Socket client;
 
     public HttpHandleThread(Socket socket) {
-        this.socket = socket;
+        this.client = socket;
     }
 
     @Override
     public void run() {
-        OutputStream clientOutput = null;
-        InputStream clientInput = null;
-//        Socket proxySocket = null;
-        InputStream proxyInput = null;
-        OutputStream proxyOutput = null;
-        try {
-            clientInput = socket.getInputStream();
-            clientOutput = socket.getOutputStream();
-            String line;
-            String host = "";
-            LineBuffer lineBuffer = new LineBuffer(1024);
-            StringBuilder headStr = new StringBuilder();
-            //读取HTTP请求头，并拿到HOST请求头和method
-            while (null != (line = lineBuffer.readLine(clientInput))) {
-                System.out.println(line);
-                headStr.append(line + "\r\n");
-                if (line.length() == 0) {
-                    break;
-                } else {
-                    String[] temp = line.split(" ");
-                    if (temp[0].contains("Host")) {
-                        host = temp[1];
-                    }
-                }
-            }
-            String type = headStr.substring(0, headStr.indexOf(" "));
-            //根据host头解析出目标服务器的host和port
-            String[] hostTemp = host.split(":");
-            host = hostTemp[0];
-            int port = 80;
-            if (hostTemp.length > 1) {
-                port = Integer.valueOf(hostTemp[1]);
-            }
-            //连接到目标服务器
-//            proxySocket = new Socket(host, port);
-//            proxyInput = proxySocket.getInputStream();
-//            proxyOutput = proxySocket.getOutputStream();
-            //根据HTTP method来判断是https还是http请求
-            if ("CONNECT".equalsIgnoreCase(type)) {//https先建立隧道
-                clientOutput.write("HTTP/1.1 200 Connection Established\r\n\r\n".getBytes());
-                clientOutput.flush();
-            } else {//http直接将请求头转发
-                proxyOutput.write(headStr.toString().getBytes());
-            }
-            //新开线程转发客户端请求至目标服务器
-//            new ProxyHandleThread(clientInput, proxyOutput).start();
-            //转发目标服务器响应至客户端
-//            while (true) {
-//                clientOutput.write(proxyInput.read());
-//            }
-        } catch (IOException e) {
+        try {//获取到客户端输入流
+            InputStream in = client.getInputStream();
+            //准备一个缓冲数组
+            byte data[] = new byte[4096];
+            //这里有一个read（byte[] b）方法，将数据读取到字节数组中，同返回读取长度
+            int len = in.read(data);
+            //打印浏览器发来的请求头
+            System.out.println(new String(data));
+            //制作响应报文
+            StringBuffer response = new StringBuffer();
+            //响应状态
+            response.append("HTTP/1.1 200 OK\r\n");
+            //响应头
+            response.append("Content-type:text/html\r\n\r\n");
+            //要返回的内容(当前时间)
+            response.append("CurrentTime: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            //获取客户端的输出流
+            OutputStream out = client.getOutputStream();
+            //将以上内容写入
+            out.write(response.toString().getBytes());
+            //关闭客户端和服务端的流和Socket
+            out.close();
+            in.close();
+            client.close();
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (proxyInput != null) {
-                try {
-                    proxyOutput.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (proxyOutput != null) {
-                try {
-                    proxyOutput.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-//            if (proxySocket != null) {
-//                try {
-//                    proxySocket.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-            if (clientInput != null) {
-                try {
-                    clientInput.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (clientOutput != null) {
-                try {
-                    clientOutput.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }

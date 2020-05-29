@@ -1,10 +1,10 @@
 package com.example.servlet;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.*;
 
 /**
@@ -25,21 +25,6 @@ public class Servlet {
         while (true) {
             Socket socket = sk.accept();
             threadPoolExecutor.execute(new HttpHandleThread(socket));
-//            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            OutputStream outputStream = socket.getOutputStream();
-//            String line = null;
-//            while ((line = br.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//            String path = "/swagger-ui.html";
-//            String host = "localhost:8080";
-//            outputStream.write(("GET " + path + " HTTP/1.1\r\n").getBytes());
-//            outputStream.write(("Host: " + host + " \r\n").getBytes());
-//            //http协议必须在报文头后面再加一个换行，通知服务器发送完成，不然服务器会一直等待
-//            outputStream.write("\r\n".getBytes());
-//            outputStream.flush();
-//            socket.shutdownOutput();
-//            socket.close();
         }
     }
 }
