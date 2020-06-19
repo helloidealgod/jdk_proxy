@@ -1,7 +1,10 @@
 package com.example.servlet;
 
+import org.springframework.util.StringUtils;
+
 import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,14 +22,12 @@ public class HttpHandleThread implements Runnable {
 
     @Override
     public void run() {
-        try {//获取到客户端输入流
+        try {
+            //获取到客户端输入流
             InputStream in = client.getInputStream();
-            //准备一个缓冲数组
-            byte data[] = new byte[4096];
-            //这里有一个read（byte[] b）方法，将数据读取到字节数组中，同返回读取长度
-            int len = in.read(data);
-            //打印浏览器发来的请求头
-            System.out.println(new String(data));
+            //解析HTTP报文信息
+            getHttpRequest(in);
+
             //制作响应报文
             StringBuffer response = new StringBuffer();
             //响应状态
@@ -40,11 +41,31 @@ public class HttpHandleThread implements Runnable {
             //将以上内容写入
             out.write(response.toString().getBytes());
             //关闭客户端和服务端的流和Socket
-            out.close();
-            in.close();
+            client.shutdownOutput();
             client.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private HttpRequest getHttpRequest(InputStream inputStream) throws IOException {
+        StringBuffer stringBuilder = new StringBuffer();
+        byte bytes[] = new byte[128];
+        int len = 0;
+        int totalLength = 0;
+        while (-1 != (len = inputStream.read(bytes))) {
+            stringBuilder.append(new String(bytes, 0, len));
+            totalLength += len;
+            if (bytes.length > len) break;
+        }
+        System.out.println(stringBuilder.toString());
+        System.out.println("===================================");
+        HttpRequest httpRequest = new HttpRequest();
+        httpRequest.setData(stringBuilder.toString());
+        System.out.println("http byte length=" + totalLength);
+        System.out.println("string byte length=" + httpRequest.getData().getBytes().length);
+//        String[] split = httpRequest.getData().split("\r\n\r\n");
+        return httpRequest;
+    }
+
 }
