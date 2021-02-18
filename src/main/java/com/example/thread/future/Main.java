@@ -1,9 +1,10 @@
 package com.example.thread.future;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import java.util.concurrent.*;
+
+import static org.reflections.util.ConfigurationBuilder.build;
 
 /**
  * @Description:
@@ -23,5 +24,9 @@ public class Main {
         //阻塞等待任务2完成
         future2.get();
         System.out.println("task done");
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-call-runner-%d").build();
+        ExecutorService executorService = new ThreadPoolExecutor(availableProcessors, availableProcessors, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue(), namedThreadFactory);
     }
 }
