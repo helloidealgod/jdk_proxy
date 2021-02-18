@@ -28,5 +28,9 @@ public class Main {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-call-runner-%d").build();
         ExecutorService executorService = new ThreadPoolExecutor(availableProcessors, availableProcessors, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue(), namedThreadFactory);
+//        如果是CPU密集型应用，则线程池大小设置为N+1
+//        如果是IO密集型应用，则线程池大小设置为2N+1
+//        最佳线程数目 = （（线程等待时间+线程CPU时间）/线程CPU时间 ）* CPU数目
+//        最佳线程数目 = （线程等待时间与线程CPU时间之比 + 1）* CPU数目
     }
 }
