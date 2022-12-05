@@ -8,7 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            BufferedReader reader = (new BufferedReader(new FileReader("/Users/jiangxiankun/workspace_c/cc/main.c")));
+
+            File f = new File("");
+            BufferedReader reader = new BufferedReader(new FileReader(f.getAbsolutePath()+"/src/main/resources/cc/main.c"));
             pr = new PushbackReader(reader);
             String token;
             while ((token = getToken()) != null) {
