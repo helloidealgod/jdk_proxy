@@ -13,14 +13,6 @@ int *intb;
 int **intc;
 int ***intd;
 
-float float1;
-float float2,float3,float4;
-float float5=1;
-float float6=2,float7=7;
-float float8[];
-float float9[9];
-float floata[1][2];
-float floata3[1][2][3];
-float *floatb;
-float **floatc;
-float ***floatd;
+int add(int a,int b);
+int* sub(int a,int b);
+int* plus(int a,int b,int *c);

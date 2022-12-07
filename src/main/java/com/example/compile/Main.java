@@ -165,6 +165,44 @@ public class Main {
                     token = getToken();
                     if (token.matches("\\(")) {
                         //函数参数列表
+                        sb.append(token);
+                        token = getToken();
+                        if(")".equals(token)){
+                            sb.append(token);
+                            token = getToken();
+                            if(";".equals(token)){
+                                System.out.println(sb.toString());
+                                break;
+                            }
+                        }else if(token.matches("int|float|char|long|")){
+                            do {
+                                sb.append(token);
+                                sb.append(" ");
+                                token = getToken();
+                                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
+                                    sb.append(token);
+                                    token = getToken();
+                                    if (",".equals(token)) {
+                                        sb.append(token);
+                                        token = getToken();
+                                        if(!token.matches("int|float|char|long|")){
+                                            System.out.println("error");
+                                            break;
+                                        }
+                                    }else if (")".equals(token)){
+                                        sb.append(token);
+                                        token = getToken();
+                                        if (";".equals(token)){
+                                            System.out.println(sb.toString());
+                                            break;
+                                        }
+                                    }
+                                }else if("*".equals(token)){
+//                                    sb.append(token);
+//                                    token = getToken();
+                                }
+                            }while (true);
+                        }
                         //函数 functionBody()
                         break;
                     } else if (token.matches("=")) {
