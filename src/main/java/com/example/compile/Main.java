@@ -128,15 +128,118 @@ public class Main {
     }
 
     public static void externalDeclaration(String token) throws IOException {
-        if(includeHandle(token)){
+        int i = 0;
+        if (includeHandle(token)) {
 
-        }else if(blsmdy(token)){
+        } else if (blsmdy(token)) {
 
-        }else {
+        } else if (0 < (i = functionDeclaration(token))) {
+            if(2 == i){
+                //函数体
+            }
+        } else {
             stack.empty();
         }
         //functionProcess(token);
 
+    }
+
+    /**
+     * <functionDefinition>:=<typeSpecifier><declarator>;
+     * 函数声明：=类型 声明
+     */
+    public static int functionDeclaration(String token) throws IOException {
+        int i = 1;
+        token = getToken();
+        if (token.matches("int|float|char|long|")) {
+            stack.push(token);
+            token = getToken();
+            while (true) {
+                //变量名、函数名
+                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
+                    stack.push(token);
+                    token = getToken();
+                    if (token.matches("\\(")) {
+                        //函数参数列表
+                        stack.push(token);
+                        token = getToken();
+                        if (")".equals(token)) {
+                            //没有入参
+                            stack.push(token);
+                            token = getToken();
+                            if (";".equals(token)) {
+                                //函数声明
+                                stack.print();
+                                break;
+                            } else if ("{".equals(token)) {
+                                //函数体开始
+                                pr.unread('{');
+                                return 2;
+                            }
+                        } else if (token.matches("int|float|char|long|")) {
+                            //入参开始
+                            do {
+                                stack.push(token);
+                                token = getToken();
+                                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
+                                    //入参名
+                                    stack.push(token);
+                                    token = getToken();
+                                    if (",".equals(token)) {
+                                        stack.push(token);
+                                        token = getToken();
+                                        if (!token.matches("int|float|char|long|")) {
+                                            // 逗号后不是类型
+                                            //todo ... 可变入参
+                                            System.out.println("error");
+                                            i = -1;
+                                            break;
+                                        }
+                                    } else if (")".equals(token)) {
+                                        //入参结束
+                                        stack.push(token);
+                                        token = getToken();
+                                        if (";".equals(token)) {
+                                            //函数声明
+                                            stack.print();
+                                            break;
+                                        } else if ("{".equals(token)) {
+                                            //函数体
+                                            pr.unread('{');
+                                            return 2;
+                                        }
+                                    }
+                                } else if ("*".equals(token)) {
+                                }
+                            } while (true);
+                        }
+                        break;
+                    } else if (token.matches("=")) {
+                        stack.failed();
+                        i = -1;
+                        break;
+                    } else if (token.matches("\\[")) {
+                        stack.failed();
+                        i = -1;
+                        break;
+                    } else if (token.matches(",")) {
+                        stack.failed();
+                        i = -1;
+                        break;
+                    } else if (token.matches(";")) {
+                        stack.failed();
+                        i = -1;
+                        break;
+                    }
+                } else if ("*".equals(token)) {
+                    stack.push(token);
+                    token = getToken();
+                } else {
+                    break;
+                }
+            }
+        }
+        return i;
     }
 
     private static void functionProcess(String token) throws IOException {
@@ -196,16 +299,20 @@ public class Main {
                         //函数 functionBody()
                         break;
                     } else if (token.matches("=")) {
-                        stack.failed();;
+                        stack.failed();
+                        ;
                         break;
                     } else if (token.matches("\\[")) {
-                        stack.failed();;
+                        stack.failed();
+                        ;
                         break;
                     } else if (token.matches(",")) {
-                        stack.failed();;
+                        stack.failed();
+                        ;
                         break;
                     } else if (token.matches(";")) {
-                        stack.failed();;
+                        stack.failed();
+                        ;
                         break;
                     }
                 } else if ("*".equals(token)) {
@@ -218,6 +325,13 @@ public class Main {
         }
     }
 
+    /**
+     * 变量声明【定义】
+     *
+     * @param token
+     * @return
+     * @throws IOException
+     */
     private static boolean blsmdy(String token) throws IOException {
         boolean success = false;
         if (token.matches("int|float|char|long|")) {
@@ -230,6 +344,7 @@ public class Main {
                     stack.push(token);
                     token = getToken();
                     if (token.matches("\\(")) {
+                        stack.push(token);
                         stack.failed();
                         break;
                     } else if (token.matches("=")) {
@@ -288,6 +403,13 @@ public class Main {
         return success;
     }
 
+    /**
+     * #include<>  #include ""
+     *
+     * @param token
+     * @return
+     * @throws IOException
+     */
     private static boolean includeHandle(String token) throws IOException {
         boolean success = false;
         if (token.matches("#include")) {
@@ -300,13 +422,15 @@ public class Main {
                 if (token.matches(">")) {
                     success = true;
                 } else {
-                    System.out.println("error");
+                    System.out.print("error:");
+                    stack.print();
                 }
             } else if (token.startsWith("\"")) {
                 stack.push(token);
                 success = true;
             } else {
-                System.out.println("error");
+                System.out.print("error:");
+                stack.print();
             }
             if (success) {
                 stack.print();

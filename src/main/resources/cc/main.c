@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include "hello.h"
-memory_end = (1<<20) + (EXT_MEM_K << 10);
-int hello(int a,int b){
-    int c = 0;
-}
-abc.def = 0;
+#include <stdio.h<
+int hello(int p1,int p2);
 int int1;
 int int2,int3,int4;
 int int5=1;
