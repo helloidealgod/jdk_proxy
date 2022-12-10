@@ -51,6 +51,8 @@ public class Stack {
     public void failed(){
         failToKenList = toKenList;
         toKenList = new ArrayList<>();
+        topIndex = -1;
+        index = 0;
     }
 
     public String getToken() {

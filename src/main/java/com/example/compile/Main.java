@@ -134,14 +134,36 @@ public class Main {
         } else if (blsmdy(token)) {
 
         } else if (0 < (i = functionDeclaration(token))) {
-            if(2 == i){
+            if (2 == i) {
                 //函数体
+                functionDefinition(token);
             }
         } else {
             stack.empty();
         }
         //functionProcess(token);
 
+    }
+
+    /**
+     * <functionDefinition>:=<typeSpecifier><declarator><functionBody>
+     * 函数定义：=类型 声明 函数体
+     */
+    public static void functionDefinition(String token) throws IOException {
+        //变量声明或初始化
+        //变量赋值
+        //if else
+        //for
+        //do while
+        token = getToken();
+        if ("{".equals(token)) {
+            stack.push(token);
+            token = getToken();
+            if ("}".equals(token)) {
+                stack.push(token);
+                stack.print();
+            }
+        }
     }
 
     /**
@@ -598,13 +620,6 @@ public class Main {
         }
     }
 
-    /**
-     * <functionDefinition>:=<typeSpecifier><declarator><functionBody>
-     * 函数定义：=类型 声明 函数体
-     */
-    public static void functionDefinition() {
-
-    }
 
     /**
      * <declaration>:=<typeSpecifier><TK_SEMICOLON> | <typeSpecifier><initDeclaratorList><TK_SEMICOLON>
