@@ -2,7 +2,10 @@
 #include "hello.h"
 #include <stdio.h<
 int hello(int p1,int p2);
-int print(int a){}
+int print(int a){
+    float fty = 0.989;
+    int i = 987;
+}
 int int1;
 int int2,int3,int4;
 int int5=1;

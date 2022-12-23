@@ -159,10 +159,15 @@ public class Main {
         if ("{".equals(token)) {
             stack.push(token);
             token = getToken();
-            if ("}".equals(token)) {
-                stack.push(token);
-                stack.print();
-            }
+            do {
+                if ("}".equals(token)) {
+                    stack.push(token);
+                    stack.print();
+                    break;
+                }
+                blsmdy(token);
+                token = getToken();
+            }while (true);
         }
     }
 
