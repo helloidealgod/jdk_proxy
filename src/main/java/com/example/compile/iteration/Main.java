@@ -73,7 +73,7 @@ public class Main {
         try {
 
             File f = new File("");
-            BufferedReader reader = new BufferedReader(new FileReader(f.getAbsolutePath() + "/src/main/resources/cc/main.c"));
+            BufferedReader reader = new BufferedReader(new FileReader(f.getAbsolutePath() + "/src/main/resources/cc/m.c"));
             pr = new PushbackReader(reader);
             translationUnit();
             pr.close();
@@ -115,7 +115,7 @@ public class Main {
     }
 
     /**
-     * <translationUnit>:={<externalDeclaration>}<TK_EOF>
+     * <翻译单元>::={<外部声明>}<文件结束符>
      *
      * @throws IOException
      */
@@ -123,529 +123,219 @@ public class Main {
         String token;
         while ((token = getToken()) != null) {
             externalDeclaration(token);
-        }
-    }
-
-    public static void externalDeclaration(String token) throws IOException {
-        int i = 0;
-        if (includeHandle(token)) {
-
-        } else if (blsmdy(token)) {
-
-        } else if (0 < (i = functionDeclaration(token))) {
-            if (2 == i) {
-                //函数体
-                functionDefinition(token);
-            }
-        } else {
-            stack.empty();
-        }
-        //functionProcess(token);
-
-    }
-
-    /**
-     * <functionDefinition>:=<typeSpecifier><declarator><functionBody>
-     * 函数定义：=类型 声明 函数体
-     */
-    public static void functionDefinition(String token) throws IOException {
-        //变量声明或初始化
-        //变量赋值
-        //if else
-        //for
-        //do while
-        token = getToken();
-        if ("{".equals(token)) {
-            stack.push(token);
-            token = getToken();
-            do {
-                if ("}".equals(token)) {
-                    stack.push(token);
-                    stack.print();
-                    break;
-                }
-                blsmdy(token);
-                token = getToken();
-            }while (true);
+            System.out.println("");
         }
     }
 
     /**
-     * <functionDefinition>:=<typeSpecifier><declarator>;
-     * 函数声明：=类型 声明
-     */
-    public static int functionDeclaration(String token) throws IOException {
-        int i = 1;
-        token = getToken();
-        if (token.matches("int|float|char|long|")) {
-            stack.push(token);
-            token = getToken();
-            while (true) {
-                //变量名、函数名
-                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                    stack.push(token);
-                    token = getToken();
-                    if (token.matches("\\(")) {
-                        //函数参数列表
-                        stack.push(token);
-                        token = getToken();
-                        if (")".equals(token)) {
-                            //没有入参
-                            stack.push(token);
-                            token = getToken();
-                            if (";".equals(token)) {
-                                //函数声明
-                                stack.print();
-                                break;
-                            } else if ("{".equals(token)) {
-                                //函数体开始
-                                pr.unread('{');
-                                return 2;
-                            }
-                        } else if (token.matches("int|float|char|long|")) {
-                            //入参开始
-                            do {
-                                stack.push(token);
-                                token = getToken();
-                                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                                    //入参名
-                                    stack.push(token);
-                                    token = getToken();
-                                    if (",".equals(token)) {
-                                        stack.push(token);
-                                        token = getToken();
-                                        if (!token.matches("int|float|char|long|")) {
-                                            // 逗号后不是类型
-                                            //todo ... 可变入参
-                                            System.out.println("error");
-                                            i = -1;
-                                            break;
-                                        }
-                                    } else if (")".equals(token)) {
-                                        //入参结束
-                                        stack.push(token);
-                                        token = getToken();
-                                        if (";".equals(token)) {
-                                            //函数声明
-                                            stack.print();
-                                            break;
-                                        } else if ("{".equals(token)) {
-                                            //函数体
-                                            pr.unread('{');
-                                            return 2;
-                                        }
-                                    }
-                                } else if ("*".equals(token)) {
-                                }
-                            } while (true);
-                        }
-                        break;
-                    } else if (token.matches("=")) {
-                        stack.failed();
-                        i = -1;
-                        break;
-                    } else if (token.matches("\\[")) {
-                        stack.failed();
-                        i = -1;
-                        break;
-                    } else if (token.matches(",")) {
-                        stack.failed();
-                        i = -1;
-                        break;
-                    } else if (token.matches(";")) {
-                        stack.failed();
-                        i = -1;
-                        break;
-                    }
-                } else if ("*".equals(token)) {
-                    stack.push(token);
-                    token = getToken();
-                } else {
-                    break;
-                }
-            }
-        }
-        return i;
-    }
-
-    private static void functionProcess(String token) throws IOException {
-        if (token.matches("int|float|char|long|")) {
-            stack.push(token);
-            token = getToken();
-            while (true) {
-                //变量名、函数名
-                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                    stack.push(token);
-                    token = getToken();
-                    if (token.matches("\\(")) {
-                        //函数参数列表
-                        stack.push(token);
-                        token = getToken();
-                        if (")".equals(token)) {
-                            stack.push(token);
-                            token = getToken();
-                            if (";".equals(token)) {
-                                stack.print();
-                                break;
-                            } else if ("{".equals(token)) {
-                                stack.push(token);
-                                token = getToken();
-                                if (token.matches("int|float|char|long|")) {
-
-                                }
-                            }
-                        } else if (token.matches("int|float|char|long|")) {
-                            do {
-                                stack.push(token);
-                                token = getToken();
-                                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                                    stack.push(token);
-                                    token = getToken();
-                                    if (",".equals(token)) {
-                                        stack.push(token);
-                                        token = getToken();
-                                        if (!token.matches("int|float|char|long|")) {
-                                            System.out.println("error");
-                                            break;
-                                        }
-                                    } else if (")".equals(token)) {
-                                        stack.push(token);
-                                        token = getToken();
-                                        if (";".equals(token)) {
-                                            stack.print();
-                                            break;
-                                        } else if ("{".equals(token)) {
-
-                                        }
-                                    }
-                                } else if ("*".equals(token)) {
-                                }
-                            } while (true);
-                        }
-                        //函数 functionBody()
-                        break;
-                    } else if (token.matches("=")) {
-                        stack.failed();
-                        ;
-                        break;
-                    } else if (token.matches("\\[")) {
-                        stack.failed();
-                        ;
-                        break;
-                    } else if (token.matches(",")) {
-                        stack.failed();
-                        ;
-                        break;
-                    } else if (token.matches(";")) {
-                        stack.failed();
-                        ;
-                        break;
-                    }
-                } else if ("*".equals(token)) {
-                    stack.push(token);
-                    token = getToken();
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * 变量声明【定义】
+     * <外部声明>::=<函数定义>|<声明>
      *
      * @param token
-     * @return
-     * @throws IOException
      */
-    private static boolean blsmdy(String token) throws IOException {
-        boolean success = false;
-        if (token.matches("int|float|char|long|")) {
-            //记录类型
-            stack.push(token);
-            token = getToken();
-            while (true) {
-                //变量名、函数名
-                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                    stack.push(token);
-                    token = getToken();
-                    if (token.matches("\\(")) {
-                        stack.push(token);
-                        stack.failed();
-                        break;
-                    } else if (token.matches("=")) {
-                        //变量 =
-                        stack.push(token);
-                        //取数
-                        token = getToken();
-                        stack.push(token);
-                        //取标点符号
-                        token = getToken();
-                        if (token.matches(";")) {
-                            stack.print();
-                            success = true;
-                            break;
-                        } else if (token.matches(",")) {
-                            stack.push(token);
-                            token = getToken();
-                        }
-                    } else if (token.matches("\\[")) {
-                        do {
-                            stack.push(token);
-                            token = getToken();
-                            stack.push(token);
-                            token = getToken();
-                            if ("]".equals(token)) {
-                                stack.push(token);
-                                token = getToken();
-                                if (";".equals(token)) {
-                                    stack.print();
-                                    success = true;
-                                    break;
-                                }
-                            } else if (";".equals(token)) {
-                                stack.print();
-                                success = true;
-                                break;
-                            }
-                        } while (true);
-                        break;
-                    } else if (token.matches(",")) {
-                        stack.push(token);
-                        token = getToken();
-                    } else if (token.matches(";")) {
-                        stack.print();
-                        success = true;
-                        break;
-                    }
-                } else if ("*".equals(token)) {
-                    stack.push(token);
-                    token = getToken();
-                } else {
-                    break;
-                }
-            }
+    private static void externalDeclaration(String token) throws IOException {
+        // 类型区分符
+        if (!lxqff(token)) {
+            System.out.println("error");
         }
-        return success;
-    }
-
-    /**
-     * #include<>  #include ""
-     *
-     * @param token
-     * @return
-     * @throws IOException
-     */
-    private static boolean includeHandle(String token) throws IOException {
-        boolean success = false;
-        if (token.matches("#include")) {
-            stack.push(token);
+        System.out.print("type:" + token);
+        while (true) {
             token = getToken();
-            if (token.matches("<")) {
-                token = getToken();
-                stack.push(token);
-                token = getToken();
-                if (token.matches(">")) {
-                    success = true;
-                } else {
-                    System.out.print("error:");
-                    stack.print();
-                }
-            } else if (token.startsWith("\"")) {
-                stack.push(token);
-                success = true;
-            } else {
-                System.out.print("error:");
-                stack.print();
-            }
-            if (success) {
-                stack.print();
-            }
-        }
-        return success;
-    }
-
-    /**
-     * 解析外部声明
-     * <externalDeclaration>:={<functionDefinition>}|{<declaration>}
-     * 函数定义或变量声明
-     *
-     * @throws IOException
-     */
-    public static void externalDeclaration0(String token) throws IOException {
-        StringBuilder sb = new StringBuilder("");
-        if (token.matches("#include")) {
-            /**
-             * #include <stdio.h>
-             * #include "hello.h"
-             * begin
-             */
-            sb.append(token);
-            sb.append(" ");
-            token = getToken();
-            if (token.matches("<")) {
-                token = getToken();
-                sb.append(token);
-                token = getToken();
-                if (token.matches(">")) {
-                    System.out.println(sb.toString());
-                } else {
-                    System.out.println("error");
-                }
-            } else if (token.startsWith("\"")) {
-                sb.append(token);
-                System.out.println(sb.toString());
-            } else {
+            // 标识符
+            if (!smf(token)) {
                 System.out.println("error");
             }
-            /**
-             * #include <stdio.h>
-             * #include "hello.h"
-             * end
-             */
-        } else if (token.matches("int|float|char|long|")) {
-            //记录类型
-            sb.append(token);
-            sb.append(" ");
+            System.out.print(" name:" + token);
             token = getToken();
-            while (true) {
-                //变量名、函数名
-                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                    sb.append(token);
-                    token = getToken();
-                    if (token.matches("\\(")) {
-                        //函数参数列表
-                        sb.append(token);
-                        token = getToken();
-                        if (")".equals(token)) {
-                            sb.append(token);
-                            token = getToken();
-                            if (";".equals(token)) {
-                                System.out.println(sb.toString());
-                                break;
-                            } else if ("{".equals(token)) {
-                                /**
-                                 * 函数体
-                                 * 1 变量声明、定义
-                                 * 2 变量引用
-                                 * 3 函数调用
-                                 * 4 for、if、while、Switch等语句（顺序、循环、分支、跳转）
-                                 */
-                                sb.append(token);
-                                token = getToken();
-                                if (token.matches("int|float|char|long|")) {
+            if (zjsmfhz(token)) {
+                token = getToken();
+                if ("{".equals(token)) {
 
-                                }
-                            }
-                        } else if (token.matches("int|float|char|long|")) {
-                            do {
-                                sb.append(token);
-                                sb.append(" ");
-                                token = getToken();
-                                if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
-                                    sb.append(token);
-                                    token = getToken();
-                                    if (",".equals(token)) {
-                                        sb.append(token);
-                                        token = getToken();
-                                        if (!token.matches("int|float|char|long|")) {
-                                            System.out.println("error");
-                                            break;
-                                        }
-                                    } else if (")".equals(token)) {
-                                        sb.append(token);
-                                        token = getToken();
-                                        if (";".equals(token)) {
-                                            System.out.println(sb.toString());
-                                            break;
-                                        } else if ("{".equals(token)) {
-
-                                        }
-                                    }
-                                } else if ("*".equals(token)) {
-//                                    sb.append(token);
-//                                    token = getToken();
-                                }
-                            } while (true);
-                        }
-                        //函数 functionBody()
-                        break;
-                    } else if (token.matches("=")) {
-                        //变量 =
-                        sb.append(token);
-                        //取数
-                        token = getToken();
-                        sb.append(token);
-                        //取标点符号
-                        token = getToken();
-                        if (token.matches(";")) {
-                            System.out.println(sb.toString());
-                            break;
-                        } else if (token.matches(",")) {
-                            sb.append(token);
-                            token = getToken();
-                        }
-                    } else if (token.matches("\\[")) {
-                        do {
-                            sb.append(token);
-                            token = getToken();
-                            sb.append(token);
-                            token = getToken();
-                            if ("]".equals(token)) {
-                                sb.append(token);
-                                token = getToken();
-                                if (";".equals(token)) {
-                                    System.out.println(sb.toString());
-                                    break;
-                                }
-                            } else if (";".equals(token)) {
-                                System.out.println(sb.toString());
-                                break;
-                            }
-                        } while (true);
-                        break;
-                    } else if (token.matches(",")) {
-                        sb.append(token);
-                        token = getToken();
-                    } else if (token.matches(";")) {
-                        System.out.println(sb.toString());
-                        break;
-                    }
-                } else if ("*".equals(token)) {
-                    /**
-                     * 类型之后接*表示指针类型
-                     */
-                    sb.append(token);
-                    token = getToken();
-                } else {
-                    break;
                 }
+            } else {
+                if ("=".equals(token)) {
+                    token = getToken();
+                    System.out.print(" value:" + token);
+                    token = getToken();
+                    if (",".equals(token)) {
+
+                    }
+                } else if (",".equals(token)) {
+
+                }
+            }
+            if (";".equals(token)) {
+                break;
             }
         }
     }
 
-
     /**
-     * <declaration>:=<typeSpecifier><TK_SEMICOLON> | <typeSpecifier><initDeclaratorList><TK_SEMICOLON>
-     * 类型 ；| 类型 变量名列表 ；
+     * <函数定义>::=<类型区分符><声明符><函数体>
+     *
+     * @param token
      */
-    public static void declaration() {
+    private static void hsdy(String token) {
 
     }
 
     /**
-     * <initDeclaratorList>:=<initDeclarator>{<TK_COMMA><initDeclarator>}
-     * :=变量名{=初始值}{,变量名{=初始值}}
+     * <函数体>::=<复合语句>
+     *
+     * @param token
      */
-    public static void initDeclaratorList() {
+    private static void hst(String token) {
 
     }
 
     /**
-     * <initDeclarator>:=<declarator>{<TK_ASSIGN><initializer>}
-     * :=变量名{=初始值}
+     * <声明>::=<类型区分符>[<初值声明符表>]<分号>
+     *
+     * @param token
      */
-    public static void initDeclarator() {
+    private static void sm(String token) {
 
     }
+
+    /**
+     * <初值声明符表>::=<初值声明符>{<逗号><初值声明符}
+     *
+     * @param token
+     */
+    private static void czsmfb(String token) {
+
+    }
+
+    /**
+     * <初值声明符>::=<声明符>|<声明符><赋值运算符><初值符>
+     *
+     * @param token
+     */
+    private static void czsmf(String token) {
+
+    }
+
+    /**
+     * <类型区分符>::=<void 关键字>|<char 关键字>|<int 关键字> | <结构区分符>
+     *
+     * @param token
+     */
+    private static boolean lxqff(String token) {
+        return token.matches("void|int|float|char|long|");
+    }
+
+    /**
+     * <声明符>::={<指针>}[<调用约定>][<结构成员对齐>]<直接声明符>
+     *
+     * @param token
+     */
+    private static boolean smf(String token) {
+        return !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
+    }
+
+    /**
+     * <指针>::=<星号>
+     *
+     * @param token
+     */
+    private static boolean zz(String token) {
+        return false;
+    }
+
+    /**
+     * <直接声明符>::=<标识符><直接声明符后缀>
+     *
+     * @param token
+     */
+    private static boolean zjsmf(String token) {
+        return false;
+    }
+
+    /**
+     * <直接声明符后缀>::={<左中括号><右中括号>|<左中括号><整数常量><右中括号>|<左小括号><右小括号>|<左小括号><形参表><右小括号>}
+     *
+     * @param token
+     */
+    private static boolean zjsmfhz(String token) throws IOException {
+        if ("[".equals(token)) {
+
+        } else if ("(".equals(token)) {
+            System.out.print(token + " ");
+            while (true) {
+                token = getToken();
+                if (lxqff(token)) {
+                    System.out.print(token + " ");
+                    token = getToken();
+                    // 标识符
+                    if (!smf(token)) {
+                        System.out.println("error");
+                    }
+                    System.out.print(token + " ");
+                    token = getToken();
+                }
+                if (")".equals(token)) {
+                    System.out.print(token);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * <结构区分符>::=<struct 关键字><标识符><左大括号><结构声明表><右大括号>| <struct关键字><标识符>
+     *
+     * <结构声明表>::=<结构声明>{<结构声明>}
+     * <结构声明>::=<类型区分符>{<结构声明符表>}<分号>
+     * <结构声明符表>::=<声明符>{<逗号><声明符>}
+     *
+     * <调用约定>::=<__cdecl 关键字>|<__stdcall关键字>
+     * <结构成员对齐>::=<__align关键字><左小括号><整数常量><右小括号>
+     *
+     * <直接声明符后缀>::={<左中括号><右中括号>|<左中括号><整数常量><右中括号>|<左小括号><右小括号>|<左小括号><形参表><右小括号>}
+     * <参数声明>::=<类型区分符><声明符>
+     *
+     * <初值符>::=<赋值表达式>
+     *
+     * <语句>::={<复合语句>|<if语句>|<for语句>|<break语句>|<continue语句>|<return语句>|<表达式语句>}
+     *
+     * <复合语句>::=<左大括号>{<声明><语句>}<右大括号>
+     * <表达式语句>::=[<expression>]<分号>
+     *
+     * <if语句>::=<if><左小括号><表达式><右小括号><语句>[<else><语句>]
+     *
+     * <for语句>::=<for><左小括号><表达式语句><表达式语句><表达式><右小括号><语句>
+     *
+     * <continue语句>::=<continue><分号>
+     * <break语句>::=<break><分号>
+     * <return语句>::=<return><expression><分号>
+     *
+     * <表达式>::=<赋值表达式>{<逗号><赋值表达式>}
+     *
+     * <赋值表达式>::=<相等类表达式>|<一元表达式><赋值等号><赋值表达式>
+     *
+     * <相等类表达式>::=<关系表达式>{<等于号><关系表达式>|<不等于号><关系表达式>}
+     *
+     * <关系表达式>::=<加减类表达式>{<小于号><加减类表达式>|<大于号><加减类表达式>|<小于等于号><加减类表达式>|<大于等于号><加减类表达式>}
+     *
+     * <加减类表达式>::=<乘除类表达式>{<加号><乘除类表达式>|<减号><乘除类表达式>}
+     *
+     * <乘除类表达式>::=<一元表达式>{<星号><一元表达式>|<除号><一元表达式>|<取余运算符><一元表达式>}
+     *
+     * <一元表达式>::=<后缀表达式>
+     * 				|<与号><一元表达式>
+     * 				|<星号><一元表达式>
+     * 				|<加号><一元表达式>
+     * 				|<减号><一元表达式>
+     * 				|<sizeof 表达式>
+     *
+     * <sizeof表达式>::=<sizeof 关键字>{<类型区分符>}
+     *
+     * <后缀表达式>::=<初等表达式>{
+     * 				<左中括号><expression><右中括号>
+     * 				|<左小括号><右小括号>
+     * 				|<左小括号><实参表达式><右小括号>
+     * 				|<点号>IDENTIFIER
+     * 				|<箭头>IDENTIFIER}
+     *
+     * <初等表达式>::=<标识符>|<整数常量>|<字符串常量>|<字符常量>|(<表达式>)
+     */
 }
