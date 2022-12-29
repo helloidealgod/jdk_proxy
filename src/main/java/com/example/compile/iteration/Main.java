@@ -129,6 +129,9 @@ public class Main {
 
     /**
      * <外部声明>::=<函数定义>|<声明>
+     * <函数定义>::=<类型区分符><声明符><函数体>
+     * <声明>::=<类型区分符>[<初值声明符表>]<分号>
+     * <初值声明符表>::=<初值声明符>{<逗号><初值声明符}
      *
      * @param token
      */
@@ -149,7 +152,11 @@ public class Main {
             if (zjsmfhz(token)) {
                 token = getToken();
                 if ("{".equals(token)) {
-
+                    System.out.print(token);
+                    token = getToken();
+                    if (fhyj(token)) {
+                        break;
+                    }
                 }
             } else {
                 if ("=".equals(token)) {
@@ -280,6 +287,247 @@ public class Main {
         }
         return false;
     }
+
+    /**
+     * <复合语句>::=<左大括号>{<声明><语句>}<右大括号>
+     *
+     * @param token
+     */
+    private static boolean fhyj(String token) throws IOException {
+        // <声明>
+        while (lxqff(token)) {
+            System.out.print("type:" + token);
+            while (true) {
+                token = getToken();
+                // 标识符
+                if (!smf(token)) {
+                    System.out.println("error");
+                }
+                System.out.print(" name:" + token);
+                token = getToken();
+                if (zjsmfhz(token)) {
+                    token = getToken();
+                    if ("{".equals(token)) {
+                        System.out.println("error");
+                    }
+                } else {
+                    if ("=".equals(token)) {
+                        token = getToken();
+                        System.out.print(" value:" + token);
+                        token = getToken();
+                        if (",".equals(token)) {
+
+                        }
+                    } else if (",".equals(token)) {
+
+                    }
+                }
+                if (";".equals(token)) {
+                    token = getToken();
+                    break;
+                }
+            }
+        }
+        // 语句
+        while (!"}".equals(token)) {
+            if (yj(token)) {
+                token = getToken();
+            } else {
+                System.out.println("error");
+            }
+        }
+        if ("}".equals(token)) {
+            System.out.println(token);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <语句>::={<复合语句>|<if语句>|<for语句>|<break语句>|<continue语句>|<return语句>|<表达式语句>}
+     *
+     * @param token
+     */
+    private static boolean yj(String token) throws IOException {
+        if ("break".equals(token)) {
+            System.out.println(token);
+            token = getToken();
+            return true;
+        } else if ("continue".equals(token)) {
+            System.out.println(token);
+            token = getToken();
+            return true;
+        } else if ("return".equals(token)) {
+            System.out.println(token);
+            token = getToken();
+            return true;
+        } else if ("if".equals(token)) {
+            //if 语句
+            System.out.print(token);
+            token = getToken();
+            if ("(".equals(token)) {
+                System.out.print(token);
+                token = getToken();
+                System.out.print(token);
+                token = getToken();
+                if (")".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    if ("{".equals(token)) {
+                        System.out.print(token);
+                        token = getToken();
+                        if (fhyj(token)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }else if(cdbds(token)){
+            //表达式语句
+            token = getToken();
+            if("=".equals(token)){
+                token = getToken();
+                if(cdbds(token)){
+                    token = getToken();
+                    if(";".equals(token)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * <表达式>::=<赋值表达式>{<逗号><赋值表达式>}
+     * @param token
+     */
+    private static boolean bds(String token) throws IOException {
+        while (true){
+            if(!fzbds(token)){
+                System.out.println("error");
+            }
+            token = getToken();
+            if(!",".equals(token)){
+                break;
+            }
+            token = getToken();
+        }
+        return false;
+    }
+
+    /**
+     * <赋值表达式>::=<相等类表达式>|<一元表达式><赋值等号><赋值表达式>
+     * @param token
+     */
+    private static boolean fzbds(String token) {
+        if(xdlbds(token)){
+            return true;
+        }else if(yybds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <相等类表达式>::=<关系表达式>{<等于号><关系表达式>|<不等于号><关系表达式>}
+     * @param token
+     * @return
+     */
+    private static boolean xdlbds(String token) {
+        if(gxbds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <关系表达式>::=<加减类表达式>{<小于号><加减类表达式>|<大于号><加减类表达式>|<小于等于号><加减类表达式>|<大于等于号><加减类表达式>}
+     * @param token
+     * @return
+     */
+    private static boolean gxbds(String token) {
+        if(jjlbds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <加减类表达式>::=<乘除类表达式>{<加号><乘除类表达式>|<减号><乘除类表达式>}
+     * @param token
+     * @return
+     */
+    private static boolean jjlbds(String token) {
+        if(cclbds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <乘除类表达式>::=<一元表达式>{<星号><一元表达式>|<除号><一元表达式>|<取余运算符><一元表达式>}
+     * @param token
+     * @return
+     */
+    private static boolean cclbds(String token) {
+        if(yybds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <一元表达式>::=<后缀表达式>
+     * 				|<与号><一元表达式>
+     * 				|<星号><一元表达式>
+     * 				|<加号><一元表达式>
+     * 				|<减号><一元表达式>
+     * 				|<sizeof 表达式>
+     * @param token
+     * @return
+     */
+    private static boolean yybds(String token) {
+        if(hzbds(token)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <后缀表达式>::=<初等表达式>{
+     * 				<左中括号><expression><右中括号>
+     * 				|<左小括号><右小括号>
+     * 				|<左小括号><实参表达式><右小括号>
+     * 				|<点号>IDENTIFIER
+     * 				|<箭头>IDENTIFIER}
+     * @param token
+     * @return
+     */
+    private static boolean hzbds(String token) {
+        if(cdbds(token)){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * <初等表达式>::=<标识符>|<整数常量>|<字符串常量>|<字符常量>|(<表达式>)
+     * @param token
+     */
+    private static boolean cdbds(String token) {
+        if(smf(token)){
+            return true;
+        }else if(token.matches("\\d+")){
+            return true;
+        }else if(token.matches("\"w+\"")){
+            return true;
+        }else if(token.matches("\'w\'")){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * <结构区分符>::=<struct 关键字><标识符><左大括号><结构声明表><右大括号>| <struct关键字><标识符>
      *
@@ -307,26 +555,7 @@ public class Main {
      * <continue语句>::=<continue><分号>
      * <break语句>::=<break><分号>
      * <return语句>::=<return><expression><分号>
-     *
-     * <表达式>::=<赋值表达式>{<逗号><赋值表达式>}
-     *
-     * <赋值表达式>::=<相等类表达式>|<一元表达式><赋值等号><赋值表达式>
-     *
-     * <相等类表达式>::=<关系表达式>{<等于号><关系表达式>|<不等于号><关系表达式>}
-     *
-     * <关系表达式>::=<加减类表达式>{<小于号><加减类表达式>|<大于号><加减类表达式>|<小于等于号><加减类表达式>|<大于等于号><加减类表达式>}
-     *
-     * <加减类表达式>::=<乘除类表达式>{<加号><乘除类表达式>|<减号><乘除类表达式>}
-     *
-     * <乘除类表达式>::=<一元表达式>{<星号><一元表达式>|<除号><一元表达式>|<取余运算符><一元表达式>}
-     *
-     * <一元表达式>::=<后缀表达式>
-     * 				|<与号><一元表达式>
-     * 				|<星号><一元表达式>
-     * 				|<加号><一元表达式>
-     * 				|<减号><一元表达式>
-     * 				|<sizeof 表达式>
-     *
+
      * <sizeof表达式>::=<sizeof 关键字>{<类型区分符>}
      *
      * <后缀表达式>::=<初等表达式>{
@@ -335,7 +564,5 @@ public class Main {
      * 				|<左小括号><实参表达式><右小括号>
      * 				|<点号>IDENTIFIER
      * 				|<箭头>IDENTIFIER}
-     *
-     * <初等表达式>::=<标识符>|<整数常量>|<字符串常量>|<字符常量>|(<表达式>)
      */
 }
