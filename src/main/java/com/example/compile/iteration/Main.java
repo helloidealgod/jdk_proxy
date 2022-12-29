@@ -382,47 +382,57 @@ public class Main {
                     }
                 }
             }
-        }else if(cdbds(token)){
-            //表达式语句
-            token = getToken();
-            if("=".equals(token)){
-                token = getToken();
-                if(cdbds(token)){
-                    token = getToken();
-                    if(";".equals(token)){
-                        return true;
-                    }
-                }
-            }
+        } else if (bds(token)) {
+            return true;
         }
+//
+//        else if(cdbds(token)){
+//            //表达式语句
+//            token = getToken();
+//            if("=".equals(token)){
+//                token = getToken();
+//                if(cdbds(token)){
+//                    token = getToken();
+//                    if(";".equals(token)){
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
         return false;
     }
+
     /**
      * <表达式>::=<赋值表达式>{<逗号><赋值表达式>}
+     *
      * @param token
      */
     private static boolean bds(String token) throws IOException {
-        while (true){
-            if(!fzbds(token)){
+        while (true) {
+            if (!fzbds(token)) {
                 System.out.println("error");
             }
             token = getToken();
-            if(!",".equals(token)){
+            if (!",".equals(token)) {
                 break;
             }
             token = getToken();
+        }
+        if (";".equals(token)) {
+            return true;
         }
         return false;
     }
 
     /**
      * <赋值表达式>::=<相等类表达式>|<一元表达式><赋值等号><赋值表达式>
+     *
      * @param token
      */
-    private static boolean fzbds(String token) {
-        if(xdlbds(token)){
+    private static boolean fzbds(String token) throws IOException {
+        if (xdlbds(token)) {
             return true;
-        }else if(yybds(token)){
+        } else if (yybds(token)) {
             return true;
         }
         return false;
@@ -430,11 +440,20 @@ public class Main {
 
     /**
      * <相等类表达式>::=<关系表达式>{<等于号><关系表达式>|<不等于号><关系表达式>}
+     *
      * @param token
      * @return
      */
-    private static boolean xdlbds(String token) {
-        if(gxbds(token)){
+    private static boolean xdlbds(String token) throws IOException {
+        if (gxbds(token)) {
+            token = getToken();
+            if ("=".equals(token) || "!=".equals(token)) {
+                System.out.print(token);
+                token = getToken();
+                if (!gxbds(token)) {
+                    System.out.println("error");
+                }
+            }
             return true;
         }
         return false;
@@ -442,11 +461,12 @@ public class Main {
 
     /**
      * <关系表达式>::=<加减类表达式>{<小于号><加减类表达式>|<大于号><加减类表达式>|<小于等于号><加减类表达式>|<大于等于号><加减类表达式>}
+     *
      * @param token
      * @return
      */
-    private static boolean gxbds(String token) {
-        if(jjlbds(token)){
+    private static boolean gxbds(String token) throws IOException {
+        if (jjlbds(token)) {
             return true;
         }
         return false;
@@ -454,11 +474,25 @@ public class Main {
 
     /**
      * <加减类表达式>::=<乘除类表达式>{<加号><乘除类表达式>|<减号><乘除类表达式>}
+     *
      * @param token
      * @return
      */
-    private static boolean jjlbds(String token) {
-        if(cclbds(token)){
+    private static boolean jjlbds(String token) throws IOException {
+        if (cclbds(token)) {
+            while (true) {
+                token = getToken();
+                if ("+".equals(token) || "-".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    if (cclbds(token)) {
+                    }
+                } else {
+                    stack.push(token);
+                    stack.failed();
+                    break;
+                }
+            }
             return true;
         }
         return false;
@@ -466,11 +500,25 @@ public class Main {
 
     /**
      * <乘除类表达式>::=<一元表达式>{<星号><一元表达式>|<除号><一元表达式>|<取余运算符><一元表达式>}
+     *
      * @param token
      * @return
      */
-    private static boolean cclbds(String token) {
-        if(yybds(token)){
+    private static boolean cclbds(String token) throws IOException {
+        if (yybds(token)) {
+            while (true) {
+                token = getToken();
+                if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    if (yybds(token)) {
+                    }
+                } else {
+                    stack.push(token);
+                    stack.failed();
+                    break;
+                }
+            }
             return true;
         }
         return false;
@@ -478,16 +526,17 @@ public class Main {
 
     /**
      * <一元表达式>::=<后缀表达式>
-     * 				|<与号><一元表达式>
-     * 				|<星号><一元表达式>
-     * 				|<加号><一元表达式>
-     * 				|<减号><一元表达式>
-     * 				|<sizeof 表达式>
+     * |<与号><一元表达式>
+     * |<星号><一元表达式>
+     * |<加号><一元表达式>
+     * |<减号><一元表达式>
+     * |<sizeof 表达式>
+     *
      * @param token
      * @return
      */
     private static boolean yybds(String token) {
-        if(hzbds(token)){
+        if (hzbds(token)) {
             return true;
         }
         return false;
@@ -495,16 +544,17 @@ public class Main {
 
     /**
      * <后缀表达式>::=<初等表达式>{
-     * 				<左中括号><expression><右中括号>
-     * 				|<左小括号><右小括号>
-     * 				|<左小括号><实参表达式><右小括号>
-     * 				|<点号>IDENTIFIER
-     * 				|<箭头>IDENTIFIER}
+     * <左中括号><expression><右中括号>
+     * |<左小括号><右小括号>
+     * |<左小括号><实参表达式><右小括号>
+     * |<点号>IDENTIFIER
+     * |<箭头>IDENTIFIER}
+     *
      * @param token
      * @return
      */
     private static boolean hzbds(String token) {
-        if(cdbds(token)){
+        if (cdbds(token)) {
             return true;
         }
         return false;
@@ -513,16 +563,20 @@ public class Main {
 
     /**
      * <初等表达式>::=<标识符>|<整数常量>|<字符串常量>|<字符常量>|(<表达式>)
+     *
      * @param token
      */
     private static boolean cdbds(String token) {
-        if(smf(token)){
+        if (smf(token)) {
+            System.out.println(token);
             return true;
-        }else if(token.matches("\\d+")){
+        } else if (token.matches("\\d+")) {
+            System.out.print(token);
             return true;
-        }else if(token.matches("\"w+\"")){
+        } else if (token.startsWith("\"") && token.endsWith("\"")) {
+            System.out.print(token);
             return true;
-        }else if(token.matches("\'w\'")){
+        } else if (token.matches("\'w\'")) {
             return true;
         }
         return false;
@@ -555,7 +609,6 @@ public class Main {
      * <continue语句>::=<continue><分号>
      * <break语句>::=<break><分号>
      * <return语句>::=<return><expression><分号>
-
      * <sizeof表达式>::=<sizeof 关键字>{<类型区分符>}
      *
      * <后缀表达式>::=<初等表达式>{

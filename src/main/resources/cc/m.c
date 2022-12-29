@@ -18,5 +18,8 @@ void sub(int a,int b){
         int e = 0;
         break;
         a = 0;
+        s = "hello world!";
+        temp = a + b +f;
+        temp = a + b * c / d % e;
     }
 }
