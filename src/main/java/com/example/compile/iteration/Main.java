@@ -385,20 +385,6 @@ public class Main {
         } else if (bds(token)) {
             return true;
         }
-//
-//        else if(cdbds(token)){
-//            //表达式语句
-//            token = getToken();
-//            if("=".equals(token)){
-//                token = getToken();
-//                if(cdbds(token)){
-//                    token = getToken();
-//                    if(";".equals(token)){
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
         return false;
     }
 
@@ -535,7 +521,7 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean yybds(String token) {
+    private static boolean yybds(String token) throws IOException {
         if (hzbds(token)) {
             return true;
         }
@@ -553,8 +539,19 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean hzbds(String token) {
+    private static boolean hzbds(String token) throws IOException {
         if (cdbds(token)) {
+            token = getToken();
+            if ("(".equals(token) || "[".equals(token)) {
+                System.out.print(token);
+                token = getToken();
+                if (")".equals(token) || "]".equals(token)) {
+                    System.out.print(token);
+                }
+            } else {
+                stack.push(token);
+                stack.failed();
+            }
             return true;
         }
         return false;

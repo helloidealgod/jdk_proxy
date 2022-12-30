@@ -21,5 +21,7 @@ void sub(int a,int b){
         s = "hello world!";
         temp = a + b +f;
         temp = a + b * c / d % e;
+        temp = add();
     }
+    temp2 = add2();
 }
