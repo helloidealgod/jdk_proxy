@@ -134,7 +134,7 @@ public class Main {
             System.out.println("");
         }
         System.out.println("=======================================");
-        Utils.statementToString(statementList, 0);
+//        Utils.statementToString(statementList, 0);
     }
 
     /**
@@ -379,21 +379,39 @@ public class Main {
      * @param token
      */
     private static boolean yj(String token) throws IOException {
+        Statement tempStatement = new Statement();
         if ("break".equals(token)) {
             System.out.println(token);
+            tempStatement.setName(token);
+            tempStatement.setStatementType(token);
+            statement.subStatementList.add(tempStatement);
             token = getToken();
             return true;
         } else if ("continue".equals(token)) {
             System.out.println(token);
+            tempStatement.setName(token);
+            tempStatement.setStatementType(token);
+            statement.subStatementList.add(tempStatement);
             token = getToken();
             return true;
         } else if ("return".equals(token)) {
-            System.out.println(token);
+            System.out.print(token);
+            tempStatement.setName(token);
+            tempStatement.setStatementType(token);
+            statement.subStatementList.add(tempStatement);
             token = getToken();
+            if(!";".equals(token)){
+                System.out.print(" ");
+                if(bds(token)){
+
+                }
+            }
+            System.out.println("");
             return true;
         } else if ("if".equals(token)) {
             //if 语句
             System.out.print(token);
+            tempStatement.setName(token);
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -409,6 +427,7 @@ public class Main {
                         System.out.print(token);
                         token = getToken();
                         if (fhyj(token)) {
+                            statement.subStatementList.add(tempStatement);
                             return true;
                         }
                     }
@@ -416,6 +435,7 @@ public class Main {
             }
         } else if ("for".equals(token)) {
             System.out.print(token);
+            tempStatement.setName(token);
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -439,6 +459,7 @@ public class Main {
                         System.out.print(token);
                         token = getToken();
                         if (fhyj(token)) {
+                            statement.subStatementList.add(tempStatement);
                             return true;
                         }
                     }
@@ -446,6 +467,7 @@ public class Main {
             }
         } else if ("while".equals(token)) {
             System.out.print(token);
+            tempStatement.setName(token);
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -461,6 +483,7 @@ public class Main {
                         System.out.print(token);
                         token = getToken();
                         if (fhyj(token)) {
+                            statement.subStatementList.add(tempStatement);
                             return true;
                         }
                     }
@@ -703,30 +726,10 @@ public class Main {
      * <调用约定>::=<__cdecl 关键字>|<__stdcall关键字>
      * <结构成员对齐>::=<__align关键字><左小括号><整数常量><右小括号>
      *
-     * <直接声明符后缀>::={<左中括号><右中括号>|<左中括号><整数常量><右中括号>|<左小括号><右小括号>|<左小括号><形参表><右小括号>}
      * <参数声明>::=<类型区分符><声明符>
      *
      * <初值符>::=<赋值表达式>
      *
-     * <语句>::={<复合语句>|<if语句>|<for语句>|<break语句>|<continue语句>|<return语句>|<表达式语句>}
-     *
-     * <复合语句>::=<左大括号>{<声明><语句>}<右大括号>
-     * <表达式语句>::=[<expression>]<分号>
-     *
-     * <if语句>::=<if><左小括号><表达式><右小括号><语句>[<else><语句>]
-     *
-     * <for语句>::=<for><左小括号><表达式语句><表达式语句><表达式><右小括号><语句>
-     *
-     * <continue语句>::=<continue><分号>
-     * <break语句>::=<break><分号>
-     * <return语句>::=<return><expression><分号>
      * <sizeof表达式>::=<sizeof 关键字>{<类型区分符>}
-     *
-     * <后缀表达式>::=<初等表达式>{
-     * 				<左中括号><expression><右中括号>
-     * 				|<左小括号><右小括号>
-     * 				|<左小括号><实参表达式><右小括号>
-     * 				|<点号>IDENTIFIER
-     * 				|<箭头>IDENTIFIER}
      */
 }
