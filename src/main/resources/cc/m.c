@@ -1,7 +1,16 @@
 int a;
 int b,c;
 int d=0,g;
+struct abc{
+};
 
+struct abc{
+int a,b;
+int c;
+} ghj;
+
+struct adc a[];
+struct adc a[234];
 void sub(int a,int b){
     char c;
     if(a > 0){

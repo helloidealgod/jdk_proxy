@@ -157,6 +157,9 @@ public class Main {
             statement.setType(type);
 
             token = getToken();
+            if (";".equals(token)) {
+                break;
+            }
             // 标识符
             if (!smf(token)) {
                 System.out.println("error");
@@ -245,8 +248,66 @@ public class Main {
      *
      * @param token
      */
-    private static boolean lxqff(String token) {
-        return token.matches("void|int|float|char|long|");
+    private static boolean lxqff(String token) throws IOException {
+        if (token.matches("void|int|float|char|long|")) {
+            return true;
+        } else if (jgqff(token)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * <结构区分符>::=<struct 关键字><标识符><左大括号><结构声明表><右大括号>| <struct关键字><标识符>
+     * <p>
+     * <结构声明表>::=<结构声明>{<结构声明>}
+     * <结构声明>::=<类型区分符>{<结构声明符表>}<分号>
+     * <结构声明符表>::=<声明符>{<逗号><声明符>}
+     *
+     * @param token
+     */
+    private static boolean jgqff(String token) throws IOException {
+        if (token.matches("struct")) {
+            token = getToken();
+            if (smf(token)) {
+                System.out.print(token + " ");
+                token = getToken();
+                if ("{".equals(token)) {
+                    System.out.print(token + " ");
+                    while (true) {
+                        token = getToken();
+                        if ("}".equals(token)) {
+                            System.out.print(token + " ");
+                            return true;
+                        }
+                        if (!lxqff(token)) {
+                            System.out.println("error");
+                        }
+                        System.out.print(token + " ");
+                        while (true) {
+                            token = getToken();
+                            if (!smf(token)) {
+                                System.out.println("error");
+                            }
+                            System.out.print(token + " ");
+                            token = getToken();
+                            if (",".equals(token)) {
+                                System.out.print(token + " ");
+                            }
+                            if (";".equals(token)) {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    stack.push(token);
+                    stack.failed();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -283,7 +344,18 @@ public class Main {
      */
     private static boolean zjsmfhz(String token) throws IOException {
         if ("[".equals(token)) {
-
+            System.out.print(token);
+            token = getToken();
+            if(token.matches("\\d+")){
+                System.out.print(token);
+                token = getToken();
+            }
+            if("]".equals(token)){
+                System.out.print(token);
+                return true;
+            }else {
+                System.out.print("error");
+            }
         } else if ("(".equals(token)) {
             System.out.print(token + " ");
             while (true) {
@@ -400,9 +472,9 @@ public class Main {
             tempStatement.setStatementType(token);
             statement.subStatementList.add(tempStatement);
             token = getToken();
-            if(!";".equals(token)){
+            if (!";".equals(token)) {
                 System.out.print(" ");
-                if(bds(token)){
+                if (bds(token)) {
 
                 }
             }
@@ -719,9 +791,7 @@ public class Main {
     /**
      * <结构区分符>::=<struct 关键字><标识符><左大括号><结构声明表><右大括号>| <struct关键字><标识符>
      *
-     * <结构声明表>::=<结构声明>{<结构声明>}
-     * <结构声明>::=<类型区分符>{<结构声明符表>}<分号>
-     * <结构声明符表>::=<声明符>{<逗号><声明符>}
+     *
      *
      * <调用约定>::=<__cdecl 关键字>|<__stdcall关键字>
      * <结构成员对齐>::=<__align关键字><左小括号><整数常量><右小括号>
