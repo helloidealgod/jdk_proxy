@@ -614,10 +614,22 @@ public class Main {
         if (cdbds(token)) {
             token = getToken();
             if ("(".equals(token) || "[".equals(token)) {
-                System.out.print(token);
-                token = getToken();
-                if (")".equals(token) || "]".equals(token)) {
+                while (true) {
                     System.out.print(token);
+                    token = getToken();
+                    if (")".equals(token) || "]".equals(token)) {
+                        System.out.print(token);
+                        break;
+                    } else if (cdbds(token)) {
+                        token = getToken();
+                        if (",".equals(token)) {
+                            System.out.print(token);
+                            token = getToken();
+                        } else {
+                            stack.push(token);
+                            stack.failed();
+                        }
+                    }
                 }
             } else {
                 stack.push(token);
