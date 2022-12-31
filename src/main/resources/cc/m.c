@@ -1,27 +1,9 @@
-int abc;
-int a,b,c;
-void main();
-int z=0,u=9,i;
-void test(int a);
-void add(int a,int b);
 void sub(int a,int b){
-    float f=0;
-    continue;
-}
-
-void sub(int a,int b){
-    int sum = 0;
-    int sub, sumc = 9,temp = 10;
-    break;
-    return;
-    if(t1){
-        int e = 0;
-        break;
-        a = 0;
-        s = "hello world!";
-        temp = a + b +f;
-        temp = a + b * c / d % e;
-        temp = add();
+    if(a > 0){
     }
-    temp2 = add2();
+    for(i=0;i<10;i=i+1){
+
+    }
+    while(b <= 0){
+    }
 }

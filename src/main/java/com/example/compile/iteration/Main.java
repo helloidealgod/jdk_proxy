@@ -368,7 +368,61 @@ public class Main {
             if ("(".equals(token)) {
                 System.out.print(token);
                 token = getToken();
+                if (bds(token)) {
+
+                }
+                token = getToken();
+                if (")".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    if ("{".equals(token)) {
+                        System.out.print(token);
+                        token = getToken();
+                        if (fhyj(token)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else if ("for".equals(token)) {
+            System.out.print(token);
+            token = getToken();
+            if ("(".equals(token)) {
                 System.out.print(token);
+                token = getToken();
+                if (bds(token)) {
+
+                }
+                token = getToken();
+                if (bds(token)) {
+
+                }
+                token = getToken();
+                if (bds(token)) {
+
+                }
+                token = getToken();
+                if (")".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    if ("{".equals(token)) {
+                        System.out.print(token);
+                        token = getToken();
+                        if (fhyj(token)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else if ("while".equals(token)) {
+            System.out.print(token);
+            token = getToken();
+            if ("(".equals(token)) {
+                System.out.print(token);
+                token = getToken();
+                if (bds(token)) {
+
+                }
                 token = getToken();
                 if (")".equals(token)) {
                     System.out.print(token);
@@ -406,8 +460,11 @@ public class Main {
         }
         if (";".equals(token)) {
             return true;
+        } else {
+            stack.push(token);
+            stack.failed();
+            return true;
         }
-        return false;
     }
 
     /**
@@ -439,6 +496,9 @@ public class Main {
                 if (!gxbds(token)) {
                     System.out.println("error");
                 }
+            } else {
+                stack.push(token);
+                stack.failed();
             }
             return true;
         }
@@ -453,6 +513,17 @@ public class Main {
      */
     private static boolean gxbds(String token) throws IOException {
         if (jjlbds(token)) {
+            token = getToken();
+            if ("<".equals(token) || ">".equals(token) || "<=".equals(token) || ">=".equals(token)) {
+                System.out.print(token);
+                token = getToken();
+                if (!jjlbds(token)) {
+                    System.out.println("error");
+                }
+            } else {
+                stack.push(token);
+                stack.failed();
+            }
             return true;
         }
         return false;
@@ -565,7 +636,7 @@ public class Main {
      */
     private static boolean cdbds(String token) {
         if (smf(token)) {
-            System.out.println(token);
+            System.out.print(token);
             return true;
         } else if (token.matches("\\d+")) {
             System.out.print(token);
@@ -573,7 +644,8 @@ public class Main {
         } else if (token.startsWith("\"") && token.endsWith("\"")) {
             System.out.print(token);
             return true;
-        } else if (token.matches("\'w\'")) {
+        } else if (token.startsWith("\'") && token.endsWith("\'")) {
+            System.out.print(token);
             return true;
         }
         return false;
