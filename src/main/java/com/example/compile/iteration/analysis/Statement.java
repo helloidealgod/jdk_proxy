@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Statement {
-    public int layer;
     public String type;
     public String name;
     public String initValue;
@@ -27,15 +26,6 @@ public class Statement {
 
     public void setRealParameterList(List<Statement> realParameterList) {
         this.realParameterList = realParameterList;
-    }
-
-
-    public int getLayer() {
-        return layer;
-    }
-
-    public void setLayer(int layer) {
-        this.layer = layer;
     }
 
     public List<Statement> getSubStatementList() {

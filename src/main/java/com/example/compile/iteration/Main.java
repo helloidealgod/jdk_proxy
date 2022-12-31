@@ -134,7 +134,7 @@ public class Main {
             System.out.println("");
         }
         System.out.println("=======================================");
-        Utils.statementToString(statementList);
+        Utils.statementToString(statementList, 0);
     }
 
     /**
