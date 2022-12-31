@@ -1,6 +1,11 @@
 package com.example.compile.iteration;
 
+import com.example.compile.iteration.analysis.Statement;
+import com.example.compile.iteration.analysis.Utils;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static PushbackReader pr;
@@ -69,9 +74,12 @@ public class Main {
 
     public static Stack stack = new Stack();
 
+    public static List<Statement> statementList = new ArrayList<>();
+
+    public static Statement statement;
+
     public static void main(String[] args) {
         try {
-
             File f = new File("");
             BufferedReader reader = new BufferedReader(new FileReader(f.getAbsolutePath() + "/src/main/resources/cc/m.c"));
             pr = new PushbackReader(reader);
@@ -125,6 +133,8 @@ public class Main {
             externalDeclaration(token);
             System.out.println("");
         }
+        System.out.println("=======================================");
+        Utils.statementToString(statementList);
     }
 
     /**
@@ -141,20 +151,27 @@ public class Main {
             System.out.println("error");
         }
         System.out.print("type:" + token);
+        String type = token;
         while (true) {
+            statement = new Statement();
+            statement.setType(type);
+
             token = getToken();
             // 标识符
             if (!smf(token)) {
                 System.out.println("error");
             }
             System.out.print(" name:" + token);
+            statement.setName(token);
             token = getToken();
             if (zjsmfhz(token)) {
                 token = getToken();
                 if ("{".equals(token)) {
+                    statement.setStatementType("function");
                     System.out.print(token);
                     token = getToken();
                     if (fhyj(token)) {
+                        statementList.add(statement);
                         break;
                     }
                 }
@@ -162,15 +179,17 @@ public class Main {
                 if ("=".equals(token)) {
                     token = getToken();
                     System.out.print(" value:" + token);
+                    statement.setInitValue(token);
                     token = getToken();
                     if (",".equals(token)) {
-
+                        statementList.add(statement);
                     }
                 } else if (",".equals(token)) {
-
+                    statementList.add(statement);
                 }
             }
             if (";".equals(token)) {
+                statementList.add(statement);
                 break;
             }
         }
@@ -268,16 +287,22 @@ public class Main {
         } else if ("(".equals(token)) {
             System.out.print(token + " ");
             while (true) {
+                Statement temp = new Statement();
                 token = getToken();
+                // 类型区分符
                 if (lxqff(token)) {
                     System.out.print(token + " ");
+                    temp.setType(token);
                     token = getToken();
                     // 标识符
                     if (!smf(token)) {
                         System.out.println("error");
                     }
+                    temp.setName(token);
                     System.out.print(token + " ");
                     token = getToken();
+
+                    statement.formalParameterList.add(temp);
                 }
                 if (")".equals(token)) {
                     System.out.print(token);
@@ -296,7 +321,9 @@ public class Main {
     private static boolean fhyj(String token) throws IOException {
         // <声明>
         while (lxqff(token)) {
+            Statement tempStatement = new Statement();
             System.out.print("type:" + token);
+            tempStatement.setType(token);
             while (true) {
                 token = getToken();
                 // 标识符
@@ -304,6 +331,7 @@ public class Main {
                     System.out.println("error");
                 }
                 System.out.print(" name:" + token);
+                tempStatement.setName(token);
                 token = getToken();
                 if (zjsmfhz(token)) {
                     token = getToken();
@@ -314,15 +342,17 @@ public class Main {
                     if ("=".equals(token)) {
                         token = getToken();
                         System.out.print(" value:" + token);
+                        tempStatement.setInitValue(token);
                         token = getToken();
                         if (",".equals(token)) {
-
+                            statement.subStatementList.add(tempStatement);
                         }
                     } else if (",".equals(token)) {
-
+                        statement.subStatementList.add(tempStatement);
                     }
                 }
                 if (";".equals(token)) {
+                    statement.subStatementList.add(tempStatement);
                     token = getToken();
                     break;
                 }
