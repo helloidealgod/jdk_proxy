@@ -734,6 +734,13 @@ public class Main {
      * @return
      */
     private static boolean yybds(String token) throws IOException {
+        if ("&".equals(token) || "*".equals(token) || "+".equals(token) || "-".equals(token)) {
+            System.out.print(token);
+            token = getToken();
+            if (yybds(token)) {
+                return true;
+            }
+        }
         if (hzbds(token)) {
             return true;
         }
@@ -809,16 +816,10 @@ public class Main {
 
     /**
      * <结构区分符>::=<struct 关键字><标识符><左大括号><结构声明表><右大括号>| <struct关键字><标识符>
-     *
-     *
-     *
      * <调用约定>::=<__cdecl 关键字>|<__stdcall关键字>
      * <结构成员对齐>::=<__align关键字><左小括号><整数常量><右小括号>
-     *
      * <参数声明>::=<类型区分符><声明符>
-     *
      * <初值符>::=<赋值表达式>
-     *
      * <sizeof表达式>::=<sizeof 关键字>{<类型区分符>}
      */
 }

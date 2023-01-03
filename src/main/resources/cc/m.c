@@ -33,5 +33,8 @@ void sub(int a,int b){
     return a;
     return a+b;
     return a > 0;
-
+    a = &c;
+    a = *c;
+    a = +c;
+    a = -c;
 }
