@@ -1,11 +1,15 @@
 package com.example.compile.iteration;
 
+import com.example.compile.iteration.analysis.DataType;
+import com.example.compile.iteration.analysis.Result;
 import com.example.compile.iteration.analysis.Statement;
-import com.example.compile.iteration.analysis.Utils;
+import com.example.compile.iteration.analysis.StatementType;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.compile.iteration.analysis.Utils.resultListToString;
 
 public class Main {
     public static PushbackReader pr;
@@ -74,9 +78,7 @@ public class Main {
 
     public static Stack stack = new Stack();
 
-    public static List<Statement> statementList = new ArrayList<>();
-
-    public static Statement statement;
+    public static List<Result> resultList = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
@@ -134,7 +136,7 @@ public class Main {
             System.out.println("");
         }
         System.out.println("=======================================");
-//        Utils.statementToString(statementList, 0);
+        resultListToString(resultList,0);
     }
 
     /**
@@ -147,34 +149,38 @@ public class Main {
      */
     private static void externalDeclaration(String token) throws IOException {
         // 类型区分符
-        if (!lxqff(token)) {
+        Result lxqff = lxqff(token);
+        if (!lxqff.success) {
             System.out.println("error");
         }
         System.out.print("type:" + token);
-        String type = token;
         while (true) {
-            statement = new Statement();
-            statement.setType(type);
-
             token = getToken();
             if (";".equals(token)) {
                 break;
             }
             // 标识符
-            if (!smf(token)) {
+            Result smf = smf(token);
+            if (!smf.success) {
                 System.out.println("error");
             }
+
+            smf.type = lxqff.type;
+            smf.width = lxqff.width;
             System.out.print(" name:" + token);
-            statement.setName(token);
             token = getToken();
-            if (zjsmfhz(token)) {
+            Result zjsmfhz = zjsmfhz(token);
+            if (zjsmfhz.success) {
                 token = getToken();
+                smf.statementType = StatementType.FUNCTION.getValue();
+                smf.formalParameterList = zjsmfhz.formalParameterList;
                 if ("{".equals(token)) {
-                    statement.setStatementType("function");
                     System.out.print(token);
                     token = getToken();
-                    if (fhyj(token)) {
-                        statementList.add(statement);
+                    Result fhyj = fhyj(token);
+                    if (fhyj.success) {
+                        smf.subList = fhyj.subList;
+                        resultList.add(smf);
                         break;
                     }
                 }
@@ -182,17 +188,17 @@ public class Main {
                 if ("=".equals(token)) {
                     token = getToken();
                     System.out.print(" value:" + token);
-                    statement.setInitValue(token);
+                    smf.initValue = token;
                     token = getToken();
                     if (",".equals(token)) {
-                        statementList.add(statement);
+                        resultList.add(smf);
                     }
                 } else if (",".equals(token)) {
-                    statementList.add(statement);
+                    resultList.add(smf);
                 }
             }
             if (";".equals(token)) {
-                statementList.add(statement);
+                resultList.add(smf);
                 break;
             }
         }
@@ -248,13 +254,34 @@ public class Main {
      *
      * @param token
      */
-    private static boolean lxqff(String token) throws IOException {
+    private static Result lxqff(String token) throws IOException {
+        Result result = null;
         if (token.matches("void|int|float|char|long|")) {
-            return true;
-        } else if (jgqff(token)) {
-            return true;
+            result = new Result();
+            if ("void".equals(token)) {
+                result.type = DataType.VOID.getValue();
+                result.width = 4;
+            } else if ("int".equals(token)) {
+                result.type = DataType.INT.getValue();
+                result.width = 4;
+            } else if ("float".equals(token)) {
+                result.type = DataType.FLOAT.getValue();
+                result.width = 4;
+            } else if ("char".equals(token)) {
+                result.type = DataType.CHAR.getValue();
+                result.width = 1;
+            } else if ("long".equals(token)) {
+                result.type = DataType.LONG.getValue();
+                result.width = 4;
+            }
+            result.success = true;
+            return result;
+        } else if ((result = jgqff(token)).success) {
+            result.success = true;
+            return result;
         } else {
-            return false;
+            result.success = false;
+            return result;
         }
     }
 
@@ -267,29 +294,41 @@ public class Main {
      *
      * @param token
      */
-    private static boolean jgqff(String token) throws IOException {
+    private static Result jgqff(String token) throws IOException {
+        Result result = new Result();
         if (token.matches("struct")) {
             token = getToken();
-            if (smf(token)) {
+            Result smf = smf(token);
+            if (smf.success) {
                 System.out.print(token + " ");
+                result.name = smf.name;
                 token = getToken();
                 if ("{".equals(token)) {
                     System.out.print(token + " ");
+
                     while (true) {
                         token = getToken();
                         if ("}".equals(token)) {
                             System.out.print(token + " ");
-                            return true;
+                            result.success = true;
+                            return result;
                         }
-                        if (!lxqff(token)) {
+                        Result lxqff = lxqff(token);
+                        if (!lxqff.success) {
                             System.out.println("error");
                         }
                         System.out.print(token + " ");
                         while (true) {
                             token = getToken();
-                            if (!smf(token)) {
+                            Result smf1 = smf(token);
+                            if (!smf1.success) {
                                 System.out.println("error");
                             }
+
+                            smf1.type = lxqff.type;
+                            smf1.width = lxqff.width;
+                            result.subList.add(smf1);
+
                             System.out.print(token + " ");
                             token = getToken();
                             if (",".equals(token)) {
@@ -303,11 +342,13 @@ public class Main {
                 } else {
                     stack.push(token);
                     stack.failed();
-                    return true;
+                    result.success = true;
+                    return result;
                 }
             }
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -315,11 +356,17 @@ public class Main {
      *
      * @param token
      */
-    private static boolean smf(String token) throws IOException {
+    private static Result smf(String token) throws IOException {
+        Result result = new Result();
         if (zz(token)) {
             token = getToken();
         }
-        return !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
+        boolean success = !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
+        result.success = success;
+        if (success) {
+            result.name = token;
+        }
+        return result;
     }
 
     /**
@@ -358,7 +405,8 @@ public class Main {
      *
      * @param token
      */
-    private static boolean zjsmfhz(String token) throws IOException {
+    private static Result zjsmfhz(String token) throws IOException {
+        Result result = new Result();
         if ("[".equals(token)) {
             System.out.print(token);
             token = getToken();
@@ -368,37 +416,41 @@ public class Main {
             }
             if ("]".equals(token)) {
                 System.out.print(token);
-                return true;
+                result.success = true;
+                return result;
             } else {
                 System.out.print("error");
             }
         } else if ("(".equals(token)) {
             System.out.print(token + " ");
             while (true) {
-                Statement temp = new Statement();
                 token = getToken();
                 // 类型区分符
-                if (lxqff(token)) {
+                Result lxqff = lxqff(token);
+                if (lxqff.success) {
                     System.out.print(token + " ");
-                    temp.setType(token);
                     token = getToken();
                     // 标识符
-                    if (!smf(token)) {
+                    Result smf = smf(token);
+                    if (!smf.success) {
                         System.out.println("error");
                     }
-                    temp.setName(token);
                     System.out.print(token + " ");
+                    smf.type = lxqff.type;
+                    smf.width = lxqff.width;
                     token = getToken();
-
-                    statement.formalParameterList.add(temp);
+                    //形参
+                    result.formalParameterList.add(smf);
                 }
                 if (")".equals(token)) {
                     System.out.print(token);
-                    return true;
+                    result.success = true;
+                    return result;
                 }
             }
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -406,22 +458,29 @@ public class Main {
      *
      * @param token
      */
-    private static boolean fhyj(String token) throws IOException {
+    private static Result fhyj(String token) throws IOException {
+        Result result = new Result();
         // <声明>
-        while (lxqff(token)) {
+        Result lxqff = null;
+        while ((lxqff = lxqff(token)).success) {
             Statement tempStatement = new Statement();
             System.out.print("type:" + token);
             tempStatement.setType(token);
             while (true) {
                 token = getToken();
                 // 标识符
-                if (!smf(token)) {
+                Result smf = smf(token);
+                if (!smf.success) {
                     System.out.println("error");
                 }
+
+                smf.type = lxqff.type;
+                smf.width = lxqff.width;
+
                 System.out.print(" name:" + token);
-                tempStatement.setName(token);
                 token = getToken();
-                if (zjsmfhz(token)) {
+                Result zjsmfhz = zjsmfhz(token);
+                if (zjsmfhz.success) {
                     token = getToken();
                     if ("{".equals(token)) {
                         System.out.println("error");
@@ -430,17 +489,17 @@ public class Main {
                     if ("=".equals(token)) {
                         token = getToken();
                         System.out.print(" value:" + token);
-                        tempStatement.setInitValue(token);
+                        smf.initValue = token;
                         token = getToken();
                         if (",".equals(token)) {
-                            statement.subStatementList.add(tempStatement);
+                            result.subList.add(smf);
                         }
                     } else if (",".equals(token)) {
-                        statement.subStatementList.add(tempStatement);
+                        result.subList.add(smf);
                     }
                 }
                 if (";".equals(token)) {
-                    statement.subStatementList.add(tempStatement);
+                    result.subList.add(smf);
                     token = getToken();
                     break;
                 }
@@ -448,7 +507,9 @@ public class Main {
         }
         // 语句
         while (!"}".equals(token)) {
-            if (yj(token)) {
+            Result yj = yj(token);
+            if (yj.success) {
+                result.subList.add(yj);
                 token = getToken();
             } else {
                 System.out.println("error");
@@ -456,9 +517,11 @@ public class Main {
         }
         if ("}".equals(token)) {
             System.out.println(token);
-            return true;
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -466,27 +529,23 @@ public class Main {
      *
      * @param token
      */
-    private static boolean yj(String token) throws IOException {
-        Statement tempStatement = new Statement();
+    private static Result yj(String token) throws IOException {
+        Result result = new Result();
         if ("break".equals(token)) {
             System.out.println(token);
-            tempStatement.setName(token);
-            tempStatement.setStatementType(token);
-            statement.subStatementList.add(tempStatement);
+            result.name = token;
             token = getToken();
-            return true;
+            result.success = true;
+            return result;
         } else if ("continue".equals(token)) {
             System.out.println(token);
-            tempStatement.setName(token);
-            tempStatement.setStatementType(token);
-            statement.subStatementList.add(tempStatement);
+            result.name = token;
             token = getToken();
-            return true;
+            result.success = true;
+            return result;
         } else if ("return".equals(token)) {
             System.out.print(token);
-            tempStatement.setName(token);
-            tempStatement.setStatementType(token);
-            statement.subStatementList.add(tempStatement);
+            result.name = token;
             token = getToken();
             if (!";".equals(token)) {
                 System.out.print(" ");
@@ -495,11 +554,13 @@ public class Main {
                 }
             }
             System.out.println("");
-            return true;
+            result.success = true;
+            return result;
         } else if ("if".equals(token)) {
             //if 语句
             System.out.print(token);
-            tempStatement.setName(token);
+            result.name = token;
+            result.statementType = StatementType.IF.getValue();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -514,16 +575,19 @@ public class Main {
                     if ("{".equals(token)) {
                         System.out.print(token);
                         token = getToken();
-                        if (fhyj(token)) {
-                            statement.subStatementList.add(tempStatement);
-                            return true;
+                        Result fhyj = fhyj(token);
+                        if (fhyj.success) {
+                            //statement.subStatementList.add(tempStatement);
+                            result.success = true;
+                            return result;
                         }
                     }
                 }
             }
         } else if ("for".equals(token)) {
             System.out.print(token);
-            tempStatement.setName(token);
+            result.name = token;
+            result.statementType = StatementType.FOR.getValue();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -546,16 +610,19 @@ public class Main {
                     if ("{".equals(token)) {
                         System.out.print(token);
                         token = getToken();
-                        if (fhyj(token)) {
-                            statement.subStatementList.add(tempStatement);
-                            return true;
+                        Result fhyj = fhyj(token);
+                        if (fhyj.success) {
+                            //statement.subStatementList.add(tempStatement);
+                            result.success = true;
+                            return result;
                         }
                     }
                 }
             }
         } else if ("while".equals(token)) {
             System.out.print(token);
-            tempStatement.setName(token);
+            result.name = token;
+            result.statementType = StatementType.WHILE.getValue();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -570,17 +637,22 @@ public class Main {
                     if ("{".equals(token)) {
                         System.out.print(token);
                         token = getToken();
-                        if (fhyj(token)) {
-                            statement.subStatementList.add(tempStatement);
-                            return true;
+                        Result fhyj = fhyj(token);
+                        if (fhyj.success) {
+                            //statement.subStatementList.add(tempStatement);
+                            result.subList = fhyj.subList;
+                            result.success = true;
+                            return result;
                         }
                     }
                 }
             }
         } else if (bds(token)) {
-            return true;
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -798,7 +870,8 @@ public class Main {
      * @param token
      */
     private static boolean cdbds(String token) throws IOException {
-        if (smf(token)) {
+        Result smf = smf(token);
+        if (smf.success) {
             System.out.print(token);
             return true;
         } else if (token.matches("\\d+")) {

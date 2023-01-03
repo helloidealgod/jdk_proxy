@@ -14,6 +14,7 @@ int c;
 
 struct adc a[];
 struct adc a[234];
+void test(int p1,int p2);
 void sub(int a,int b){
     char c;
     int *a;
