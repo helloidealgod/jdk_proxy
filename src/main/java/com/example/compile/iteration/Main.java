@@ -315,7 +315,10 @@ public class Main {
      *
      * @param token
      */
-    private static boolean smf(String token) {
+    private static boolean smf(String token) throws IOException {
+        if (zz(token)) {
+            token = getToken();
+        }
         return !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
     }
 
@@ -324,8 +327,21 @@ public class Main {
      *
      * @param token
      */
-    private static boolean zz(String token) {
-        return false;
+    private static boolean zz(String token) throws IOException {
+        if ("*".equals(token)) {
+            System.out.print(token);
+            token = getToken();
+            if (!"*".equals(token)) {
+                stack.push(token);
+                stack.failed();
+                return true;
+            } else {
+                zz(token);
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -774,7 +790,7 @@ public class Main {
      *
      * @param token
      */
-    private static boolean cdbds(String token) {
+    private static boolean cdbds(String token) throws IOException {
         if (smf(token)) {
             System.out.print(token);
             return true;

@@ -1,3 +1,6 @@
+int *pointer;
+int **pointer;
+int ***pointer;
 int a;
 int b,c;
 int d=0,g;
@@ -13,6 +16,7 @@ struct adc a[];
 struct adc a[234];
 void sub(int a,int b){
     char c;
+    int *a;
     if(a > 0){
         char cc;
     }
@@ -29,4 +33,5 @@ void sub(int a,int b){
     return a;
     return a+b;
     return a > 0;
+
 }
