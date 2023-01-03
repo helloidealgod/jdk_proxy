@@ -346,14 +346,14 @@ public class Main {
         if ("[".equals(token)) {
             System.out.print(token);
             token = getToken();
-            if(token.matches("\\d+")){
+            if (token.matches("\\d+")) {
                 System.out.print(token);
                 token = getToken();
             }
-            if("]".equals(token)){
+            if ("]".equals(token)) {
                 System.out.print(token);
                 return true;
-            }else {
+            } else {
                 System.out.print("error");
             }
         } else if ("(".equals(token)) {
@@ -750,6 +750,9 @@ public class Main {
                         if (",".equals(token)) {
                             System.out.print(token);
                             token = getToken();
+                        } else if (")".equals(token)) {
+                            System.out.print(token);
+                            break;
                         } else {
                             stack.push(token);
                             stack.failed();
