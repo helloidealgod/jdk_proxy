@@ -61,7 +61,6 @@ public class Utils {
                     break;
                 case 3:
                 case 4:
-                case 5:
                     System.out.print(result.name);
                     System.out.print(" {");
                     resultListToString(result.subList, layer + 1);
@@ -69,6 +68,8 @@ public class Utils {
                         System.out.print("  ");
                     }
                     System.out.println("}");
+                    break;
+                case 5:
                     break;
                 default:
                     break;

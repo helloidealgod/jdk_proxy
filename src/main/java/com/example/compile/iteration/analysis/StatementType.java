@@ -1,11 +1,14 @@
 package com.example.compile.iteration.analysis;
 
 public enum StatementType {
-    INIT(1),
-    FUNCTION(2),
-    IF(3),
-    FOR(4),
-    WHILE(5),
+    VAR_DECLARE(1),
+    VAR_ASSIGN(2),
+    FUNCTION_DECLARE(3),
+    FUNCTION_DEFINE(4),
+    FUNCTION_CALL(5),
+    IF(6),
+    FOR(7),
+    WHILE(8),
     ;
     private int value;
 

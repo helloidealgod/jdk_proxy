@@ -167,9 +167,13 @@ public class Main {
             if (!smf.success) {
                 System.out.println("error");
             }
-
-            smf.type = lxqff.type;
-            smf.width = lxqff.width;
+            if (DataType.PTR.getValue() == smf.type) {
+                setPointerType(smf, lxqff.type);
+            } else {
+                smf.type = lxqff.type;
+                smf.typeStr = lxqff.typeStr;
+                smf.width = lxqff.width;
+            }
             if (DataType.STRUCT.getValue() == lxqff.type) {
                 if (0 < lxqff.subList.size()) {
                     smf.subList = lxqff.subList;
@@ -186,9 +190,12 @@ public class Main {
             Result zjsmfhz = zjsmfhz(token);
             if (zjsmfhz.success) {
                 token = getToken();
-                smf.statementType = StatementType.FUNCTION.getValue();
+                smf.statementType = StatementType.FUNCTION_DECLARE.getValue();
+                smf.statementTypeStr = StatementType.FUNCTION_DECLARE.name();
                 smf.formalParameterList = zjsmfhz.formalParameterList;
                 if ("{".equals(token)) {
+                    smf.statementType = StatementType.FUNCTION_DEFINE.getValue();
+                    smf.statementTypeStr = StatementType.FUNCTION_DEFINE.name();
                     System.out.print(token);
                     token = getToken();
                     Result fhyj = fhyj(token);
@@ -274,18 +281,23 @@ public class Main {
             result = new Result();
             if ("void".equals(token)) {
                 result.type = DataType.VOID.getValue();
+                result.typeStr = DataType.VOID.name();
                 result.width = 4;
             } else if ("int".equals(token)) {
                 result.type = DataType.INT.getValue();
+                result.typeStr = DataType.INT.name();
                 result.width = 4;
             } else if ("float".equals(token)) {
                 result.type = DataType.FLOAT.getValue();
+                result.typeStr = DataType.FLOAT.name();
                 result.width = 4;
             } else if ("char".equals(token)) {
                 result.type = DataType.CHAR.getValue();
+                result.typeStr = DataType.CHAR.name();
                 result.width = 1;
             } else if ("long".equals(token)) {
                 result.type = DataType.LONG.getValue();
+                result.typeStr = DataType.LONG.name();
                 result.width = 4;
             }
             result.success = true;
@@ -313,6 +325,7 @@ public class Main {
         Result result = new Result();
         if (token.matches("struct")) {
             result.type = DataType.STRUCT.getValue();
+            result.typeStr = DataType.STRUCT.name();
             token = getToken();
             Result smf = smf(token);
             if (smf.success) {
@@ -343,6 +356,7 @@ public class Main {
                             }
 
                             smf1.type = lxqff.type;
+                            smf1.typeStr = lxqff.typeStr;
                             smf1.width = lxqff.width;
                             result.subList.add(smf1);
 
@@ -375,13 +389,19 @@ public class Main {
      */
     private static Result smf(String token) throws IOException {
         Result result = new Result();
-        if (zz(token)) {
+        Result zz = zz(token);
+        if (zz.success) {
             token = getToken();
         }
         boolean success = !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
         result.success = success;
         if (success) {
             result.name = token;
+            if (zz.success) {
+                result.type = DataType.PTR.getValue();
+                result.typeStr = DataType.PTR.name();
+                result.rel = zz.rel;
+            }
         }
         return result;
     }
@@ -391,21 +411,38 @@ public class Main {
      *
      * @param token
      */
-    private static boolean zz(String token) throws IOException {
+    private static Result zz(String token) throws IOException {
+        Result result = new Result();
         if ("*".equals(token)) {
             System.out.print(token);
+            result.type = DataType.PTR.getValue();
+            result.typeStr = DataType.PTR.name();
             token = getToken();
             if (!"*".equals(token)) {
                 stack.push(token);
                 stack.failed();
-                return true;
+                result.success = true;
+                return result;
             } else {
-                zz(token);
+                Result zz = zz(token);
+                result.rel = zz;
             }
         } else {
-            return false;
+            result.success = false;
+            return result;
         }
-        return true;
+        result.success = true;
+        return result;
+    }
+
+    private static void setPointerType(Result result, int type) {
+        if (null == result.rel) {
+            Result rel = new Result();
+            rel.type = type;
+            result.rel = rel;
+        } else {
+            setPointerType(result.rel, type);
+        }
     }
 
     /**
@@ -454,6 +491,7 @@ public class Main {
                     }
                     System.out.print(token + " ");
                     smf.type = lxqff.type;
+                    smf.typeStr = lxqff.typeStr;
                     smf.width = lxqff.width;
                     token = getToken();
                     //形参
@@ -492,6 +530,7 @@ public class Main {
                 }
 
                 smf.type = lxqff.type;
+                smf.typeStr = lxqff.typeStr;
                 smf.width = lxqff.width;
 
                 System.out.print(" name:" + token);
@@ -579,6 +618,7 @@ public class Main {
             System.out.print(token);
             result.name = token;
             result.statementType = StatementType.IF.getValue();
+            result.statementTypeStr = StatementType.IF.name();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -607,6 +647,7 @@ public class Main {
             System.out.print(token);
             result.name = token;
             result.statementType = StatementType.FOR.getValue();
+            result.statementTypeStr = StatementType.FOR.name();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
@@ -645,6 +686,7 @@ public class Main {
             System.out.print(token);
             result.name = token;
             result.statementType = StatementType.WHILE.getValue();
+            result.statementTypeStr = StatementType.WHILE.name();
             token = getToken();
             if ("(".equals(token)) {
                 System.out.print(token);
