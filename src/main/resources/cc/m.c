@@ -12,8 +12,8 @@ int a,b;
 int c;
 } ghj;
 
-struct adc a[];
-struct adc a[234];
+struct abc a[];
+struct abc a[234];
 void test(int p1,int p2);
 void sub(int a,int b){
     char c;
@@ -26,7 +26,7 @@ void sub(int a,int b){
     }
     while(b <= 0){
         int k=0;
-        k=add(a);
+        k=add(a)+add1(a);
         k=add(a,b,c);
     }
     return;

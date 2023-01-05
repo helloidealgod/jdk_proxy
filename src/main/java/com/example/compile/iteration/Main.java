@@ -7,6 +7,7 @@ import com.example.compile.iteration.analysis.StatementType;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.compile.iteration.analysis.Utils.resultListToString;
@@ -80,6 +81,8 @@ public class Main {
 
     public static List<Result> resultList = new ArrayList<>();
 
+    public static HashMap<String, Result> symbol = new HashMap<>();
+
     public static void main(String[] args) {
         try {
             File f = new File("");
@@ -136,7 +139,7 @@ public class Main {
             System.out.println("");
         }
         System.out.println("=======================================");
-        resultListToString(resultList,0);
+        resultListToString(resultList, 0);
     }
 
     /**
@@ -167,6 +170,17 @@ public class Main {
 
             smf.type = lxqff.type;
             smf.width = lxqff.width;
+            if (DataType.STRUCT.getValue() == lxqff.type) {
+                if (0 < lxqff.subList.size()) {
+                    smf.subList = lxqff.subList;
+                } else {
+                    String name = lxqff.getName();
+                    Result result = symbol.get(name);
+                    if (null != result) {
+                        smf.subList = result.subList;
+                    }
+                }
+            }
             System.out.print(" name:" + token);
             token = getToken();
             Result zjsmfhz = zjsmfhz(token);
@@ -280,6 +294,7 @@ public class Main {
             result.success = true;
             return result;
         } else {
+            result = new Result();
             result.success = false;
             return result;
         }
@@ -297,6 +312,7 @@ public class Main {
     private static Result jgqff(String token) throws IOException {
         Result result = new Result();
         if (token.matches("struct")) {
+            result.type = DataType.STRUCT.getValue();
             token = getToken();
             Result smf = smf(token);
             if (smf.success) {
@@ -311,6 +327,7 @@ public class Main {
                         if ("}".equals(token)) {
                             System.out.print(token + " ");
                             result.success = true;
+                            symbol.put(result.name, result);
                             return result;
                         }
                         Result lxqff = lxqff(token);
@@ -549,7 +566,8 @@ public class Main {
             token = getToken();
             if (!";".equals(token)) {
                 System.out.print(" ");
-                if (bds(token)) {
+                Result bds = bds(token);
+                if (bds.success) {
 
                 }
             }
@@ -565,7 +583,8 @@ public class Main {
             if ("(".equals(token)) {
                 System.out.print(token);
                 token = getToken();
-                if (bds(token)) {
+                Result bds = bds(token);
+                if (bds.success) {
 
                 }
                 token = getToken();
@@ -577,8 +596,8 @@ public class Main {
                         token = getToken();
                         Result fhyj = fhyj(token);
                         if (fhyj.success) {
-                            //statement.subStatementList.add(tempStatement);
                             result.success = true;
+                            result.subList = fhyj.subList;
                             return result;
                         }
                     }
@@ -592,15 +611,18 @@ public class Main {
             if ("(".equals(token)) {
                 System.out.print(token);
                 token = getToken();
-                if (bds(token)) {
+                Result bds = bds(token);
+                if (bds.success) {
 
                 }
                 token = getToken();
-                if (bds(token)) {
+                Result bds1 = bds(token);
+                if (bds1.success) {
 
                 }
                 token = getToken();
-                if (bds(token)) {
+                Result bds2 = bds(token);
+                if (bds2.success) {
 
                 }
                 token = getToken();
@@ -612,8 +634,8 @@ public class Main {
                         token = getToken();
                         Result fhyj = fhyj(token);
                         if (fhyj.success) {
-                            //statement.subStatementList.add(tempStatement);
                             result.success = true;
+                            result.subList = fhyj.subList;
                             return result;
                         }
                     }
@@ -627,7 +649,8 @@ public class Main {
             if ("(".equals(token)) {
                 System.out.print(token);
                 token = getToken();
-                if (bds(token)) {
+                Result bds = bds(token);
+                if (bds.success) {
 
                 }
                 token = getToken();
@@ -647,7 +670,7 @@ public class Main {
                     }
                 }
             }
-        } else if (bds(token)) {
+        } else if ((result = bds(token)).success) {
             result.success = true;
             return result;
         }
@@ -660,7 +683,8 @@ public class Main {
      *
      * @param token
      */
-    private static boolean bds(String token) throws IOException {
+    private static Result bds(String token) throws IOException {
+        Result result = new Result();
         while (true) {
             if (!fzbds(token)) {
                 System.out.println("error");
@@ -672,11 +696,13 @@ public class Main {
             token = getToken();
         }
         if (";".equals(token)) {
-            return true;
+            result.success = true;
+            return result;
         } else {
             stack.push(token);
             stack.failed();
-            return true;
+            result.success = true;
+            return result;
         }
     }
 

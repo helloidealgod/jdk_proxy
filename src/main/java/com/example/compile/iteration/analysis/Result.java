@@ -18,4 +18,8 @@ public class Result {
     public List<Result> subList = new ArrayList<>();
     /*形参列表*/
     public List<Result> formalParameterList = new ArrayList<>();
+
+    public String getName(){
+        return name;
+    }
 }

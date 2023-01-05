@@ -1,12 +1,15 @@
 package com.example.compile.iteration.analysis;
 
 public enum DataType {
-    VOID(1),
+    INT(1),
     CHAR(2),
-    INT(3),
-    FLOAT(4),
-    LONG(5),
+    SHORT(3),
+    VOID(4),
+    PTR(5),
     STRUCT(6),
+    FLOAT(7),
+    LONG(8),
+    ARRAY(9),
     ;
     private int value;
 

@@ -63,7 +63,12 @@ public class Utils {
                 case 4:
                 case 5:
                     System.out.print(result.name);
+                    System.out.print(" {");
                     resultListToString(result.subList, layer + 1);
+                    for (int i = 0; i < layer; i++) {
+                        System.out.print("  ");
+                    }
+                    System.out.println("}");
                     break;
                 default:
                     break;
