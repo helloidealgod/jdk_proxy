@@ -168,12 +168,14 @@ public class Main {
                 System.out.println("error");
             }
             if (DataType.PTR.getValue() == smf.type) {
-                setPointerType(smf, lxqff.type);
+                setPointerType(smf, lxqff);
             } else {
                 smf.type = lxqff.type;
                 smf.typeStr = lxqff.typeStr;
                 smf.width = lxqff.width;
             }
+            smf.statementType = StatementType.VAR_DECLARE.getValue();
+            smf.statementTypeStr = StatementType.VAR_DECLARE.name();
             if (DataType.STRUCT.getValue() == lxqff.type) {
                 if (0 < lxqff.subList.size()) {
                     smf.subList = lxqff.subList;
@@ -190,9 +192,15 @@ public class Main {
             Result zjsmfhz = zjsmfhz(token);
             if (zjsmfhz.success) {
                 token = getToken();
-                smf.statementType = StatementType.FUNCTION_DECLARE.getValue();
-                smf.statementTypeStr = StatementType.FUNCTION_DECLARE.name();
-                smf.formalParameterList = zjsmfhz.formalParameterList;
+                if (DataType.ARRAY.getValue() == zjsmfhz.type) {
+                    Result arr = smf.clone();
+                    setArrAyType2(zjsmfhz, arr);
+                    smf = zjsmfhz;
+                } else {
+                    smf.statementType = StatementType.FUNCTION_DECLARE.getValue();
+                    smf.statementTypeStr = StatementType.FUNCTION_DECLARE.name();
+                    smf.formalParameterList = zjsmfhz.formalParameterList;
+                }
                 if ("{".equals(token)) {
                     smf.statementType = StatementType.FUNCTION_DEFINE.getValue();
                     smf.statementTypeStr = StatementType.FUNCTION_DEFINE.name();
@@ -435,13 +443,33 @@ public class Main {
         return result;
     }
 
-    private static void setPointerType(Result result, int type) {
+    private static void setPointerType(Result result, Result type) {
         if (null == result.rel) {
-            Result rel = new Result();
-            rel.type = type;
+            Result rel =type.clone();
             result.rel = rel;
         } else {
             setPointerType(result.rel, type);
+        }
+    }
+
+    private static void setArrAyType(Result result, Result result2e) {
+        if (null == result.typeStr) {
+            result.type = result2e.type;
+            result.typeStr = result2e.typeStr;
+            result.statementType = result2e.statementType;
+            result.statementTypeStr = result2e.statementTypeStr;
+            result.arrayLength = result2e.arrayLength;
+        } else {
+            result.rel = new Result();
+            setArrAyType(result.rel, result2e);
+        }
+    }
+
+    private static void setArrAyType2(Result result, Result result2e) {
+        if (null == result.rel) {
+            result.rel = result2e;
+        } else {
+            setArrAyType2(result.rel, result2e);
         }
     }
 
@@ -462,18 +490,34 @@ public class Main {
     private static Result zjsmfhz(String token) throws IOException {
         Result result = new Result();
         if ("[".equals(token)) {
-            System.out.print(token);
-            token = getToken();
-            if (token.matches("\\d+")) {
+            while (true) {
+                Result array = new Result();
+                array.type = DataType.ARRAY.getValue();
+                array.typeStr = DataType.ARRAY.name();
+                array.statementType = StatementType.VAR_DECLARE.getValue();
+                array.statementTypeStr = StatementType.VAR_DECLARE.name();
                 System.out.print(token);
                 token = getToken();
-            }
-            if ("]".equals(token)) {
-                System.out.print(token);
-                result.success = true;
-                return result;
-            } else {
-                System.out.print("error");
+                if (token.matches("\\d+")) {
+                    System.out.print(token);
+                    array.arrayLength = token;
+                    token = getToken();
+                }
+                if ("]".equals(token)) {
+                    System.out.print(token);
+                    token = getToken();
+                    setArrAyType(result, array);
+                    if ("[".equals(token)) {
+//                        setArrAyType(result, array);
+                    } else {
+                        stack.push(token);
+                        stack.failed();
+                        result.success = true;
+                        return result;
+                    }
+                } else {
+                    System.out.print("error");
+                }
             }
         } else if ("(".equals(token)) {
             System.out.print(token + " ");

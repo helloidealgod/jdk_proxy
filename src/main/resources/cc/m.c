@@ -14,6 +14,7 @@ int c;
 
 struct abc a[];
 struct abc a[234];
+struct abc ab[234][67];
 void test(int p1,int p2);
 void sub(int a,int b){
     char c;
