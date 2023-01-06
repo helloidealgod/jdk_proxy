@@ -842,6 +842,8 @@ public class Main {
                         result.statementType = StatementType.VAR_ASSIGN.getValue();
                         result.statementTypeStr = StatementType.VAR_ASSIGN.name();
                     }
+                } else {
+                    System.out.print("");
                 }
                 System.out.print(token);
                 token = getToken();
@@ -871,13 +873,35 @@ public class Main {
         Result result = null;
         if ((result = jjlbds(token)).success) {
             token = getToken();
-            if ("<".equals(token) || ">".equals(token) || "<=".equals(token) || ">=".equals(token)) {
+            if ("<".equals(token) || ">".equals(token) || "<=".equals(token) || ">=".equals(token) || "==".equals(token) || "!=".equals(token)) {
+                result.operation1 = result.clone();
+                if ("<".equals(token)) {
+                    result.operationType = Operation.LT.getValue();
+                    result.operationTypeStr = Operation.LT.name();
+                } else if (">".equals(token)) {
+                    result.operationType = Operation.BT.getValue();
+                    result.operationTypeStr = Operation.BT.name();
+                } else if ("<=".equals(token)) {
+                    result.operationType = Operation.LTEQ.getValue();
+                    result.operationTypeStr = Operation.LTEQ.name();
+                } else if (">=".equals(token)) {
+                    result.operationType = Operation.BTEQ.getValue();
+                    result.operationTypeStr = Operation.BTEQ.name();
+                } else if ("==".equals(token)) {
+                    result.operationType = Operation.EQ.getValue();
+                    result.operationTypeStr = Operation.EQ.name();
+                } else {
+                    result.operationType = Operation.NEQ.getValue();
+                    result.operationTypeStr = Operation.NEQ.name();
+                }
                 System.out.print(token);
                 token = getToken();
                 Result jjlbds = jjlbds(token);
                 if (!jjlbds.success) {
                     System.out.println("error");
                 }
+
+                result.operation2 = jjlbds;
             } else {
                 stack.push(token);
                 stack.failed();

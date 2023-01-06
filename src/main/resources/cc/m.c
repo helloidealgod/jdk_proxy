@@ -39,8 +39,8 @@ void sub(int a,int b){
     a = *c;
     a = +c;
     a = -c;
-
     sum = var1 + var2;
-
     p = p0 + p1 * p2;
+
+    a = a1 != a2;
 }
