@@ -18,6 +18,7 @@ public class Result implements Cloneable, Serializable {
     public String name;
     /*数组长度*/
     public String arrayLength;
+    public String returnStr;
     /*初始值字符串*/
     public String initValue;
     public List<Result> subList = new ArrayList<>();

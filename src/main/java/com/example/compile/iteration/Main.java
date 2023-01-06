@@ -168,6 +168,8 @@ public class Main {
                 System.out.println("error");
             }
             if (DataType.PTR.getValue() == smf.type) {
+                lxqff.statementType = StatementType.VAR_DECLARE.getValue();
+                lxqff.statementTypeStr = StatementType.VAR_DECLARE.name();
                 setPointerType(smf, lxqff);
             } else {
                 smf.type = lxqff.type;
@@ -634,18 +636,24 @@ public class Main {
         if ("break".equals(token)) {
             System.out.println(token);
             result.name = token;
+            result.statementType = StatementType.BREAK.getValue();
+            result.statementTypeStr = StatementType.BREAK.name();
             token = getToken();
             result.success = true;
             return result;
         } else if ("continue".equals(token)) {
             System.out.println(token);
             result.name = token;
+            result.statementType = StatementType.CONTINUE.getValue();
+            result.statementTypeStr = StatementType.CONTINUE.name();
             token = getToken();
             result.success = true;
             return result;
         } else if ("return".equals(token)) {
             System.out.print(token);
             result.name = token;
+            result.statementType = StatementType.RETURN.getValue();
+            result.statementTypeStr = StatementType.RETURN.name();
             token = getToken();
             if (!";".equals(token)) {
                 System.out.print(" ");

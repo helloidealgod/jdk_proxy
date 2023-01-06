@@ -9,6 +9,9 @@ public enum StatementType {
     IF(6),
     FOR(7),
     WHILE(8),
+    BREAK(9),
+    CONTINUE(10),
+    RETURN(11),
     ;
     private int value;
 
