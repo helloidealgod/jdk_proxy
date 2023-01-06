@@ -447,7 +447,7 @@ public class Main {
 
     private static void setPointerType(Result result, Result type) {
         if (null == result.rel) {
-            Result rel =type.clone();
+            Result rel = type.clone();
             result.rel = rel;
         } else {
             setPointerType(result.rel, type);
@@ -611,7 +611,11 @@ public class Main {
         while (!"}".equals(token)) {
             Result yj = yj(token);
             if (yj.success) {
-                result.subList.add(yj);
+                if (yj.statementType == 0) {
+                    result.subList.addAll(yj.subList);
+                } else {
+                    result.subList.add(yj);
+                }
                 token = getToken();
             } else {
                 System.out.println("error");
@@ -780,9 +784,11 @@ public class Main {
     private static Result bds(String token) throws IOException {
         Result result = new Result();
         while (true) {
-            if (!fzbds(token)) {
+            Result fzbds = fzbds(token);
+            if (!fzbds.success) {
                 System.out.println("error");
             }
+            result.subList.add(fzbds);
             token = getToken();
             if (!",".equals(token)) {
                 break;
@@ -805,13 +811,17 @@ public class Main {
      *
      * @param token
      */
-    private static boolean fzbds(String token) throws IOException {
-        if (xdlbds(token)) {
-            return true;
-        } else if (yybds(token)) {
-            return true;
+    private static Result fzbds(String token) throws IOException {
+        Result result = null;
+        if ((result = xdlbds(token)).success) {
+            result.success = true;
+            return result;
+        } else if ((result = yybds(token)).success) {
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -820,22 +830,27 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean xdlbds(String token) throws IOException {
-        if (gxbds(token)) {
+    private static Result xdlbds(String token) throws IOException {
+        Result result = null;
+        if ((result = gxbds(token)).success) {
             token = getToken();
             if ("=".equals(token) || "!=".equals(token)) {
                 System.out.print(token);
                 token = getToken();
-                if (!gxbds(token)) {
+                Result gxbds = gxbds(token);
+                if (!gxbds.success) {
                     System.out.println("error");
                 }
+                result.rel = gxbds;
             } else {
                 stack.push(token);
                 stack.failed();
             }
-            return true;
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -844,22 +859,26 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean gxbds(String token) throws IOException {
-        if (jjlbds(token)) {
+    private static Result gxbds(String token) throws IOException {
+        Result result = null;
+        if ((result = jjlbds(token)).success) {
             token = getToken();
             if ("<".equals(token) || ">".equals(token) || "<=".equals(token) || ">=".equals(token)) {
                 System.out.print(token);
                 token = getToken();
-                if (!jjlbds(token)) {
+                Result jjlbds = jjlbds(token);
+                if (!jjlbds.success) {
                     System.out.println("error");
                 }
             } else {
                 stack.push(token);
                 stack.failed();
             }
-            return true;
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -868,14 +887,16 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean jjlbds(String token) throws IOException {
-        if (cclbds(token)) {
+    private static Result jjlbds(String token) throws IOException {
+        Result result = new Result();
+        if ((result = cclbds(token)).success) {
             while (true) {
                 token = getToken();
                 if ("+".equals(token) || "-".equals(token)) {
                     System.out.print(token);
                     token = getToken();
-                    if (cclbds(token)) {
+                    Result cclbds = cclbds(token);
+                    if (cclbds.success) {
                     }
                 } else {
                     stack.push(token);
@@ -883,9 +904,11 @@ public class Main {
                     break;
                 }
             }
-            return true;
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -894,14 +917,23 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean cclbds(String token) throws IOException {
-        if (yybds(token)) {
+    private static Result cclbds(String token) throws IOException {
+        Result yybds = yybds(token);
+        if (yybds.success) {
             while (true) {
                 token = getToken();
                 if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
+                    if ("*".equals(token)) {
+
+                    } else if ("/".equals(token)) {
+
+                    } else {
+
+                    }
                     System.out.print(token);
                     token = getToken();
-                    if (yybds(token)) {
+                    Result yybds1 = yybds(token);
+                    if (yybds1.success) {
                     }
                 } else {
                     stack.push(token);
@@ -909,9 +941,11 @@ public class Main {
                     break;
                 }
             }
-            return true;
+            yybds.success = true;
+            return yybds;
         }
-        return false;
+        yybds.success = false;
+        return yybds;
     }
 
     /**
@@ -925,18 +959,33 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean yybds(String token) throws IOException {
+    private static Result yybds(String token) throws IOException {
+        Result result = new Result();
         if ("&".equals(token) || "*".equals(token) || "+".equals(token) || "-".equals(token)) {
+            if ("&".equals(token)) {
+                result.statementType = StatementType.ADDR.getValue();
+                result.statementTypeStr = StatementType.ADDR.name();
+            } else if ("*".equals(token)) {
+                result.statementType = StatementType.PTR.getValue();
+                result.statementTypeStr = StatementType.PTR.name();
+            } else if ("-".equals(token)) {
+                result.statementType = StatementType.MINUS.getValue();
+                result.statementTypeStr = StatementType.MINUS.name();
+            }
             System.out.print(token);
             token = getToken();
-            if (yybds(token)) {
-                return true;
+            Result yybds = yybds(token);
+            if (yybds.success) {
+                result.success = true;
+                return result;
             }
         }
-        if (hzbds(token)) {
-            return true;
+        if ((result = hzbds(token)).success) {
+            result.success = true;
+            return result;
         }
-        return false;
+        result.success = false;
+        return result;
     }
 
     /**
@@ -950,17 +999,25 @@ public class Main {
      * @param token
      * @return
      */
-    private static boolean hzbds(String token) throws IOException {
-        if (cdbds(token)) {
+    private static Result hzbds(String token) throws IOException {
+        Result cdbds = cdbds(token);
+        if (cdbds.success) {
             token = getToken();
             if ("(".equals(token) || "[".equals(token)) {
+                if ("(".equals(token)) {
+                    cdbds.statementType = StatementType.FUNCTION_CALL.getValue();
+                    cdbds.statementTypeStr = StatementType.FUNCTION_CALL.name();
+                } else {
+
+                }
                 while (true) {
+                    Result cdbd1 = null;
                     System.out.print(token);
                     token = getToken();
                     if (")".equals(token) || "]".equals(token)) {
                         System.out.print(token);
                         break;
-                    } else if (cdbds(token)) {
+                    } else if ((cdbd1 = cdbds(token)).success) {
                         token = getToken();
                         if (",".equals(token)) {
                             System.out.print(token);
@@ -978,9 +1035,11 @@ public class Main {
                 stack.push(token);
                 stack.failed();
             }
-            return true;
+            cdbds.success = true;
+            return cdbds;
         }
-        return false;
+        cdbds.success = false;
+        return cdbds;
     }
 
 
@@ -989,22 +1048,38 @@ public class Main {
      *
      * @param token
      */
-    private static boolean cdbds(String token) throws IOException {
+    private static Result cdbds(String token) throws IOException {
         Result smf = smf(token);
         if (smf.success) {
             System.out.print(token);
-            return true;
+            smf.success = true;
+            smf.statementType = StatementType.SMF.getValue();
+            smf.statementTypeStr = StatementType.SMF.name();
+            return smf;
         } else if (token.matches("\\d+")) {
             System.out.print(token);
-            return true;
+            smf.success = true;
+            smf.statementType = StatementType.CONSTANT.getValue();
+            smf.statementTypeStr = StatementType.CONSTANT.name();
+            smf.initValue = token;
+            return smf;
         } else if (token.startsWith("\"") && token.endsWith("\"")) {
             System.out.print(token);
-            return true;
+            smf.success = true;
+            smf.statementType = StatementType.CONSTANT.getValue();
+            smf.statementTypeStr = StatementType.CONSTANT.name();
+            smf.initValue = token;
+            return smf;
         } else if (token.startsWith("\'") && token.endsWith("\'")) {
             System.out.print(token);
-            return true;
+            smf.success = true;
+            smf.statementType = StatementType.CONSTANT.getValue();
+            smf.statementTypeStr = StatementType.CONSTANT.name();
+            smf.initValue = token;
+            return smf;
         }
-        return false;
+        smf.success = false;
+        return smf;
     }
 
     /**

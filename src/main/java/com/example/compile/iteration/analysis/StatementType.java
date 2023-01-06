@@ -12,6 +12,14 @@ public enum StatementType {
     BREAK(9),
     CONTINUE(10),
     RETURN(11),
+    SMF(12),
+    CONSTANT(13),
+    ADDR(14),
+    PTR(15),
+    MINUS(16),
+    MUL(17),
+    DIV(18),
+    MOD(19),
     ;
     private int value;
 
