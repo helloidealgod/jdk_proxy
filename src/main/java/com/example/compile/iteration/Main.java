@@ -840,6 +840,12 @@ public class Main {
         if ((result = gxbds(token)).success) {
             token = getToken();
             if ("=".equals(token) || "!=".equals(token)) {
+                if ("=".equals(token)) {
+                    if (StatementType.SMF.getValue() == result.statementType) {
+                        result.statementType = StatementType.VAR_ASSIGN.getValue();
+                        result.statementTypeStr = StatementType.VAR_ASSIGN.name();
+                    }
+                }
                 System.out.print(token);
                 token = getToken();
                 Result gxbds = gxbds(token);

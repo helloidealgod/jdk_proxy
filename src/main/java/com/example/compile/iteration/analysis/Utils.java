@@ -53,7 +53,12 @@ public class Utils {
                     System.out.println("");
                     break;
                 case 2:
-                    System.out.println("");
+                    System.out.print(result.name);
+                    System.out.print(" = ");
+                    if (null != result.rel.statementTypeStr) {
+                        System.out.print(result.rel.statementTypeStr + " ");
+                    }
+                    System.out.println(result.rel.name);
                     break;
                 case 3:
                 case 4:
