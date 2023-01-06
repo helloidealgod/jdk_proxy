@@ -36,44 +36,83 @@ public class Utils {
             int statementType = result.statementType;
             switch (statementType) {
                 case 0:
-                    System.out.print(result.type);
+                    System.out.println("error");
+                    break;
+                case 1:
+                    System.out.print(result.typeStr);
+                    System.out.print(" ");
+                    System.out.print(result.width);
+                    System.out.print(" ");
+                    if (result.type == DataType.PTR.getValue()) {
+                        printPtr(result);
+                    }
+                    System.out.print(result.name);
+                    if (null != result.initValue) {
+                        System.out.print(" = " + result.initValue);
+                    }
+                    System.out.println("");
+                    break;
+                case 2:
+                    System.out.println("");
+                    break;
+                case 3:
+                case 4:
+                    System.out.print(result.typeStr);
                     System.out.print(" ");
                     System.out.print(result.width);
                     System.out.print(" ");
                     System.out.print(result.name);
-                    System.out.print(" ");
-                    if (null != result.initValue) {
-                        System.out.print("= ");
-                        System.out.print(result.initValue);
+                    System.out.print("(");
+                    for (Result item : result.formalParameterList) {
+                        System.out.print(item.typeStr + " " + item.name + ",");
                     }
+                    System.out.println(")");
+                    if (0 < result.subList.size()) {
+                        System.out.println("{");
+                        resultListToString(result.subList, layer + 1);
+                        for (int i = 0; i < layer; i++) {
+                            System.out.print("  ");
+                        }
+                        System.out.println("}");
+                    }
+                    break;
+                case 5:
                     System.out.println("");
                     break;
-                case 1:
-                    break;
-                case 2:
-                    System.out.print(result.type);
-                    System.out.print(" ");
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
                     System.out.print(result.name);
-                    System.out.print(" (");
-                    resultListToString(result.formalParameterList, layer);
-                    System.out.println(")");
-                    resultListToString(result.subList, layer + 1);
-                    break;
-                case 3:
-                case 4:
-                    System.out.print(result.name);
-                    System.out.print(" {");
-                    resultListToString(result.subList, layer + 1);
+                    System.out.println("{");
+                    if (0 < result.subList.size()) {
+                        resultListToString(result.subList, layer + 1);
+                    }
                     for (int i = 0; i < layer; i++) {
                         System.out.print("  ");
                     }
                     System.out.println("}");
                     break;
-                case 5:
+                case 11:
+                case 12:
+                    System.out.println(result.name);
                     break;
                 default:
+                    System.out.println("");
                     break;
             }
+        }
+    }
+
+    private static void printPtr(Result result) {
+        if (null != result.rel) {
+            printPtr(result.rel);
+        }
+        if (result.type == DataType.PTR.getValue()) {
+            System.out.print("*");
+        } else {
+            System.out.print(result.typeStr + " ");
         }
     }
 }

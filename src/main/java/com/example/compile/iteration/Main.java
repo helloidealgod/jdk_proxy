@@ -138,7 +138,7 @@ public class Main {
             externalDeclaration(token);
             System.out.println("");
         }
-        System.out.println("=======================================");
+        System.out.println("\n================================================================================\n");
         resultListToString(resultList, 0);
     }
 
@@ -574,10 +574,15 @@ public class Main {
                 if (!smf.success) {
                     System.out.println("error");
                 }
-
-                smf.type = lxqff.type;
-                smf.typeStr = lxqff.typeStr;
-                smf.width = lxqff.width;
+                if (smf.type == DataType.PTR.getValue()) {
+                    smf.rel = lxqff;
+                } else {
+                    smf.type = lxqff.type;
+                    smf.typeStr = lxqff.typeStr;
+                    smf.width = lxqff.width;
+                }
+                smf.statementType = StatementType.VAR_DECLARE.getValue();
+                smf.statementTypeStr = StatementType.VAR_DECLARE.name();
 
                 System.out.print(" name:" + token);
                 token = getToken();
@@ -977,6 +982,7 @@ public class Main {
             Result yybds = yybds(token);
             if (yybds.success) {
                 result.success = true;
+                result.name = yybds.name;
                 return result;
             }
         }
