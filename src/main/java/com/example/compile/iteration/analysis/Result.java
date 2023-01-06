@@ -27,6 +27,13 @@ public class Result implements Cloneable, Serializable {
     /*指针、数组 用*/
     public Result rel;
 
+    /*运算类型*/
+    public int operationType;
+    public String operationTypeStr;
+    public Result operation1;
+    public Result operation2;
+
+
     public String getName() {
         return name;
     }

@@ -1,9 +1,6 @@
 package com.example.compile.iteration;
 
-import com.example.compile.iteration.analysis.DataType;
-import com.example.compile.iteration.analysis.Result;
-import com.example.compile.iteration.analysis.Statement;
-import com.example.compile.iteration.analysis.StatementType;
+import com.example.compile.iteration.analysis.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -904,10 +901,19 @@ public class Main {
             while (true) {
                 token = getToken();
                 if ("+".equals(token) || "-".equals(token)) {
+                    result.operation1 = result.clone();
+                    if ("+".equals(token)) {
+                        result.operationType = Operation.PLUS.getValue();
+                        result.operationTypeStr = Operation.PLUS.name();
+                    } else {
+                        result.operationType = Operation.SUB.getValue();
+                        result.operationTypeStr = Operation.SUB.name();
+                    }
                     System.out.print(token);
                     token = getToken();
                     Result cclbds = cclbds(token);
                     if (cclbds.success) {
+                        result.operation2 = cclbds;
                     }
                 } else {
                     stack.push(token);
@@ -934,17 +940,22 @@ public class Main {
             while (true) {
                 token = getToken();
                 if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
+                    yybds.operation1 = yybds.clone();
                     if ("*".equals(token)) {
-
+                        yybds.operationType = Operation.MUL.getValue();
+                        yybds.operationTypeStr = Operation.MUL.name();
                     } else if ("/".equals(token)) {
-
+                        yybds.operationType = Operation.DIV.getValue();
+                        yybds.operationTypeStr = Operation.DIV.name();
                     } else {
-
+                        yybds.operationType = Operation.MOD.getValue();
+                        yybds.operationTypeStr = Operation.MOD.name();
                     }
                     System.out.print(token);
                     token = getToken();
                     Result yybds1 = yybds(token);
                     if (yybds1.success) {
+                        yybds.operation2 = yybds1;
                     }
                 } else {
                     stack.push(token);
