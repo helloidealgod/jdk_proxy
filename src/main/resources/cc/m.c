@@ -19,10 +19,10 @@ void test(int p1,int p2);
 void sub(int a,int b){
     char c;
     int *a;
+    int o = (p1 + m) * k;
     int a = b * c / d % e;
     int o = p + i - 91;
     int i = p + b + 90 + u * t / q + w;
-    int o = (p1 + m) * k;
     int o = (p1 + m) * (k / u);
     int o = (p1 + m) != (k / u);
 
