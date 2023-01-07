@@ -1,6 +1,9 @@
 package com.example.compile.iteration.analysis;
 
 import java.util.List;
+import java.util.Stack;
+
+import static com.example.compile.iteration.analysis.Operation.*;
 
 public class Utils {
     public static void statementToString(List<Statement> statementList, int layer) {
@@ -119,5 +122,22 @@ public class Utils {
         } else {
             System.out.print(result.typeStr + " ");
         }
+    }
+
+    public static boolean compareOperate(Stack<String> operateStack, String operate) {
+        if (operateStack.isEmpty()) {
+            return false;
+        }
+        String peek = operateStack.peek();
+        if (PLUS.name().equals(peek) || SUB.name().equals(peek)) {
+            if (MUL.name().equals(operate) || DIV.name().equals(operate) || MOD.name().equals(operate)) {
+                //优先级高 入栈
+                return false;
+            } else {
+                //优先级相等 运算之前的
+                return true;
+            }
+        }
+        return true;
     }
 }

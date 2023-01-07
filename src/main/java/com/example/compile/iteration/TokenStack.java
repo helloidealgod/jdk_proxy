@@ -3,7 +3,7 @@ package com.example.compile.iteration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Stack {
+public class TokenStack {
     public List<String> toKenList = new ArrayList<>();
     public List<String> failToKenList;
     public int topIndex = -1;

@@ -1,6 +1,6 @@
 package com.example.compile.utils;
 
-import com.example.compile.iteration.Stack;
+import com.example.compile.iteration.TokenStack;
 
 import java.io.*;
 
@@ -69,7 +69,7 @@ public class TokenUtils {
         return stateMap;
     }
 
-    public Stack stack = new Stack();
+    public TokenStack stack = new TokenStack();
 
     public TokenUtils() throws FileNotFoundException {
         File f = new File("");

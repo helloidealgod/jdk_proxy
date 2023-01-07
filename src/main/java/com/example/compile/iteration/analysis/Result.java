@@ -26,6 +26,7 @@ public class Result implements Cloneable, Serializable {
     public List<Result> formalParameterList = new ArrayList<>();
     /*指针、数组 用*/
     public Result rel;
+    public List<Result> operateList = new ArrayList<>();
 
     /*运算类型*/
     public int operationType;

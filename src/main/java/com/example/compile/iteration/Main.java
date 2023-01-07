@@ -1,12 +1,15 @@
 package com.example.compile.iteration;
 
+
 import com.example.compile.iteration.analysis.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
+import static com.example.compile.iteration.analysis.Utils.compareOperate;
 import static com.example.compile.iteration.analysis.Utils.resultListToString;
 
 public class Main {
@@ -74,11 +77,14 @@ public class Main {
         return stateMap;
     }
 
-    public static Stack stack = new Stack();
+    public static TokenStack stack = new TokenStack();
 
     public static List<Result> resultList = new ArrayList<>();
 
     public static HashMap<String, Result> symbol = new HashMap<>();
+
+    public static Stack<Result> smfStack = new Stack<>();
+    public static Stack<String> operateStack = new Stack<>();
 
     public static void main(String[] args) {
         try {
@@ -596,7 +602,7 @@ public class Main {
                         token = getToken();
 //                        System.out.print(" value:" + token);
                         Result fzbds = fzbds(token);
-                        smf.initValue = token;
+//                        smf.initValue = token;
                         token = getToken();
                         if (",".equals(token)) {
                             result.subList.add(smf);
@@ -925,28 +931,86 @@ public class Main {
     private static Result jjlbds(String token) throws IOException {
         Result result = null;
         if ((result = cclbds(token)).success) {
+            smfStack.push(result);
             while (true) {
                 token = getToken();
                 if ("+".equals(token) || "-".equals(token)) {
-                    result.operation1 = result.clone();
+                    Result op = new Result();
                     if ("+".equals(token)) {
-                        result.operationType = Operation.PLUS.getValue();
-                        result.operationTypeStr = Operation.PLUS.name();
+                        if (compareOperate(operateStack, Operation.PLUS.name())) {
+                            //出栈运算，入栈
+                            Result smf2 = smfStack.pop();
+                            Result smf1 = smfStack.pop();
+                            String operate = operateStack.pop();
+                            op.operation1 = smf1;
+                            op.operation2 = smf2;
+                            if (Operation.PLUS.name().equals(operate)) {
+                                op.operationType = Operation.PLUS.getValue();
+                                op.operationTypeStr = Operation.PLUS.name();
+                            } else if (Operation.SUB.name().equals(operate)) {
+                                op.operationType = Operation.SUB.getValue();
+                                op.operationTypeStr = Operation.SUB.name();
+                            }
+                            smfStack.push(op);
+                            operateStack.push(Operation.PLUS.name());
+                            result.operateList.add(op);
+                        } else {
+                            operateStack.push(Operation.PLUS.name());
+                        }
                     } else {
-                        result.operationType = Operation.SUB.getValue();
-                        result.operationTypeStr = Operation.SUB.name();
+                        if (compareOperate(operateStack, Operation.SUB.name())) {
+                            //出栈运算，入栈
+                            Result smf2 = smfStack.pop();
+                            Result smf1 = smfStack.pop();
+                            String operate = operateStack.pop();
+                            op.operation1 = smf1;
+                            op.operation2 = smf2;
+                            if (Operation.PLUS.name().equals(operate)) {
+                                op.operationType = Operation.PLUS.getValue();
+                                op.operationTypeStr = Operation.PLUS.name();
+                            } else if (Operation.SUB.name().equals(operate)) {
+                                op.operationType = Operation.SUB.getValue();
+                                op.operationTypeStr = Operation.SUB.name();
+                            }
+                            smfStack.push(op);
+                            operateStack.push(Operation.SUB.name());
+                            result.operateList.add(op);
+                        } else {
+                            operateStack.push(Operation.SUB.name());
+                        }
                     }
                     System.out.print(token);
                     token = getToken();
                     Result cclbds = cclbds(token);
                     if (cclbds.success) {
-                        result.operation2 = cclbds;
+                        smfStack.push(cclbds);
                     }
                 } else {
                     stack.push(token);
                     stack.failed();
                     break;
                 }
+            }
+            if (operateStack.empty()) {
+                smfStack.clear();
+            } else if (1 == operateStack.size()) {
+                //出栈运算，入栈
+                Result op = new Result();
+                Result smf2 = smfStack.pop();
+                Result smf1 = smfStack.pop();
+                String operate = operateStack.pop();
+                op.operation1 = smf1;
+                op.operation2 = smf2;
+                if (Operation.PLUS.name().equals(operate)) {
+                    op.operationType = Operation.PLUS.getValue();
+                    op.operationTypeStr = Operation.PLUS.name();
+                } else if (Operation.SUB.name().equals(operate)) {
+                    op.operationType = Operation.SUB.getValue();
+                    op.operationTypeStr = Operation.SUB.name();
+                }
+                result.operateList.add(op);
+            } else {
+                System.out.println("error");
             }
             result.success = true;
             return result;
@@ -964,25 +1028,37 @@ public class Main {
     private static Result cclbds(String token) throws IOException {
         Result yybds = yybds(token);
         if (yybds.success) {
+
             while (true) {
                 token = getToken();
                 if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
+
+                    smfStack.push(yybds);
+
                     yybds.operation1 = yybds.clone();
                     if ("*".equals(token)) {
                         yybds.operationType = Operation.MUL.getValue();
                         yybds.operationTypeStr = Operation.MUL.name();
+
+                        operateStack.push(Operation.MUL.name());
                     } else if ("/".equals(token)) {
                         yybds.operationType = Operation.DIV.getValue();
                         yybds.operationTypeStr = Operation.DIV.name();
+
+                        operateStack.push(Operation.MUL.name());
                     } else {
                         yybds.operationType = Operation.MOD.getValue();
                         yybds.operationTypeStr = Operation.MOD.name();
+
+                        operateStack.push(Operation.MUL.name());
                     }
                     System.out.print(token);
                     token = getToken();
                     Result yybds1 = yybds(token);
                     if (yybds1.success) {
-                        yybds.operation2 = yybds1;
+//                        yybds.operation2 = yybds1;
+
+                        smfStack.push(yybds1);
                     }
                 } else {
                     stack.push(token);
@@ -1127,11 +1203,11 @@ public class Main {
             smf.statementTypeStr = StatementType.CONSTANT.name();
             smf.initValue = token;
             return smf;
-        }else if("(".equals(token)){
+        } else if ("(".equals(token)) {
             System.out.print(token);
             token = getToken();
             Result bds = bds(token);
-            if(bds.success){
+            if (bds.success) {
                 token = getToken();
                 System.out.print(token);
             }
