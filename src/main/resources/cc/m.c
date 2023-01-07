@@ -43,4 +43,9 @@ void sub(int a,int b){
     p = p0 + p1 * p2;
 
     a = a1 != a2;
+
+    int i = p + b + 90 + u * t / q + w;
+        int o = (p1 + m) * k;
+        int o = (p1 + m) * (k / u);
+        int o = (p1 + m) != (k / u);
 }

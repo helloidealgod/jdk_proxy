@@ -402,6 +402,8 @@ public class Main {
         }
         boolean success = !token.matches("void|int|float|char|long|") && token.matches("[_A-Za-z][_A-Za-z0-9]*");
         result.success = success;
+        result.statementType = StatementType.SMF.getValue();
+        result.statementTypeStr = StatementType.SMF.name();
         if (success) {
             result.name = token;
             if (zz.success) {
@@ -573,7 +575,7 @@ public class Main {
                 }
                 if (smf.type == DataType.PTR.getValue()) {
                     smf.rel = lxqff;
-                } else {
+                } else if (0 != lxqff.type) {
                     smf.type = lxqff.type;
                     smf.typeStr = lxqff.typeStr;
                     smf.width = lxqff.width;
@@ -592,7 +594,8 @@ public class Main {
                 } else {
                     if ("=".equals(token)) {
                         token = getToken();
-                        System.out.print(" value:" + token);
+//                        System.out.print(" value:" + token);
+                        Result fzbds = fzbds(token);
                         smf.initValue = token;
                         token = getToken();
                         if (",".equals(token)) {
@@ -920,7 +923,7 @@ public class Main {
      * @return
      */
     private static Result jjlbds(String token) throws IOException {
-        Result result = new Result();
+        Result result = null;
         if ((result = cclbds(token)).success) {
             while (true) {
                 token = getToken();
@@ -1123,6 +1126,16 @@ public class Main {
             smf.statementType = StatementType.CONSTANT.getValue();
             smf.statementTypeStr = StatementType.CONSTANT.name();
             smf.initValue = token;
+            return smf;
+        }else if("(".equals(token)){
+            System.out.print(token);
+            token = getToken();
+            Result bds = bds(token);
+            if(bds.success){
+                token = getToken();
+                System.out.print(token);
+            }
+            smf.success = true;
             return smf;
         }
         smf.success = false;
