@@ -121,6 +121,7 @@ public class Utils {
                 case 8:
                 case 9:
                 case 10:
+                    printTab(layer);
                     System.out.print(result.name);
                     System.out.println("{");
                     if (0 < result.subList.size()) {
@@ -133,6 +134,7 @@ public class Utils {
                     break;
                 case 11:
                 case 12:
+                    printTab(layer);
                     System.out.println(result.name);
                     break;
                 default:
