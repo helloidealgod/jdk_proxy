@@ -33,15 +33,32 @@ public class Utils {
 
     public static void resultListToString(List<Result> resultList, int layer) {
         for (Result result : resultList) {
-            for (int i = 0; i < layer; i++) {
-                System.out.print("  ");
-            }
+
             int statementType = result.statementType;
             switch (statementType) {
                 case 0:
                     System.out.println("error");
                     break;
                 case 1:
+                    Result result1 = null;
+                    if (0 < result.operateList.size()) {
+                        for (int i = 0; i < result.operateList.size() - 1; i++) {
+                            printTab(layer);
+                            result1 = result.operateList.get(i);
+                            System.out.print(result1.operationTypeStr + " ");
+                            if (StatementType.CONSTANT.getValue() == result1.operation1.statementType) {
+                                System.out.print(result1.operation1.initValue + " ");
+                            } else {
+                                System.out.print(result1.operation1.name + " ");
+                            }
+                            if (StatementType.CONSTANT.getValue() == result1.operation2.statementType) {
+                                System.out.println(result1.operation2.initValue);
+                            } else {
+                                System.out.println(result1.operation2.name);
+                            }
+                        }
+                    }
+                    printTab(layer);
                     System.out.print(result.typeStr);
                     System.out.print(" ");
                     System.out.print(result.width);
@@ -50,8 +67,20 @@ public class Utils {
                         printPtr(result);
                     }
                     System.out.print(result.name);
-                    if (null != result.initValue) {
-                        System.out.print(" = " + result.initValue);
+                    if (0 < result.operateList.size()) {
+                        System.out.print(" = ");
+                        result1 = result.operateList.get(result.operateList.size() - 1);
+                        System.out.print(result1.operationTypeStr + " ");
+                        if (StatementType.CONSTANT.getValue() == result1.operation1.statementType) {
+                            System.out.print(result1.operation1.initValue + " ");
+                        } else {
+                            System.out.print(result1.operation1.name + " ");
+                        }
+                        if (StatementType.CONSTANT.getValue() == result1.operation2.statementType) {
+                            System.out.print(result1.operation2.initValue);
+                        } else {
+                            System.out.print(result1.operation2.name);
+                        }
                     }
                     System.out.println("");
                     break;
@@ -121,6 +150,12 @@ public class Utils {
             System.out.print("*");
         } else {
             System.out.print(result.typeStr + " ");
+        }
+    }
+
+    private static void printTab(int layer) {
+        for (int i = 0; i < layer; i++) {
+            System.out.print("  ");
         }
     }
 

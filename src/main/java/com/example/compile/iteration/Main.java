@@ -830,6 +830,8 @@ public class Main {
         Result result = null;
         if ((result = xdlbds(token)).success) {
             result.success = true;
+            result.statementType = StatementType.FZBDS.getValue();
+            result.statementTypeStr = StatementType.FZBDS.name();
             return result;
         } else if ((result = yybds(token)).success) {
             result.success = true;
@@ -1301,6 +1303,8 @@ public class Main {
                 System.out.print(token);
 
                 smf.operateList = bds.operateList;
+                smf.statementType = StatementType.FZBDS.getValue();
+                smf.statementTypeStr = StatementType.FZBDS.name();
             }
             smf.success = true;
             return smf;
