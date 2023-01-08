@@ -603,6 +603,9 @@ public class Main {
 //                        System.out.print(" value:" + token);
                         Result fzbds = fzbds(token);
 //                        smf.initValue = token;
+                        if (fzbds.success) {
+                            smf.operateList = fzbds.operateList;
+                        }
                         token = getToken();
                         if (",".equals(token)) {
                             result.subList.add(smf);
@@ -800,6 +803,7 @@ public class Main {
                 System.out.println("error");
             }
             result.subList.add(fzbds);
+            result.operateList = fzbds.operateList;
             token = getToken();
             if (!",".equals(token)) {
                 break;
@@ -929,12 +933,17 @@ public class Main {
      * @return
      */
     private static Result jjlbds(String token) throws IOException {
-        Result result = null;
-        if ((result = cclbds(token)).success) {
-            smfStack.push(result);
+        Result result = new Result();
+        Result cclbds = null;
+        if ((cclbds = cclbds(token)).success) {
+            boolean isSet = false;
             while (true) {
                 token = getToken();
                 if ("+".equals(token) || "-".equals(token)) {
+                    if (!isSet) {
+                        smfStack.push(cclbds);
+                        isSet = true;
+                    }
                     Result op = new Result();
                     if ("+".equals(token)) {
                         if (compareOperate(operateStack, Operation.PLUS.name())) {
@@ -981,9 +990,9 @@ public class Main {
                     }
                     System.out.print(token);
                     token = getToken();
-                    Result cclbds = cclbds(token);
-                    if (cclbds.success) {
-                        smfStack.push(cclbds);
+                    Result cclbds1 = cclbds(token);
+                    if (cclbds1.success) {
+                        smfStack.push(cclbds1);
                     }
                 } else {
                     stack.push(token);
@@ -993,6 +1002,7 @@ public class Main {
             }
             if (operateStack.empty()) {
                 smfStack.clear();
+                result = cclbds;
             } else if (1 == operateStack.size()) {
                 //出栈运算，入栈
                 Result op = new Result();
@@ -1028,10 +1038,14 @@ public class Main {
     private static Result cclbds(String token) throws IOException {
         Result yybds = yybds(token);
         if (yybds.success) {
-            smfStack.push(yybds);
+            boolean isSet = false;
             while (true) {
                 token = getToken();
                 if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
+                    if (!isSet) {
+                        smfStack.push(yybds);
+                        isSet = true;
+                    }
                     Result op = new Result();
                     if ("*".equals(token)) {
                         if (compareOperate(operateStack, Operation.MUL.name())) {
@@ -1285,6 +1299,8 @@ public class Main {
             if (bds.success) {
                 token = getToken();
                 System.out.print(token);
+
+                smf.operateList = bds.operateList;
             }
             smf.success = true;
             return smf;
