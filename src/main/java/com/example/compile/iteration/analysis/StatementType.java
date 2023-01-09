@@ -17,7 +17,9 @@ public enum StatementType {
     ADDR(14),
     PTR(15),
     MINUS(16),
-    FZBDS(17),
+    ZKH(17),
+    YKH(18),
+    FZBDS(19),
     ;
     private int value;
 

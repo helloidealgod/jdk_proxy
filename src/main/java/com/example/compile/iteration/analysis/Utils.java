@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Stack;
 
 import static com.example.compile.iteration.analysis.Operation.*;
+import static com.example.compile.iteration.analysis.StatementType.ZKH;
 
 public class Utils {
     public static void statementToString(List<Statement> statementList, int layer) {
@@ -174,6 +175,8 @@ public class Utils {
                 //优先级相等 运算之前的
                 return true;
             }
+        }else if(ZKH.name().equals(peek)){
+            return false;
         }
         return true;
     }

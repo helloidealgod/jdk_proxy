@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import static com.example.compile.iteration.analysis.StatementType.FZBDS;
+import static com.example.compile.iteration.analysis.StatementType.ZKH;
 import static com.example.compile.iteration.analysis.Utils.compareOperate;
 import static com.example.compile.iteration.analysis.Utils.resultListToString;
 
@@ -802,8 +804,7 @@ public class Main {
             if (!fzbds.success) {
                 System.out.println("error");
             }
-            result.subList.add(fzbds);
-            result.operateList = fzbds.operateList;
+            result.operateList = fzbds.clone().operateList;
             token = getToken();
             if (!",".equals(token)) {
                 break;
@@ -943,7 +944,7 @@ public class Main {
                 token = getToken();
                 if ("+".equals(token) || "-".equals(token)) {
                     if (!isSet) {
-                        smfStack.push(cclbds);
+                        smfStack.push(cclbds.clone());
                         isSet = true;
                     }
                     Result op = new Result();
@@ -994,7 +995,7 @@ public class Main {
                     token = getToken();
                     Result cclbds1 = cclbds(token);
                     if (cclbds1.success) {
-                        smfStack.push(cclbds1);
+                        smfStack.push(cclbds1.clone());
                     }
                 } else {
                     stack.push(token);
@@ -1004,25 +1005,29 @@ public class Main {
             }
             if (operateStack.empty()) {
                 smfStack.clear();
-                result = cclbds;
-            } else if (1 == operateStack.size()) {
-                //出栈运算，入栈
-                Result op = new Result();
-                Result smf2 = smfStack.pop();
-                Result smf1 = smfStack.pop();
-                String operate = operateStack.pop();
-                op.operation1 = smf1;
-                op.operation2 = smf2;
-                if (Operation.PLUS.name().equals(operate)) {
-                    op.operationType = Operation.PLUS.getValue();
-                    op.operationTypeStr = Operation.PLUS.name();
-                } else if (Operation.SUB.name().equals(operate)) {
-                    op.operationType = Operation.SUB.getValue();
-                    op.operationTypeStr = Operation.SUB.name();
+                result = cclbds.clone();
+            } else if (0 < operateStack.size()) {
+                String peek = operateStack.peek();
+                if (!ZKH.name().equals(peek)) {
+                    //出栈运算，入栈
+                    Result op = new Result();
+                    Result smf2 = smfStack.pop();
+                    Result smf1 = smfStack.pop();
+                    String operate = operateStack.pop();
+                    op.operation1 = smf1;
+                    op.operation2 = smf2;
+                    if (Operation.PLUS.name().equals(operate)) {
+                        op.operationType = Operation.PLUS.getValue();
+                        op.operationTypeStr = Operation.PLUS.name();
+                    } else if (Operation.SUB.name().equals(operate)) {
+                        op.operationType = Operation.SUB.getValue();
+                        op.operationTypeStr = Operation.SUB.name();
+                    }
+                    result.operateList.add(op);
+                } else {
+//                    System.out.println("error");
+                    result = cclbds.clone();
                 }
-                result.operateList.add(op);
-            } else {
-                System.out.println("error");
             }
             result.success = true;
             return result;
@@ -1045,7 +1050,14 @@ public class Main {
                 token = getToken();
                 if ("*".equals(token) || "/".equals(token) || "%".equals(token)) {
                     if (!isSet) {
-                        smfStack.push(yybds);
+                        if (StatementType.FZBDS.getValue() == yybds.statementType && 0 < yybds.operateList.size()) {
+                            smfStack.push(yybds.operateList.get(0).clone());
+                            if (1 < yybds.operateList.size()) {
+                                System.out.println("wrong");
+                            }
+                        } else {
+                            smfStack.push(yybds.clone());
+                        }
                         isSet = true;
                     }
                     Result op = new Result();
@@ -1126,7 +1138,15 @@ public class Main {
                     token = getToken();
                     Result yybds1 = yybds(token);
                     if (yybds1.success) {
-                        smfStack.push(yybds1);
+                        if(FZBDS.getValue() == yybds1.statementType && 0 != yybds1.operateList.size()){
+//                            smfStack.push(yybds1.operateList.get(0));
+                            yybds.operateList.add(yybds1.operateList.get(0));
+                            if(1 < yybds1.operateList.size()) {
+                                System.out.println("wrong");
+                            }
+                        }else {
+                            smfStack.push(yybds1.clone());
+                        }
                     }
                 } else {
                     stack.push(token);
@@ -1136,25 +1156,28 @@ public class Main {
             }
             if (0 < operateStack.size()) {
                 String peek = operateStack.peek();
-                if (Operation.MUL.name().equals(peek) || Operation.DIV.name().equals(peek) || Operation.MOD.name().equals(peek)) {
-                    //出栈运算，入栈
-                    Result op = new Result();
-                    Result smf2 = smfStack.pop();
-                    Result smf1 = smfStack.pop();
-                    String operate = operateStack.pop();
-                    op.operation1 = smf1;
-                    op.operation2 = smf2;
-                    if (Operation.MUL.name().equals(operate)) {
-                        op.operationType = Operation.MUL.getValue();
-                        op.operationTypeStr = Operation.MUL.name();
-                    } else if (Operation.DIV.name().equals(operate)) {
-                        op.operationType = Operation.DIV.getValue();
-                        op.operationTypeStr = Operation.DIV.name();
-                    } else if (Operation.MOD.name().equals(operate)) {
-                        op.operationType = Operation.MOD.getValue();
-                        op.operationTypeStr = Operation.MOD.name();
+                if (!ZKH.name().equals(peek)) {
+                    if (Operation.MUL.name().equals(peek) || Operation.DIV.name().equals(peek) || Operation.MOD.name().equals(peek)) {
+                        //出栈运算，入栈
+                        Result op = new Result();
+                        Result smf2 = smfStack.pop();
+                        Result smf1 = smfStack.pop();
+                        String operate = operateStack.pop();
+                        op.operation1 = smf1;
+                        op.operation2 = smf2;
+                        if (Operation.MUL.name().equals(operate)) {
+                            op.operationType = Operation.MUL.getValue();
+                            op.operationTypeStr = Operation.MUL.name();
+                        } else if (Operation.DIV.name().equals(operate)) {
+                            op.operationType = Operation.DIV.getValue();
+                            op.operationTypeStr = Operation.DIV.name();
+                        } else if (Operation.MOD.name().equals(operate)) {
+                            op.operationType = Operation.MOD.getValue();
+                            op.operationTypeStr = Operation.MOD.name();
+                        }
+                        smfStack.push(op);
+                        yybds.operateList.add(op.clone());
                     }
-                    yybds.operateList.add(op);
                 }
             }
             yybds.success = true;
@@ -1296,13 +1319,21 @@ public class Main {
             return smf;
         } else if ("(".equals(token)) {
             System.out.print(token);
+            operateStack.push(ZKH.name());
             token = getToken();
             Result bds = bds(token);
             if (bds.success) {
                 token = getToken();
                 System.out.print(token);
+                if (!")".equals(token)) {
+                    System.out.println("error");
+                }
+                String peek = operateStack.peek();
+                if (ZKH.name().equals(peek)) {
+                    operateStack.pop();
+                }
 
-                smf.operateList = bds.operateList;
+                smf.operateList = bds.clone().operateList;
                 smf.statementType = StatementType.FZBDS.getValue();
                 smf.statementTypeStr = StatementType.FZBDS.name();
             }
