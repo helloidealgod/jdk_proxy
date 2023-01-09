@@ -20,6 +20,7 @@ public enum StatementType {
     ZKH(17),
     YKH(18),
     FZBDS(19),
+    GXBDS(20),
     ;
     private int value;
 

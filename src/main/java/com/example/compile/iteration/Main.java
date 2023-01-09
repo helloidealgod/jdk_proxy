@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import static com.example.compile.iteration.analysis.StatementType.FZBDS;
-import static com.example.compile.iteration.analysis.StatementType.ZKH;
+import static com.example.compile.iteration.analysis.StatementType.*;
 import static com.example.compile.iteration.analysis.Utils.compareOperate;
 import static com.example.compile.iteration.analysis.Utils.resultListToString;
 
@@ -606,7 +605,11 @@ public class Main {
                         Result fzbds = fzbds(token);
 //                        smf.initValue = token;
                         if (fzbds.success) {
-                            smf.operateList = fzbds.operateList;
+                            if (GXBDS.getValue() == fzbds.statementType) {
+                                smf.operateList.add(fzbds);
+                            } else {
+                                smf.operateList = fzbds.operateList;
+                            }
                         }
                         token = getToken();
                         if (",".equals(token)) {
@@ -831,8 +834,10 @@ public class Main {
         Result result = null;
         if ((result = xdlbds(token)).success) {
             result.success = true;
-            result.statementType = StatementType.FZBDS.getValue();
-            result.statementTypeStr = StatementType.FZBDS.name();
+            if (GXBDS.getValue() != result.statementType) {
+                result.statementType = StatementType.FZBDS.getValue();
+                result.statementTypeStr = StatementType.FZBDS.name();
+            }
             return result;
         } else if ((result = yybds(token)).success) {
             result.success = true;
@@ -859,7 +864,7 @@ public class Main {
                         result.statementTypeStr = StatementType.VAR_ASSIGN.name();
                     }
                 } else {
-                    System.out.print("");
+                    System.out.println("\nwwww!=wwww");
                 }
                 System.out.print(token);
                 token = getToken();
@@ -887,10 +892,14 @@ public class Main {
      */
     private static Result gxbds(String token) throws IOException {
         Result result = null;
+//        Result jjlbds = null;
         if ((result = jjlbds(token)).success) {
             token = getToken();
             if ("<".equals(token) || ">".equals(token) || "<=".equals(token) || ">=".equals(token) || "==".equals(token) || "!=".equals(token)) {
                 result.operation1 = result.clone();
+                result.operateList = new ArrayList<>();
+                result.statementType = GXBDS.getValue();
+                result.statementTypeStr = GXBDS.name();
                 if ("<".equals(token)) {
                     result.operationType = Operation.LT.getValue();
                     result.operationTypeStr = Operation.LT.name();
@@ -912,12 +921,12 @@ public class Main {
                 }
                 System.out.print(token);
                 token = getToken();
-                Result jjlbds = jjlbds(token);
-                if (!jjlbds.success) {
+                Result jjlbds1 = jjlbds(token);
+                if (!jjlbds1.success) {
                     System.out.println("error");
                 }
 
-                result.operation2 = jjlbds;
+                result.operation2 = jjlbds1;
             } else {
                 stack.push(token);
                 stack.failed();
