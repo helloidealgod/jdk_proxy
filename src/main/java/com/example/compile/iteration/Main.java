@@ -996,6 +996,7 @@ public class Main {
                     Result cclbds1 = cclbds(token);
                     if (cclbds1.success) {
                         smfStack.push(cclbds1.clone());
+                        result.operateList.addAll(cclbds1.operateList);
                     }
                 } else {
                     stack.push(token);
@@ -1138,13 +1139,13 @@ public class Main {
                     token = getToken();
                     Result yybds1 = yybds(token);
                     if (yybds1.success) {
-                        if(FZBDS.getValue() == yybds1.statementType && 0 != yybds1.operateList.size()){
+                        if (FZBDS.getValue() == yybds1.statementType && 0 != yybds1.operateList.size()) {
 //                            smfStack.push(yybds1.operateList.get(0));
                             yybds.operateList.add(yybds1.operateList.get(0));
-                            if(1 < yybds1.operateList.size()) {
+                            if (1 < yybds1.operateList.size()) {
                                 System.out.println("wrong");
                             }
-                        }else {
+                        } else {
                             smfStack.push(yybds1.clone());
                         }
                     }
@@ -1179,6 +1180,12 @@ public class Main {
                         yybds.operateList.add(op.clone());
                     }
                 }
+            }
+            if (0 < yybds.operateList.size()) {
+                yybds.statementType = FZBDS.getValue();
+                yybds.statementTypeStr = FZBDS.name();
+                //todo
+                yybds.name = null;
             }
             yybds.success = true;
             return yybds;
