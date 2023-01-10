@@ -17,7 +17,7 @@ public class UDPServer2 {
         Node node1 = new Node(new NodeId(), InetAddress.getLocalHost(), port);
         String hostAddress = node1.getInetAddress().getHostAddress();
         System.out.println("port=" + port);
-        sendMessage(new Message("PING", node1, "127.0.0.1", 53420, "hello i am server2"));
+        sendMessage(new Message("FIND_NODE", node1, "127.0.0.1", 53420, "hello i am server2"));
         while (true) {
             //创建一个数据包，用于接收数据
             byte[] bys = new byte[1024];
