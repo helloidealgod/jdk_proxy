@@ -30,12 +30,12 @@ public class UDPServer {
             Message message = JSON.parseObject(s, Message.class);
             if ("PING".equals(message.getOperateType())) {
                 System.out.println("ip=" + message.getFromIp() + " port=" + message.getFromPort());
-                sendMessage(new Message("PING", hostAddress, port, message.getFromIp(), message.getFromPort(), "hello i am server1"));
-            } else if ("STORE".equals(s)) {
+                sendMessage(new Message("PING", node1, message.getFromIp(), message.getFromPort(), "hello i am server"));
+            } else if ("STORE".equals(message.getOperateType())) {
 
-            } else if ("FIND_NODE".equals(s)) {
+            } else if ("FIND_NODE".equals(message.getOperateType())) {
 
-            } else if ("FIND_VALUE".equals(s)) {
+            } else if ("FIND_VALUE".equals(message.getOperateType())) {
 
             }
             //关闭接收端

@@ -13,6 +13,10 @@ public class Node {
     private int port;
     private final String strRep;
 
+    public Node() {
+        this.strRep = "";
+    }
+
     public Node(NodeId nid, InetAddress ip, int port) {
         this.nodeId = nid;
         this.inetAddress = ip;
@@ -35,6 +39,22 @@ public class Node {
 
     public InetAddress getInetAddress() {
         return this.inetAddress;
+    }
+
+    public void setNodeId(NodeId nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getStrRep() {
+        return strRep;
     }
 
     public InetSocketAddress getSocketAddress() {

@@ -17,7 +17,7 @@ public class UDPServer1 {
         Node node1 = new Node(new NodeId(), InetAddress.getLocalHost(), port);
         String hostAddress = node1.getInetAddress().getHostAddress();
         System.out.println("port=" + port);
-        sendMessage(new Message("PING", hostAddress, port, "127.0.0.1", 53420, "hello i am server1"));
+        sendMessage(new Message("PING", node1, "127.0.0.1", 53420, "hello i am server1"));
         while (true) {
             //创建一个数据包，用于接收数据
             byte[] bys = new byte[1024];
@@ -30,11 +30,11 @@ public class UDPServer1 {
             Message message = JSON.parseObject(s, Message.class);
             if ("PING".equals(message.getOperateType())) {
                 System.out.println("ip=" + message.getFromIp() + " port=" + message.getFromPort());
-            } else if ("STORE".equals(s)) {
+            } else if ("STORE".equals(message.getOperateType())) {
 
-            } else if ("FIND_NODE".equals(s)) {
+            } else if ("FIND_NODE".equals(message.getOperateType())) {
 
-            } else if ("FIND_VALUE".equals(s)) {
+            } else if ("FIND_VALUE".equals(message.getOperateType())) {
 
             }
             //关闭接收端

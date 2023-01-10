@@ -6,7 +6,7 @@ public class Message {
     private int fromPort;
     private String toIp;
     private int toPort;
-    private NodeId nodeId;
+    private Node node;
     private String data;
 
     public Message() {
@@ -20,6 +20,16 @@ public class Message {
         this.toIp = toIp;
         this.toPort = toPort;
         this.data = data;
+    }
+
+    public Message(String operateType, Node node, String toIp, int toPort, String data) {
+        this.operateType = operateType;
+        this.fromIp = node.getInetAddress().getHostAddress();
+        this.fromPort = node.getPort();
+        this.toIp = toIp;
+        this.toPort = toPort;
+        this.data = data;
+        this.node = node;
     }
 
     public String getData() {
@@ -36,14 +46,6 @@ public class Message {
 
     public void setOperateType(String operateType) {
         this.operateType = operateType;
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(NodeId nodeId) {
-        this.nodeId = nodeId;
     }
 
     public String getFromIp() {
@@ -76,5 +78,13 @@ public class Message {
 
     public void setToPort(int toPort) {
         this.toPort = toPort;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }
