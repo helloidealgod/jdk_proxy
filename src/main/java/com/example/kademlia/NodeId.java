@@ -56,4 +56,33 @@ public class NodeId {
         in.readFully(input);
         this.keyBytes = input;
     }
+
+    public int getFirstSetBitIndex() {
+        int prefixLength = 0;
+        for (byte b : this.keyBytes) {
+            if (b == 0) {
+                prefixLength += 8;
+            } else {
+                /* If the byte is not 0, we need to count how many MSBs are 0 */
+                int count = 0;
+                for (int i = 7; i >= 0; i--) {
+                    boolean a = (b & (1 << i)) == 0;
+                    if (a) {
+                        count++;
+                    } else {
+                        break;   // Reset the count if we encounter a non-zero number
+                    }
+                }
+                /* Add the count of MSB 0s to the prefix length */
+                prefixLength += count;
+                /* Break here since we've now covered the MSB 0s */
+                break;
+            }
+        }
+        return prefixLength;
+    }
+
+    public int getDistance(NodeId to) {
+        return ID_LENGTH - this.xor(to).getFirstSetBitIndex();
+    }
 }
