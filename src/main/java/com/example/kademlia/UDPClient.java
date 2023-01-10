@@ -14,8 +14,9 @@ public class UDPClient {
         //创建数据，并把数据打包
         //DatagramPacket (byte[] buf, int length, InetAddress address, int port)
         //构造一个数据包，发送长度为length的数据包到指定 主机上的指定端口号。
-        byte[] bys = "hello,udp,我来了".getBytes();
-        DatagramPacket dp = new DatagramPacket(bys, bys.length, InetAddress.getByName("127.0.0.1"), 10086);
+//        byte[] bys = "hello,udp,我来了".getBytes();
+        byte[] bys = "PING".getBytes();
+        DatagramPacket dp = new DatagramPacket(bys, bys.length, InetAddress.getByName("127.0.0.1"), 53733);
         //调用DatagramSocket对象的方法发送数据
         //void send (DatagramPacket p)从此套接字发送数据报包
         ds.send(dp);

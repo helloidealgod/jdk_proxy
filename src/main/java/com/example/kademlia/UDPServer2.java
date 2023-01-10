@@ -5,15 +5,17 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class UDPServer {
+import static com.example.kademlia.Utils.sendMessage;
+
+public class UDPServer2 {
 
     public static void main(String[] args) throws IOException {
-        //创建接收端的Socket对象(DatagramSocket)
-        DatagramSocket ds = new DatagramSocket(53420);
+        DatagramSocket ds = new DatagramSocket();
         int port = ds.getLocalPort();
-        System.out.println("port=" + port);
         Node node1 = new Node(new NodeId(), InetAddress.getLocalHost(), port);
         String hostAddress = node1.getInetAddress().getHostAddress();
+        System.out.println("port=" + port);
+        sendMessage("127.0.0.1",53420,"PING");
         while (true) {
             //创建一个数据包，用于接收数据
             byte[] bys = new byte[1024];
