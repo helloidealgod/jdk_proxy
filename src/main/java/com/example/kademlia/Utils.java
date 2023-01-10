@@ -1,5 +1,7 @@
 package com.example.kademlia;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -10,6 +12,14 @@ public class Utils {
         DatagramSocket ds = new DatagramSocket();
         byte[] bys = message.getBytes();
         DatagramPacket dp = new DatagramPacket(bys, bys.length, InetAddress.getByName(ip), port);
+        ds.send(dp);
+        ds.close();
+    }
+
+    public static void sendMessage(Message message) throws IOException {
+        DatagramSocket ds = new DatagramSocket();
+        byte[] bys = JSON.toJSONString(message).getBytes();
+        DatagramPacket dp = new DatagramPacket(bys, bys.length, InetAddress.getByName(message.getToIp()), message.getToPort());
         ds.send(dp);
         ds.close();
     }
