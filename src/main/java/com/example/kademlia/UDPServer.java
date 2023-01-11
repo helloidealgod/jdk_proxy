@@ -12,15 +12,15 @@ import static com.example.kademlia.Utils.sendMessage;
 public class UDPServer {
 
     public static void main(String[] args) throws IOException {
-        Bucket[] buckets = new Bucket[161];
+        //Bucket buckets = new Bucket;
         //创建接收端的Socket对象(DatagramSocket)
         DatagramSocket ds = new DatagramSocket(53420);
         int port = ds.getLocalPort();
         Node node1 = new Node(new NodeId(), InetAddress.getLocalHost(), port);
         String hostAddress = node1.getInetAddress().getHostAddress();
         System.out.println("port=" + port);
-        buckets[0] = new Bucket();
-        buckets[0].getNodeList().add(node1);
+        Bucket bucket = new Bucket();
+        bucket.getNodeList().add(node1);
         while (true) {
             //创建一个数据包，用于接收数据
             byte[] bys = new byte[1024];
@@ -38,16 +38,19 @@ public class UDPServer {
             } else if ("STORE".equals(message.getOperateType())) {
 
             } else if ("FIND_NODE".equals(message.getOperateType())) {
-//                int dis = node1.getNodeId().getDistance(message.getNode().getNodeId());
+                int dis = node1.getNodeId().getDistance(message.getNode().getNodeId());
 //                if (null == buckets[dis]) {
 //                    buckets[dis] = new Bucket();
 //                }
-//                for (Node item : buckets[0].getNodeList()) {
-//                    if (!node1.equals(item)) {
-//                        sendMessage(new Message("FIND_NODE", node1, item.getInetAddress().getHostAddress(), item.getPort(), "hello i am server"));
-//                    }
-//                }
-//                buckets[0].getNodeList().add(message.getNode());
+                for (Node item : bucket.getNodeList()) {
+                    if (!message.getNode().equals(item)) {
+                        System.out.println("send to port:" + message.getNode().getPort());
+                        sendMessage(new Message("FIND_NODE", item,
+                                message.getNode().getInetAddress().getHostAddress(), message.getNode().getPort(),
+                                "hello i am server"));
+                    }
+                }
+                bucket.getNodeList().add(message.getNode());
             } else if ("FIND_VALUE".equals(message.getOperateType())) {
 
             }
