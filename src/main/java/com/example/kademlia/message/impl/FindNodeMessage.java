@@ -1,26 +1,28 @@
-package com.example.kademlia.message;
+package com.example.kademlia.message.impl;
 
+import com.example.kademlia.message.Message;
 import com.example.kademlia.node.Node;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PongMessage extends Message {
-    public byte code = 0x02;
+public class FindNodeMessage extends Message {
+    public static final byte CODE = 0x05;
     private Node origin;
 
-    public PongMessage() {
+    public FindNodeMessage() {
 
     }
 
-    public PongMessage(Node origin) {
+    public FindNodeMessage(Node origin) {
         this.origin = origin;
     }
 
-    public PongMessage(DataInputStream in) throws IOException {
+    public FindNodeMessage(DataInputStream in) throws IOException {
         this.fromStream(in);
     }
+
 
     public Node getOrigin() {
         return origin;
@@ -30,17 +32,9 @@ public class PongMessage extends Message {
         this.origin = origin;
     }
 
-    public byte getCode() {
-        return code;
-    }
-
-    public void setCode(byte code) {
-        this.code = code;
-    }
-
     @Override
     public byte code() {
-        return code;
+        return CODE;
     }
 
     @Override

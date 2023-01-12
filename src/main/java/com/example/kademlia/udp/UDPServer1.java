@@ -3,7 +3,7 @@ package com.example.kademlia.udp;
 import com.alibaba.fastjson.JSON;
 import com.example.kademlia.message.MessageFactory;
 import com.example.kademlia.message.MessageUtils;
-import com.example.kademlia.message.PingMessage;
+import com.example.kademlia.message.impl.PingMessage;
 import com.example.kademlia.node.Node;
 import com.example.kademlia.node.NodeId;
 

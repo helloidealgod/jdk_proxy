@@ -1,13 +1,18 @@
 package com.example.kademlia;
 
 import com.alibaba.fastjson.JSON;
+import com.example.kademlia.message.Message;
 import com.example.kademlia.message.MessageFactory;
 import com.example.kademlia.message.MessageUtils;
-import com.example.kademlia.message.PingMessage;
+import com.example.kademlia.message.impl.*;
 import com.example.kademlia.node.Node;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class KadServer {
     private static final int DATAGRAM_BUFFER_SIZE = 64 * 1024;
@@ -15,7 +20,9 @@ public class KadServer {
     private boolean isRun = true;
     private Node seedNode;
     private Node origin;
+    private DatagramSocket ds;
     private Bucket bucket = new Bucket();
+    private Map<String, Node> table = new HashMap<>();
 
     public KadServer() {
 
@@ -53,7 +60,6 @@ public class KadServer {
         if (null == this.origin) {
             return;
         }
-        DatagramSocket ds;
         if (0 != this.origin.getPort()) {
             ds = new DatagramSocket(this.origin.getPort());
         } else {
@@ -61,9 +67,15 @@ public class KadServer {
             this.origin.setPort(ds.getLocalPort());
         }
         MessageFactory messageFactory = new MessageFactory();
+        System.out.println(origin.getPort());
+        table.put(origin.getNodeId().toString(), origin);
+//        if (null != seedNode) {
+//            PingMessage pingMessage = new PingMessage(origin);
+//            MessageUtils.sendMessage(ds, seedNode, pingMessage);
+//        }
         if (null != seedNode) {
-            PingMessage pingMessage = new PingMessage(origin);
-            MessageUtils.sendMessage(ds, seedNode, pingMessage);
+            FindNodeMessage findNodeMessage = new FindNodeMessage(origin);
+            MessageUtils.sendMessage(ds, seedNode, findNodeMessage);
         }
         while (isRun) {
             //创建一个数据包，用于接收数据
@@ -74,14 +86,40 @@ public class KadServer {
 
             byte code = dp.getData()[0];
             String json = new String(dp.getData(), 1, dp.getLength() - 1);
-            com.example.kademlia.message.Message message = messageFactory.createMessage(code, json);
+            Message message = messageFactory.createMessage(code, json);
             System.out.println(JSON.toJSONString(message));
 
+            reply(code, message);
         }
         ds.close();
     }
 
     public void stop() {
         this.isRun = false;
+    }
+
+    public void reply(byte code, Message message) throws IOException {
+        switch (code) {
+            case PingMessage.CODE:
+                PongMessage pongMessage = new PongMessage(this.origin);
+                MessageUtils.sendMessage(ds, ((PingMessage) message).getOrigin(), pongMessage);
+                break;
+            case StoreMessage.CODE:
+
+            case FindNodeMessage.CODE:
+                Node origin = ((FindNodeMessage) message).getOrigin();
+                String nodeIdStr = origin.getNodeId().toString();
+                Iterator<Map.Entry<String, Node>> iterator = table.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, Node> next = iterator.next();
+                    FindNodeReplyMessage findNodeReplyMessage = new FindNodeReplyMessage(next.getValue());
+                    MessageUtils.sendMessage(ds, origin, findNodeReplyMessage);
+                }
+                table.put(nodeIdStr, origin);
+            case FindValueMessage.CODE:
+
+            default:
+                break;
+        }
     }
 }

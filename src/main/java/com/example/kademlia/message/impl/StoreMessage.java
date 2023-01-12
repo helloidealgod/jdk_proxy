@@ -1,24 +1,25 @@
-package com.example.kademlia.message;
+package com.example.kademlia.message.impl;
 
+import com.example.kademlia.message.Message;
 import com.example.kademlia.node.Node;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PingMessage extends Message {
-    public byte code = 0x01;
+public class StoreMessage extends Message {
+    public static final byte CODE = 0x03;
     private Node origin;
 
-    public PingMessage() {
+    public StoreMessage() {
 
     }
 
-    public PingMessage(Node origin) {
+    public StoreMessage(Node origin) {
         this.origin = origin;
     }
 
-    public PingMessage(DataInputStream in) throws IOException {
+    public StoreMessage(DataInputStream in) throws IOException {
         this.fromStream(in);
     }
 
@@ -31,17 +32,9 @@ public class PingMessage extends Message {
         this.origin = origin;
     }
 
-    public byte getCode() {
-        return code;
-    }
-
-    public void setCode(byte code) {
-        this.code = code;
-    }
-
     @Override
     public byte code() {
-        return code;
+        return CODE;
     }
 
     @Override
