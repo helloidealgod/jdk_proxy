@@ -1,4 +1,4 @@
-package com.example.kademlia;
+package com.example.kademlia.node;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

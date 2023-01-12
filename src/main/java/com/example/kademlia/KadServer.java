@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.kademlia.message.MessageFactory;
 import com.example.kademlia.message.MessageUtils;
 import com.example.kademlia.message.PingMessage;
+import com.example.kademlia.node.Node;
 
 import java.io.IOException;
 import java.net.*;

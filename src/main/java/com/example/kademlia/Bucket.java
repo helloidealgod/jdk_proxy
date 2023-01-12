@@ -1,5 +1,7 @@
 package com.example.kademlia;
 
+import com.example.kademlia.node.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.kademlia;
+package com.example.kademlia.udp;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

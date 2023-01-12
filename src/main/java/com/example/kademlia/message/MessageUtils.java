@@ -1,14 +1,13 @@
 package com.example.kademlia.message;
 
 import com.alibaba.fastjson.JSON;
-import com.example.kademlia.Node;
+import com.example.kademlia.node.Node;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 public class MessageUtils {
     public static void sendMessage(DatagramSocket ds, Node to, Message message) throws IOException {

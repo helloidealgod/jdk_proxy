@@ -1,5 +1,8 @@
 package com.example.kademlia;
 
+import com.example.kademlia.node.Node;
+import com.example.kademlia.node.NodeId;
+
 import java.io.IOException;
 import java.net.InetAddress;
 

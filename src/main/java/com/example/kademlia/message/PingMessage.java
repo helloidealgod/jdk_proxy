@@ -1,6 +1,6 @@
 package com.example.kademlia.message;
 
-import com.example.kademlia.Node;
+import com.example.kademlia.node.Node;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
