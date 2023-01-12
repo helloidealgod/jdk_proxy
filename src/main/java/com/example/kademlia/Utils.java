@@ -23,4 +23,10 @@ public class Utils {
         ds.send(dp);
         ds.close();
     }
+
+    public static void sendMessage(DatagramSocket ds, Message message) throws IOException {
+        byte[] bys = JSON.toJSONString(message).getBytes();
+        DatagramPacket dp = new DatagramPacket(bys, bys.length, InetAddress.getByName(message.getToIp()), message.getToPort());
+        ds.send(dp);
+    }
 }

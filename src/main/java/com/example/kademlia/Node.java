@@ -11,22 +11,18 @@ public class Node {
     private NodeId nodeId;
     private InetAddress inetAddress;
     private int port;
-    private final String strRep;
 
     public Node() {
-        this.strRep = "";
     }
 
     public Node(NodeId nid, InetAddress ip, int port) {
         this.nodeId = nid;
         this.inetAddress = ip;
         this.port = port;
-        this.strRep = this.nodeId.toString();
     }
 
     public Node(DataInputStream in) throws IOException {
         this.fromStream(in);
-        this.strRep = this.nodeId.toString();
     }
 
     public void setInetAddress(InetAddress addr) {
@@ -51,10 +47,6 @@ public class Node {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public String getStrRep() {
-        return strRep;
     }
 
     public InetSocketAddress getSocketAddress() {
