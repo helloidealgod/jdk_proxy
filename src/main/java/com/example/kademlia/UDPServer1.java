@@ -5,8 +5,6 @@ import com.example.kademlia.message.MessageFactory;
 import com.example.kademlia.message.MessageUtils;
 import com.example.kademlia.message.PingMessage;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

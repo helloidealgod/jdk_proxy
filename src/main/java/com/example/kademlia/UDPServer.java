@@ -3,14 +3,10 @@ package com.example.kademlia;
 import com.alibaba.fastjson.JSON;
 import com.example.kademlia.message.MessageFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import static com.example.kademlia.Utils.sendMessage;
 
 public class UDPServer {
 

@@ -15,6 +15,16 @@ public class Node {
     public Node() {
     }
 
+    public Node(NodeId nid, InetAddress ip) {
+        this.nodeId = nid;
+        this.inetAddress = ip;
+    }
+
+    public Node(InetAddress ip, int port) {
+        this.inetAddress = ip;
+        this.port = port;
+    }
+
     public Node(NodeId nid, InetAddress ip, int port) {
         this.nodeId = nid;
         this.inetAddress = ip;
