@@ -9,10 +9,7 @@ import com.example.kademlia.node.Node;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class KadServer {
     private static final int DATAGRAM_BUFFER_SIZE = 64 * 1024;
@@ -104,20 +101,32 @@ public class KadServer {
                 PongMessage pongMessage = new PongMessage(this.origin);
                 MessageUtils.sendMessage(ds, ((PingMessage) message).getOrigin(), pongMessage);
                 break;
+            case PongMessage.CODE:
+                break;
             case StoreMessage.CODE:
-
+                break;
+            case StoreReplyMessage.CODE:
+                break;
             case FindNodeMessage.CODE:
                 Node origin = ((FindNodeMessage) message).getOrigin();
                 String nodeIdStr = origin.getNodeId().toString();
-                Iterator<Map.Entry<String, Node>> iterator = table.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, Node> next = iterator.next();
-                    FindNodeReplyMessage findNodeReplyMessage = new FindNodeReplyMessage(next.getValue());
-                    MessageUtils.sendMessage(ds, origin, findNodeReplyMessage);
+                List<Node> nodeList = new ArrayList<>();
+                for (Map.Entry<String, Node> next : table.entrySet()) {
+                    nodeList.add(next.getValue());
                 }
+                FindNodeReplyMessage findNodeReplyMessage = new FindNodeReplyMessage(this.origin, nodeList);
+                MessageUtils.sendMessage(ds, origin, findNodeReplyMessage);
                 table.put(nodeIdStr, origin);
+                break;
+            case FindNodeReplyMessage.CODE:
+                FindNodeReplyMessage findNodeReplyMessage1 = (FindNodeReplyMessage) message;
+                List<Node> nodeList1 = findNodeReplyMessage1.getNodeList();
+                System.out.println(JSON.toJSONString(nodeList1));
+                break;
             case FindValueMessage.CODE:
-
+                break;
+            case FindValueReplyMessage.CODE:
+                break;
             default:
                 break;
         }
