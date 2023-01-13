@@ -64,7 +64,7 @@ public class KadServer {
             this.origin.setPort(ds.getLocalPort());
         }
         MessageFactory messageFactory = new MessageFactory();
-        System.out.println(origin.getPort());
+        System.out.println(origin.getPort() + " " + this.origin.getNodeId().toString());
         table.put(origin.getNodeId().toString(), origin);
 //        if (null != seedNode) {
 //            PingMessage pingMessage = new PingMessage(origin);
@@ -84,7 +84,7 @@ public class KadServer {
             byte code = dp.getData()[0];
             String json = new String(dp.getData(), 1, dp.getLength() - 1);
             Message message = messageFactory.createMessage(code, json);
-            System.out.println(JSON.toJSONString(message));
+            //System.out.println(JSON.toJSONString(message));
 
             reply(code, message);
         }
@@ -110,6 +110,7 @@ public class KadServer {
             case FindNodeMessage.CODE:
                 Node origin = ((FindNodeMessage) message).getOrigin();
                 String nodeIdStr = origin.getNodeId().toString();
+                System.out.println("Find Node form:" + nodeIdStr + " port = " + origin.getPort() + " table size = " + table.size());
                 List<Node> nodeList = new ArrayList<>();
                 for (Map.Entry<String, Node> next : table.entrySet()) {
                     nodeList.add(next.getValue());
@@ -117,11 +118,26 @@ public class KadServer {
                 FindNodeReplyMessage findNodeReplyMessage = new FindNodeReplyMessage(this.origin, nodeList);
                 MessageUtils.sendMessage(ds, origin, findNodeReplyMessage);
                 table.put(nodeIdStr, origin);
+                System.out.println("table size = " + table.size());
                 break;
             case FindNodeReplyMessage.CODE:
                 FindNodeReplyMessage findNodeReplyMessage1 = (FindNodeReplyMessage) message;
+                Node origin1 = findNodeReplyMessage1.getOrigin();
+                String string = findNodeReplyMessage1.getOrigin().getNodeId().toString();
                 List<Node> nodeList1 = findNodeReplyMessage1.getNodeList();
-                System.out.println(JSON.toJSONString(nodeList1));
+                //System.out.println(JSON.toJSONString(nodeList1));
+                System.out.println("Find Node reply form:" + string + " port = " + origin1.getPort() + " table size = " + table.size());
+                for (Node node : nodeList1) {
+                    Node put = table.get(node.getNodeId().toString());
+                    if (null == put) {
+                        if (!findNodeReplyMessage1.getOrigin().getNodeId().equals(node.getNodeId())) {
+                            FindNodeMessage findNodeMessage = new FindNodeMessage(this.origin);
+                            MessageUtils.sendMessage(ds, node, findNodeMessage);
+                        }
+                    }
+                    table.put(node.getNodeId().toString(), node);
+                }
+                System.out.println("table size = " + table.size());
                 break;
             case FindValueMessage.CODE:
                 break;

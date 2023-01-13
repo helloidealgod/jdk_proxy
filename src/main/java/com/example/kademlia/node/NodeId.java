@@ -3,6 +3,7 @@ package com.example.kademlia.node;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Random;
 
 public class NodeId {
@@ -34,6 +35,14 @@ public class NodeId {
 
     public byte[] getBytes() {
         return this.keyBytes;
+    }
+
+    public byte[] getKeyBytes() {
+        return keyBytes;
+    }
+
+    public void setKeyBytes(byte[] keyBytes) {
+        this.keyBytes = keyBytes;
     }
 
     public NodeId xor(NodeId nid) {
@@ -84,5 +93,16 @@ public class NodeId {
 
     public int getDistance(NodeId to) {
         return ID_LENGTH - this.xor(to).getFirstSetBitIndex();
+    }
+
+    public String hexRepresentation() {
+        /* Returns the hex format of this NodeId */
+        BigInteger bi = new BigInteger(1, this.keyBytes);
+        return String.format("%0" + (this.keyBytes.length << 1) + "X", bi);
+    }
+
+    @Override
+    public String toString() {
+        return this.hexRepresentation();
     }
 }
