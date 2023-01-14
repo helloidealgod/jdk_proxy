@@ -11,8 +11,7 @@ import java.net.DatagramSocket;
 
 public class MessageUtils {
     public static void sendMessage(DatagramSocket ds, Node to, Message message) throws IOException {
-        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(); DataOutputStream dout = new DataOutputStream(bout);)
-        {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(); DataOutputStream dout = new DataOutputStream(bout);) {
             /* Setup the message for transmission */
 //            dout.writeInt(comm);
             dout.writeByte(message.code());

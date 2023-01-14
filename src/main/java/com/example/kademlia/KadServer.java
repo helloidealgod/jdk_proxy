@@ -3,10 +3,12 @@ package com.example.kademlia;
 import com.alibaba.fastjson.JSON;
 import com.example.kademlia.message.Message;
 import com.example.kademlia.message.MessageFactory;
-import com.example.kademlia.message.MessageUtils;
 import com.example.kademlia.message.impl.*;
 import com.example.kademlia.node.Node;
+import com.example.kademlia.node.NodeId;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -14,12 +16,20 @@ import java.util.*;
 public class KadServer {
     private static final int DATAGRAM_BUFFER_SIZE = 64 * 1024;
     private int port;
-    private boolean isRun = true;
+    private boolean isRun;
     private Node seedNode;
     private Node origin;
     private DatagramSocket ds;
     private Bucket bucket = new Bucket();
     private Map<String, Node> table = new HashMap<>();
+    private Timer timer;
+    private final Map<Integer, TimerTask> tasks;
+
+    {
+        isRun = true;
+        this.tasks = new HashMap<>();
+        this.timer = new Timer(true);
+    }
 
     public KadServer() {
 
@@ -54,6 +64,38 @@ public class KadServer {
     }
 
     public void start() throws IOException {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    listen();
+                } catch (IOException e) {
+
+                }
+            }
+        }.start();
+        Scanner sc = new Scanner(System.in);
+        while (isRun) {
+            System.out.print("ready:");
+            String nextLine = sc.nextLine();
+            String[] split = nextLine.split(" ");
+            if (split[0].equals("getList")) {
+                for (Map.Entry<String, Node> next : table.entrySet()) {
+                    System.out.println(next.getValue());
+                }
+            } else if (split[0].equals("ping")) {
+                if (split[1] != null) {
+                    Node to = table.get(split[1]);
+                    PingMessage ping = new PingMessage(this.origin);
+                    sendMessage(ds, to, ping);
+                }
+            } else if (split[0].equals("find_node")) {
+
+            }
+        }
+    }
+
+    public void listen() throws IOException {
         if (null == this.origin) {
             return;
         }
@@ -66,14 +108,11 @@ public class KadServer {
         MessageFactory messageFactory = new MessageFactory();
         System.out.println(origin.getPort() + " " + this.origin.getNodeId().toString());
         table.put(origin.getNodeId().toString(), origin);
-//        if (null != seedNode) {
-//            PingMessage pingMessage = new PingMessage(origin);
-//            MessageUtils.sendMessage(ds, seedNode, pingMessage);
-//        }
         if (null != seedNode) {
             FindNodeMessage findNodeMessage = new FindNodeMessage(origin);
-            MessageUtils.sendMessage(ds, seedNode, findNodeMessage);
+            this.sendMessage(ds, seedNode, findNodeMessage);
         }
+        byte[] commBytes = new byte[4];
         while (isRun) {
             //创建一个数据包，用于接收数据
             byte[] bys = new byte[DATAGRAM_BUFFER_SIZE];
@@ -81,12 +120,23 @@ public class KadServer {
             // 调用DatagramSocket对象的方法接收数据
             ds.receive(dp);
 
-            byte code = dp.getData()[0];
-            String json = new String(dp.getData(), 1, dp.getLength() - 1);
+            commBytes[3] = dp.getData()[0];
+            commBytes[2] = dp.getData()[1];
+            commBytes[1] = dp.getData()[2];
+            commBytes[0] = dp.getData()[3];
+            int comm = byteArrayToIntBest(commBytes);
+            System.out.println("receive comm:" + comm);
+            byte code = dp.getData()[4];
+            String json = new String(dp.getData(), 5, dp.getLength() - 5);
+            if (this.tasks.containsKey(comm)) {
+                TimerTask remove = tasks.remove(comm);
+                if (null != remove) {
+                    remove.cancel();
+                }
+            }
             Message message = messageFactory.createMessage(code, json);
-            //System.out.println(JSON.toJSONString(message));
 
-            reply(code, message);
+            reply(comm, code, message);
         }
         ds.close();
     }
@@ -95,11 +145,11 @@ public class KadServer {
         this.isRun = false;
     }
 
-    public void reply(byte code, Message message) throws IOException {
+    public void reply(int comm, byte code, Message message) throws IOException {
         switch (code) {
             case PingMessage.CODE:
                 PongMessage pongMessage = new PongMessage(this.origin);
-                MessageUtils.sendMessage(ds, ((PingMessage) message).getOrigin(), pongMessage);
+                this.sendMessage(comm, ds, ((PingMessage) message).getOrigin(), pongMessage);
                 break;
             case PongMessage.CODE:
                 break;
@@ -116,7 +166,7 @@ public class KadServer {
                     nodeList.add(next.getValue());
                 }
                 FindNodeReplyMessage findNodeReplyMessage = new FindNodeReplyMessage(this.origin, nodeList);
-                MessageUtils.sendMessage(ds, origin, findNodeReplyMessage);
+                this.sendMessage(comm, ds, origin, findNodeReplyMessage);
                 table.put(nodeIdStr, origin);
                 System.out.println("table size = " + table.size());
                 break;
@@ -132,7 +182,7 @@ public class KadServer {
                     if (null == put) {
                         if (!findNodeReplyMessage1.getOrigin().getNodeId().equals(node.getNodeId())) {
                             FindNodeMessage findNodeMessage = new FindNodeMessage(this.origin);
-                            MessageUtils.sendMessage(ds, node, findNodeMessage);
+                            this.sendMessage(comm, ds, node, findNodeMessage);
                         }
                     }
                     table.put(node.getNodeId().toString(), node);
@@ -146,5 +196,59 @@ public class KadServer {
             default:
                 break;
         }
+    }
+
+    public class TimeoutTask extends TimerTask {
+        private int comm;
+
+        public TimeoutTask(int comm) {
+            this.comm = comm;
+        }
+
+        @Override
+        public void run() {
+            System.out.println(this.comm + " Time Out");
+        }
+    }
+
+    public void sendMessage(DatagramSocket ds, Node to, Message message) throws IOException {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(); DataOutputStream dout = new DataOutputStream(bout);) {
+            int comm = new Random().nextInt();
+            System.out.println("send comm:" + comm);
+            dout.writeInt(comm);
+            dout.writeByte(message.code());
+            dout.writeBytes(JSON.toJSONString(message));
+            dout.close();
+
+            byte[] data = bout.toByteArray();
+            DatagramPacket pkt = new DatagramPacket(data, 0, data.length);
+            pkt.setSocketAddress(to.getSocketAddress());
+            TimeoutTask task = new TimeoutTask(comm);
+            timer.schedule(task, 20000);
+            tasks.put(comm, task);
+            ds.send(pkt);
+        }
+    }
+
+    public void sendMessage(int comm, DatagramSocket ds, Node to, Message message) throws IOException {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(); DataOutputStream dout = new DataOutputStream(bout);) {
+            System.out.println("send comm:" + comm);
+            dout.writeInt(comm);
+            dout.writeByte(message.code());
+            dout.writeBytes(JSON.toJSONString(message));
+            dout.close();
+
+            byte[] data = bout.toByteArray();
+            DatagramPacket pkt = new DatagramPacket(data, 0, data.length);
+            pkt.setSocketAddress(to.getSocketAddress());
+            ds.send(pkt);
+        }
+    }
+
+    public int byteArrayToIntBest(byte[] bytes) {
+        return (bytes[0] & 0xff)
+                | ((bytes[1] & 0xff) << 8)
+                | ((bytes[2] & 0xff) << 16)
+                | ((bytes[3] & 0xff) << 24);
     }
 }
