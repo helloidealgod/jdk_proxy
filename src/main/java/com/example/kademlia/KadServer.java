@@ -83,14 +83,18 @@ public class KadServer {
                 for (Map.Entry<String, Node> next : table.entrySet()) {
                     System.out.println(next.getValue());
                 }
+            } else if (split[0].equals("me")) {
+                System.out.println(this.origin.getNodeId().toString());
             } else if (split[0].equals("ping")) {
-                if (split[1] != null) {
+                if (split[1] != null && !split[1].equals(this.origin.getNodeId().toString())) {
                     Node to = table.get(split[1]);
                     PingMessage ping = new PingMessage(this.origin);
                     sendMessage(ds, to, ping);
                 }
             } else if (split[0].equals("find_node")) {
-
+                Node to = new Node(InetAddress.getLocalHost(), Integer.parseInt(split[1]));
+                FindNodeMessage findNodeMessage = new FindNodeMessage(origin);
+                this.sendMessage(ds, to, findNodeMessage);
             }
         }
     }
