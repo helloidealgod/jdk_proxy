@@ -7,11 +7,12 @@ import com.example.kademlia.message.impl.*;
 import com.example.kademlia.node.Node;
 import com.example.kademlia.node.NodeId;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
+
+import static com.example.kademlia.sha256.Main.*;
 
 public class KadServer {
     private static final int DATAGRAM_BUFFER_SIZE = 64 * 1024;
@@ -95,6 +96,43 @@ public class KadServer {
                 Node to = new Node(InetAddress.getLocalHost(), Integer.parseInt(split[1]));
                 FindNodeMessage findNodeMessage = new FindNodeMessage(origin);
                 this.sendMessage(ds, to, findNodeMessage);
+            } else if (split[0].equals("store")) {
+                System.out.println(split[1]);
+                File file = new File(split[1]);
+                try {
+                    byte[] fileSHABytes = getFileSHABytes(file);
+                    String fileSHA = toHexString(fileSHABytes);
+                    System.out.println("me:" + this.origin.getNodeId().toString() + " "
+                            + this.origin.getNodeId().toString().getBytes().length);
+                    System.out.println("fileSHA:" + fileSHA + " " + fileSHA.getBytes().length);
+                    int min = 9999;
+                    Node to = null;
+                    for (Map.Entry<String, Node> next : table.entrySet()) {
+                        int distance = next.getValue().getNodeId().getDistance(new NodeId(fileSHABytes));
+                        System.out.println(next.getValue().getNodeId().toString() + " " + distance);
+                        if (distance < min) {
+                            to = next.getValue();
+                            min = distance;
+                        }
+                    }
+                    if (null != to) {
+                        System.out.println("min:" + to.getNodeId().toString() + " " + min);
+
+                        FileInputStream fileInputStream = new FileInputStream(file);
+                        byte[] buffer = new byte[2 * 1024];
+                        int current = 0;
+                        for (int numRead = 0; (numRead = fileInputStream.read(buffer)) > 0; current++) {
+                            StoreMessage message = new StoreMessage(this.origin);
+                            message.setKey(fileSHA);
+                            message.setCurrent(current);
+                            message.setDate(buffer);
+
+                            this.sendMessage(ds, to, message);
+                        }
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -158,6 +196,19 @@ public class KadServer {
             case PongMessage.CODE:
                 break;
             case StoreMessage.CODE:
+                File f = new File("");
+                System.out.println(f.getAbsolutePath());
+                StoreMessage storeMessage = (StoreMessage) message;
+                String key = storeMessage.getKey();
+                File file = new File(f.getAbsolutePath() + "/" + key);
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                File fileSave = new File(f.getAbsolutePath() + "/" + key + "/" + storeMessage.getCurrent() + ".krc");
+                FileOutputStream fos = new FileOutputStream(fileSave);
+                fos.write(storeMessage.getDate());
+                fos.flush();
+                fos.close();
                 break;
             case StoreReplyMessage.CODE:
                 break;

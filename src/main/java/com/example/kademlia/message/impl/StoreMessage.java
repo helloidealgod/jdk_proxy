@@ -10,6 +10,10 @@ import java.io.IOException;
 public class StoreMessage extends Message {
     public static final byte CODE = 0x03;
     private Node origin;
+    private String key;
+    private int total;
+    private int current;
+    private byte[] date;
 
     public StoreMessage() {
 
@@ -23,6 +27,37 @@ public class StoreMessage extends Message {
         this.fromStream(in);
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(int current) {
+        this.current = current;
+    }
+
+    public byte[] getDate() {
+        return date;
+    }
+
+    public void setDate(byte[] date) {
+        this.date = date;
+    }
 
     public Node getOrigin() {
         return origin;
