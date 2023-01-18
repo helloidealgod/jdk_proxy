@@ -119,7 +119,7 @@ public class KadServer {
                         System.out.println("min:" + to.getNodeId().toString() + " " + min);
 
                         FileInputStream fileInputStream = new FileInputStream(file);
-                        byte[] buffer = new byte[2 * 1024];
+                        byte[] buffer = new byte[40 * 1024];
                         int current = 0;
                         for (int numRead = 0; (numRead = fileInputStream.read(buffer)) > 0; current++) {
                             StoreMessage message = new StoreMessage(this.origin);
@@ -128,6 +128,10 @@ public class KadServer {
                             message.setDate(buffer);
 
                             this.sendMessage(ds, to, message);
+                            try {
+                                Thread.sleep(buffer.length / 100);
+                            } catch (InterruptedException ex) {
+                            }
                         }
                     }
                 } catch (NoSuchAlgorithmException e) {
@@ -204,7 +208,7 @@ public class KadServer {
                 if (!file.exists()) {
                     file.mkdir();
                 }
-                File fileSave = new File(f.getAbsolutePath() + "/" + key + "/" + storeMessage.getCurrent() + ".krc");
+                File fileSave = new File(f.getAbsolutePath() + "/" + key + "/" + storeMessage.getCurrent() + ".kct");
                 FileOutputStream fos = new FileOutputStream(fileSave);
                 fos.write(storeMessage.getDate());
                 fos.flush();
