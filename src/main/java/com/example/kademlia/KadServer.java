@@ -6,6 +6,7 @@ import com.example.kademlia.message.MessageFactory;
 import com.example.kademlia.message.impl.*;
 import com.example.kademlia.node.Node;
 import com.example.kademlia.node.NodeId;
+import com.example.kademlia.node.NodeIdDto;
 
 import java.io.*;
 import java.net.*;
@@ -137,6 +138,11 @@ public class KadServer {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
+            } else if (split[0].equals("find_value")) {
+                //根据fileID找最近的节点ID
+                List<NodeIdDto> nearestKNode = findNearestKNode(split[1], 1);
+                FindValueMessage findValueMessage = new FindValueMessage(origin, split[1]);
+                this.sendMessage(ds, nearestKNode.get(0).getNode(), findValueMessage);
             }
         }
     }
@@ -249,6 +255,8 @@ public class KadServer {
                 System.out.println("table size = " + table.size());
                 break;
             case FindValueMessage.CODE:
+                FindValueMessage findValueMessage = (FindValueMessage) message;
+                System.out.println("fileId:" + findValueMessage.getFileId());
                 break;
             case FindValueReplyMessage.CODE:
                 break;
@@ -309,5 +317,24 @@ public class KadServer {
                 | ((bytes[1] & 0xff) << 8)
                 | ((bytes[2] & 0xff) << 16)
                 | ((bytes[3] & 0xff) << 24);
+    }
+
+    private List<NodeIdDto> findNearestKNode(String id, int k) {
+        List<NodeIdDto> nodeIdList = new ArrayList<>();
+
+        for (Map.Entry<String, Node> next : table.entrySet()) {
+            int distance = next.getValue().getNodeId().getDistance(new NodeId(hexStringToBytes(id)));
+            nodeIdList.add(new NodeIdDto(distance, next.getValue()));
+        }
+        Collections.sort(nodeIdList, new Comparator<NodeIdDto>() {
+            public int compare(NodeIdDto o1, NodeIdDto o2) {
+                return o1.getDistance() - o2.getDistance();
+            }
+        });
+
+        if (k < nodeIdList.size()) {
+            nodeIdList = nodeIdList.subList(0, k);
+        }
+        return nodeIdList;
     }
 }

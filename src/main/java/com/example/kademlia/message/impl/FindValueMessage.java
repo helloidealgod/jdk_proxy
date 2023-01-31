@@ -10,6 +10,7 @@ import java.io.IOException;
 public class FindValueMessage extends Message {
     public static final byte CODE = 0x07;
     private Node origin;
+    private String fileId;
 
     public FindValueMessage() {
 
@@ -17,6 +18,11 @@ public class FindValueMessage extends Message {
 
     public FindValueMessage(Node origin) {
         this.origin = origin;
+    }
+
+    public FindValueMessage(Node origin, String fileId) {
+        this.origin = origin;
+        this.fileId = fileId;
     }
 
     public FindValueMessage(DataInputStream in) throws IOException {
@@ -30,6 +36,14 @@ public class FindValueMessage extends Message {
 
     public void setOrigin(Node origin) {
         this.origin = origin;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     @Override
