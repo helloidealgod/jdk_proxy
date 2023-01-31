@@ -72,7 +72,7 @@ public class KadServer {
                 try {
                     listen();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }.start();
@@ -134,6 +134,7 @@ public class KadServer {
                             } catch (InterruptedException ex) {
                             }
                         }
+                        fileInputStream.close();
                     }
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -257,8 +258,47 @@ public class KadServer {
             case FindValueMessage.CODE:
                 FindValueMessage findValueMessage = (FindValueMessage) message;
                 System.out.println("fileId:" + findValueMessage.getFileId());
+
+                File f1 = new File("");
+                File file1 = new File(f1.getAbsolutePath() + "/" + findValueMessage.getFileId());
+                File[] files = file1.listFiles();
+                if (null != files) {
+                    System.out.println("files:" + files.length);
+                    byte[] buffer = new byte[40 * 1024];
+                    FileInputStream fileInputStream = null;
+                    for (File item : files) {
+                        fileInputStream = new FileInputStream(item);
+                        fileInputStream.read(buffer);
+                        FindValueReplyMessage valueReplyMessage = new FindValueReplyMessage(this.origin);
+                        valueReplyMessage.setKey(findValueMessage.getFileId());
+                        valueReplyMessage.setFileName(item.getName());
+                        valueReplyMessage.setDate(buffer);
+                        System.out.println("find value reply:" + item.getName() + findValueMessage.getOrigin().getPort());
+                        this.sendMessage(ds, findValueMessage.getOrigin(), valueReplyMessage);
+
+                        try {
+                            Thread.sleep(buffer.length / 100);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    fileInputStream.close();
+                }
                 break;
             case FindValueReplyMessage.CODE:
+                FindValueReplyMessage valueReplyMessage = (FindValueReplyMessage) message;
+                File f3 = new File("");
+                String key1 = valueReplyMessage.getKey();
+                File file3 = new File(f3.getAbsolutePath() + "/download/" + key1);
+                if (!file3.exists()) {
+                    file3.mkdirs();
+                }
+                File fileSave1 = new File(f3.getAbsolutePath() + "/download/" + key1 + "/" + valueReplyMessage.getFileName());
+                System.out.println("download:" + fileSave1.getAbsolutePath());
+                FileOutputStream fos1 = new FileOutputStream(fileSave1);
+                fos1.write(valueReplyMessage.getDate());
+                fos1.flush();
+                fos1.close();
                 break;
             default:
                 break;
@@ -323,8 +363,10 @@ public class KadServer {
         List<NodeIdDto> nodeIdList = new ArrayList<>();
 
         for (Map.Entry<String, Node> next : table.entrySet()) {
-            int distance = next.getValue().getNodeId().getDistance(new NodeId(hexStringToBytes(id)));
-            nodeIdList.add(new NodeIdDto(distance, next.getValue()));
+            if (!next.getValue().getNodeId().equals(origin.getNodeId())) {
+                int distance = next.getValue().getNodeId().getDistance(new NodeId(hexStringToBytes(id)));
+                nodeIdList.add(new NodeIdDto(distance, next.getValue()));
+            }
         }
         Collections.sort(nodeIdList, new Comparator<NodeIdDto>() {
             public int compare(NodeIdDto o1, NodeIdDto o2) {

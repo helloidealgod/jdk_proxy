@@ -10,6 +10,9 @@ import java.io.IOException;
 public class FindValueReplyMessage extends Message {
     public static final byte CODE = 0x08;
     private Node origin;
+    private String key;
+    private String fileName;
+    private byte[] date;
 
     public FindValueReplyMessage() {
 
@@ -30,6 +33,30 @@ public class FindValueReplyMessage extends Message {
 
     public void setOrigin(Node origin) {
         this.origin = origin;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public byte[] getDate() {
+        return date;
+    }
+
+    public void setDate(byte[] date) {
+        this.date = date;
     }
 
     @Override
