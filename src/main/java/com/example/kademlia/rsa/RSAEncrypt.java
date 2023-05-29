@@ -305,7 +305,7 @@ public class RSAEncrypt {
         }
 
         //测试字符串
-        String encryptStr = "Test String chaijunkun";
+        String encryptStr = "Test String chaijunkunjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkString chaijunkunjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkString chaijunkunjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
 
         try {
             //加密
