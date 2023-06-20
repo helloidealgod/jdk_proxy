@@ -1,14 +1,14 @@
+(a);
+end__
+a+b+c;
+
+
 a;
 a+b;
-a+b+c;
 a+b*c;
-end__
 
 
 
-
-
-(a);
 /;
 end__
 

@@ -127,4 +127,12 @@ public class Stack {
             System.out.println("=============end=============");
         }
     }
+
+    public int peekStatus() {
+        Integer token = null;
+        if (0 <= statusTopIndex) {
+            token = statusList.get(statusTopIndex);
+        }
+        return token;
+    }
 }

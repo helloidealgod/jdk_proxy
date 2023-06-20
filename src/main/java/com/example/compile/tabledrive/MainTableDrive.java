@@ -162,11 +162,12 @@ public class MainTableDrive {
                 SegmentStatus segment = segmentStatus[status][colIndex];
                 Integer status1 = segment.getStatus();
                 System.out.println("符号：" + tranceToken + " status=" + status + " colIndex=" + colIndex + " NextStatus=" + status1);
-                stack.pushStatus(status);
                 if (-2 == status1) {
                     System.out.println("Error");
                 } else if (-1 == status1) {
-
+                    if(0 == stack.peekStatus()){
+                        stack.popStatus();
+                    }
                     //接收
                     status1 = 0;
                     System.out.println("ACC");
@@ -175,15 +176,19 @@ public class MainTableDrive {
                     String action = segment.getAction();
                     if ("push".equals(action)) {
                         stack.push(tranceToken);
+                        stack.pushStatus(status);
                     } else if ("replaceT".equals(action)) {
                         stack.pop();
                         stack.push("T");
                         stack.push(tranceToken);
+                        stack.pushStatus(status);
                     } else if ("replaceF".equals(action)) {
                         stack.pop();
                         stack.push("F");
                         stack.push(tranceToken);
+                        stack.pushStatus(status);
                     } else if ("MulDiv".equals(action)) {
+                        stack.pushStatus(status);
                         System.out.println("MulDiv");
                         stack.pop();
                         stack.pop();
@@ -193,13 +198,16 @@ public class MainTableDrive {
                         status1 = stack.popStatus();
                         //stack.popStatus();
                     } else if ("AddSub".equals(action)) {
+                        stack.pushStatus(status);
                         System.out.println("AddSub");
                         stack.pop();
                         stack.pop();
                         //do AddSub
                         stack.push(tranceToken);
-                        //stack.popStatus();
+                        stack.popStatus();
+                        stack.popStatus();
                     } else if ("AddSubAgain".equals(action)) {
+                        stack.pushStatus(status);
                         System.out.println("AddSubAgain");
                         stack.pop();
                         stack.pop();
@@ -211,12 +219,20 @@ public class MainTableDrive {
                         stack.push("T");
                         //stack.popStatus();
                         doAgain = true;
+                    }else if("pop2f".equals(action)) {
+                        stack.pop();
+                        stack.pop();
+                        stack.push("f");
+                        stack.pushStatus(status);
+                        stack.popStatus();
+                        stack.popStatus();
                     }
                 }
 
                 stack.printToken();
                 stack.printStatus();
                 status = status1;
+                System.out.println("==============end============");
             } while (doAgain);
         }
     }
