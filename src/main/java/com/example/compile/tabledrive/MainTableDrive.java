@@ -1,5 +1,8 @@
 package com.example.compile.tabledrive;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+
 import java.io.*;
 
 public class MainTableDrive {
@@ -118,54 +121,88 @@ public class MainTableDrive {
         String token;
         Integer status = 0;
         int index = -1;
-        SegmentStatus[][] segmentStatus = {
-                {
-                        new SegmentStatus(0, "#include", ""), new SegmentStatus(2, "<", ""),
-                        new SegmentStatus(3, "stdio.h", ""), new SegmentStatus(-1, ">", ""),
-                        new SegmentStatus(-1, "\"hello.h\"", "")
-                }, {
-
-                new SegmentStatus(0, "int", ""),new SegmentStatus(-1, "hello", "")
+        SegmentStatus[][] segmentStatus = new SegmentStatus[11][7];
+        String s = "[[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":3,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"replaceT\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-1,\"action\":\"acc\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"pop2f\"},{\"status\":-2,\"action\":\"\"},{\"status\":6,\"action\":\"replaceT\"},{\"status\":7,\"action\":\"replaceF\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":8,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"MulDiv\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":9,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":3,\"action\":\"MulDiv\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"AddSub\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":10,\"action\":\"AddSubAgain\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":10,\"action\":\"AddPop(\"},{\"status\":-2,\"action\":\"\"},{\"status\":6,\"action\":\"AddSub\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"push\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-1,\"action\":\"acc\"},{\"status\":-2,\"action\":\"\"}]]";
+        JSONArray objects = JSON.parseArray(s);
+        for (int i = 0; i < objects.size(); i++) {
+            JSONArray jsonArray = objects.getJSONArray(i);
+            for (int j = 0; j < jsonArray.size(); j++) {
+                String s1 = JSON.toJSONString(jsonArray.get(j));
+                segmentStatus[i][j] = JSON.parseObject(s1, SegmentStatus.class);
+            }
         }
-        };
+
+
         while ((token = getToken()) != null) {
-            //System.out.println(token);
-            //入栈
-            stack.push(token);
-            //stack.print();
-            //查表
-            if (-1 == index) {
-                for (int i = 0; i < segmentStatus.length; i++) {
-                    if (segmentStatus[i][0].token.equals(token)) {
-                        index = i;
-                        break;
+
+            if ("end__".equals(token)) {
+                break;
+            }
+            String tranceToken = token;
+            int colIndex = 0;
+            if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
+                tranceToken = "f";
+                colIndex = 2;
+            } else if (";".equals(token)) {
+                colIndex = 5;
+            } else if ("+".equals(token) || "-".equals(token)) {
+                colIndex = 3;
+            } else if ("*".equals(token) || "/".equals(token)) {
+                colIndex = 4;
+            } else if ("(".equals(token)) {
+                colIndex = 0;
+            } else if (")".equals(token)) {
+                colIndex = 1;
+            } else {
+                colIndex = 6;
+            }
+            boolean doAgain;
+            do {
+                doAgain = false;
+                SegmentStatus segment = segmentStatus[status][colIndex];
+                Integer status1 = segment.getStatus();
+                System.out.println("符号：" + tranceToken + " status=" + status + " colIndex=" + colIndex + " NextStatus=" + status1);
+                if (-2 == status1) {
+                    System.out.println("Error");
+                } else if (-1 == status1) {
+                    //接收
+                    status1 = 0;
+                    System.out.println("ACC");
+                    stack.empty();
+                } else {
+                    String action = segment.getAction();
+                    if ("push".equals(action)) {
+                        stack.push(tranceToken);
+                    } else if ("replaceT".equals(action)) {
+                        stack.pop();
+                        stack.push("T");
+                        stack.push(tranceToken);
+                    } else if ("replaceF".equals(action)) {
+                        stack.pop();
+                        stack.push("F");
+                        stack.push(tranceToken);
+                    } else if ("MulDiv".equals(action)) {
+                        stack.pop();
+                        stack.pop();
+                        //do MulDiv
+                        stack.push(tranceToken);
+                    } else if ("AddSub".equals(action)) {
+                        stack.pop();
+                        stack.pop();
+                        //do AddSub
+                        stack.push(tranceToken);
+                    } else if ("AddSubAgain".equals(action)) {
+                        stack.pop();
+                        stack.pop();
+                        stack.pop();
+                        //do AddSub
+                        stack.push("T");
+                        doAgain = true;
                     }
                 }
-            }
-            if (-1 != index) {
-                for (int i = status; i < segmentStatus[index].length; i++) {
-                    if (segmentStatus[index][i].token.equals(token)) {
-                        status = segmentStatus[index][i].status;
-                        //句子匹配
-                        if (-1 == segmentStatus[index][i].status) {
-                            stack.print();
-                            stack.empty();
-                            status = 0;
-                            index = -1;
-                        }
-                        break;
-                    } else if (i == segmentStatus[index].length - 1) {
-                        System.out.print("Error:");
-                        stack.print();
-                        stack.empty();
-                        status = 0;
-                        index = -1;
-                        break;
-                    }
-                }
-            }
-            //判断状态
-            //是完整句子，出栈，处理
+                stack.printToken();
+                status = status1;
+            } while (doAgain);
         }
     }
 }
