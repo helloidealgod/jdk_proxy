@@ -1,13 +1,14 @@
+
+
+a*(b+c);
+(a-b)/f*g;
+a*b/c+d-e;
 (a);
-end__
 a+b+c;
-
-
 a;
 a+b;
 a+b*c;
-
-
+end__
 
 /;
 end__

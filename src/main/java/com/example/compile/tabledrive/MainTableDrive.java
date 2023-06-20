@@ -139,6 +139,7 @@ public class MainTableDrive {
                 break;
             }
             String tranceToken = token;
+
             int colIndex = 0;
             if (token.matches("[_A-Za-z][_A-Za-z0-9]*")) {
                 tranceToken = "f";
@@ -165,7 +166,7 @@ public class MainTableDrive {
                 if (-2 == status1) {
                     System.out.println("Error");
                 } else if (-1 == status1) {
-                    if(0 == stack.peekStatus()){
+                    if (0 == stack.peekStatus()) {
                         stack.popStatus();
                     }
                     //接收
@@ -219,13 +220,27 @@ public class MainTableDrive {
                         stack.push("T");
                         //stack.popStatus();
                         doAgain = true;
-                    }else if("pop2f".equals(action)) {
+                    } else if ("pop2f".equals(action)) {
                         stack.pop();
                         stack.pop();
                         stack.push("f");
                         stack.pushStatus(status);
                         stack.popStatus();
                         stack.popStatus();
+                    } else if ("AddPop(".equals(action)) {
+                        stack.pop();
+                        stack.pop();
+                        stack.pop();
+                        stack.pop();
+                        //stack.push("f");
+                        //stack.pushStatus(status);
+                        stack.popStatus();
+                        stack.popStatus();
+                        stack.popStatus();
+                        status1 = stack.popStatus();
+                        tranceToken = "f";
+                        colIndex = 2;
+                        doAgain = true;
                     }
                 }
 
