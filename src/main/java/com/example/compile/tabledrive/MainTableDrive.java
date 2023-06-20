@@ -162,9 +162,11 @@ public class MainTableDrive {
                 SegmentStatus segment = segmentStatus[status][colIndex];
                 Integer status1 = segment.getStatus();
                 System.out.println("符号：" + tranceToken + " status=" + status + " colIndex=" + colIndex + " NextStatus=" + status1);
+                stack.pushStatus(status);
                 if (-2 == status1) {
                     System.out.println("Error");
                 } else if (-1 == status1) {
+
                     //接收
                     status1 = 0;
                     System.out.println("ACC");
@@ -182,25 +184,38 @@ public class MainTableDrive {
                         stack.push("F");
                         stack.push(tranceToken);
                     } else if ("MulDiv".equals(action)) {
+                        System.out.println("MulDiv");
                         stack.pop();
                         stack.pop();
                         //do MulDiv
                         stack.push(tranceToken);
+                        stack.popStatus();
+                        status1 = stack.popStatus();
+                        //stack.popStatus();
                     } else if ("AddSub".equals(action)) {
+                        System.out.println("AddSub");
                         stack.pop();
                         stack.pop();
                         //do AddSub
                         stack.push(tranceToken);
+                        //stack.popStatus();
                     } else if ("AddSubAgain".equals(action)) {
+                        System.out.println("AddSubAgain");
                         stack.pop();
                         stack.pop();
                         stack.pop();
+                        stack.popStatus();
+                        stack.popStatus();
+                        stack.popStatus();
                         //do AddSub
                         stack.push("T");
+                        //stack.popStatus();
                         doAgain = true;
                     }
                 }
+
                 stack.printToken();
+                stack.printStatus();
                 status = status1;
             } while (doAgain);
         }

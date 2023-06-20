@@ -1,16 +1,18 @@
-
+a;
+a+b;
+a+b+c;
 a+b*c;
 end__
 
-a+b+c;
+
 
 
 
 (a);
 /;
 end__
-a+b;
-a;
+
+
 
 
 int int5=1;

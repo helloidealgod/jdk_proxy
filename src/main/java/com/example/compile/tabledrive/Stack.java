@@ -6,13 +6,31 @@ import java.util.List;
 public class Stack {
     public List<String> toKenList = new ArrayList<>();
     public List<Integer> typeList = new ArrayList<>();
+    public List<Integer> statusList = new ArrayList<>();
     public List<String> descList = new ArrayList<>();
     public int topIndex = -1;
     public int index = 0;
+    public int statusTopIndex = -1;
+    public int statusIndex = 0;
 
     public void push(String token) {
         toKenList.add(token);
         topIndex++;
+    }
+
+    public void pushStatus(Integer status) {
+        statusList.add(status);
+        statusTopIndex++;
+    }
+
+    public Integer popStatus() {
+        Integer token = null;
+        if (0 <= statusTopIndex) {
+            token = statusList.get(statusTopIndex);
+            statusList.remove(statusTopIndex);
+            statusTopIndex--;
+        }
+        return token;
     }
 
     public void push(String token, Integer type) {
@@ -85,6 +103,16 @@ public class Stack {
             System.out.print("栈内容：");
             for (int i = 0; i < toKenList.size(); i++) {
                 System.out.print(toKenList.get(i));
+            }
+            System.out.println("");
+        }
+    }
+
+    public void printStatus() {
+        if (0 < statusList.size()) {
+            System.out.print("状态栈内容：");
+            for (int i = 0; i < statusList.size(); i++) {
+                System.out.print(statusList.get(i)+" ");
             }
             System.out.println("");
         }
