@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainTableDrive {
     public static PushbackReader pr;
@@ -72,6 +74,8 @@ public class MainTableDrive {
 
     public static Stack stack = new Stack();
 
+    public static List<Quaternion> quaternionList = new ArrayList<Quaternion>();
+
     public static void main(String[] args) {
         try {
             File f = new File("");
@@ -120,7 +124,6 @@ public class MainTableDrive {
     public static void translationUnit() throws IOException {
         String token;
         Integer status = 0;
-        int index = -1;
         SegmentStatus[][] segmentStatus = new SegmentStatus[11][7];
         String s = "[[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":3,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"replaceT\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-1,\"action\":\"acc\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"pop2f\"},{\"status\":-2,\"action\":\"\"},{\"status\":6,\"action\":\"replaceT\"},{\"status\":7,\"action\":\"replaceF\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":8,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":2,\"action\":\"MulDiv\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":9,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":1,\"action\":\"push\"},{\"status\":-2,\"action\":\"\"},{\"status\":3,\"action\":\"MulDiv\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"AddSub\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":10,\"action\":\"AddSubAgain\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":10,\"action\":\"AddPop(\"},{\"status\":-2,\"action\":\"\"},{\"status\":6,\"action\":\"AddSub\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"}],[{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":-2,\"action\":\"\"},{\"status\":4,\"action\":\"push\"},{\"status\":5,\"action\":\"replaceF\"},{\"status\":-1,\"action\":\"acc\"},{\"status\":-2,\"action\":\"\"}]]";
         JSONArray objects = JSON.parseArray(s);
@@ -191,18 +194,21 @@ public class MainTableDrive {
                     } else if ("MulDiv".equals(action)) {
                         stack.pushStatus(status);
                         System.out.println("MulDiv");
-                        stack.pop();
-                        stack.pop();
+                        String op = stack.pop();
+                        String arg1 = stack.pop();
+                        quaternionList.add(new Quaternion(op, arg1, tranceToken));
                         //do MulDiv
                         stack.push(tranceToken);
                         stack.popStatus();
                         status1 = stack.popStatus();
-                        //stack.popStatus();
                     } else if ("AddSub".equals(action)) {
                         stack.pushStatus(status);
                         System.out.println("AddSub");
-                        stack.pop();
-                        stack.pop();
+                        String arg2 = stack.pop();
+                        String op = stack.pop();
+                        String arg1 = stack.pop();
+                        quaternionList.add(new Quaternion(op, arg1, arg2));
+                        stack.push("f");
                         //do AddSub
                         stack.push(tranceToken);
                         stack.popStatus();
@@ -210,15 +216,15 @@ public class MainTableDrive {
                     } else if ("AddSubAgain".equals(action)) {
                         stack.pushStatus(status);
                         System.out.println("AddSubAgain");
-                        stack.pop();
-                        stack.pop();
-                        stack.pop();
+                        String arg2 = stack.pop();
+                        String op = stack.pop();
+                        String arg1 = stack.pop();
+                        quaternionList.add(new Quaternion(op, arg1, arg2));
                         stack.popStatus();
                         stack.popStatus();
                         stack.popStatus();
                         //do AddSub
                         stack.push("T");
-                        //stack.popStatus();
                         doAgain = true;
                     } else if ("pop2f".equals(action)) {
                         stack.pop();
@@ -228,12 +234,11 @@ public class MainTableDrive {
                         stack.popStatus();
                         stack.popStatus();
                     } else if ("AddPop(".equals(action)) {
+                        String arg2 = stack.pop();
+                        String op = stack.pop();
+                        String arg1 = stack.pop();
                         stack.pop();
-                        stack.pop();
-                        stack.pop();
-                        stack.pop();
-                        //stack.push("f");
-                        //stack.pushStatus(status);
+                        quaternionList.add(new Quaternion(op, arg1, arg2));
                         stack.popStatus();
                         stack.popStatus();
                         stack.popStatus();
@@ -250,5 +255,6 @@ public class MainTableDrive {
                 System.out.println("==============end============");
             } while (doAgain);
         }
+        System.out.println("==============end============");
     }
 }

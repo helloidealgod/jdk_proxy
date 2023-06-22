@@ -1,4 +1,4 @@
-
+((asd+qw)*(a+q))*ui;
 
 a*(b+c);
 (a-b)/f*g;
