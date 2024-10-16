@@ -16,7 +16,10 @@ public class MyProxy {
 
     public static Object newProxyInstance(ClassLoader classLoader, Class<?> intf, MyInvocationHandler h) {
         File file = new File("");
-        String path = file.getAbsolutePath()+"\\src\\main\\java\\com\\example\\proxy\\proxy\\$Proxy0.java";
+        //win
+        //String path = file.getAbsolutePath()+"\\src\\main\\java\\com\\example\\proxy\\proxy\\$Proxy0.java";
+        //mac
+        String path = file.getAbsolutePath()+"/src/main/java/com/example/proxy/proxy/$Proxy0.java";
         //1、用字符串的方式拼凑出内存里的代理类
         String proxyClass = get$Proxy0(intf);
         //2、将字符串输出到一个.Java文件里
@@ -29,7 +32,10 @@ public class MyProxy {
 
     private static Object loadClassToJvm(MyInvocationHandler h) {
         File file = new File("");
-        String path = file.getAbsolutePath()+"\\src\\main\\java\\com\\example\\proxy\\proxy";
+        //win
+        //String path = file.getAbsolutePath()+"\\src\\main\\java\\com\\example\\proxy\\proxy";
+        //mac
+        String path = file.getAbsolutePath()+"/src/main/java/com/example/proxy/proxy";
         MyClassLoader myClassLoader = new MyClassLoader(path);
         try {
             Class<?> $Proxy0 = myClassLoader.findClass("$Proxy0");
