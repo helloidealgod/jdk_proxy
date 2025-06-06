@@ -367,14 +367,14 @@ public class Main {
                 result = String.valueOf(b1 || b2);
             }
         } else if (op.equals("!")) {
-            boolean b1 = false;
-            if ("true".equals(val1) || "false".equals(val1)) {
-                b1 = "true".equals(val1);
+            boolean b2 = false;
+            if ("true".equals(val2) || "false".equals(val2)) {
+                b2 = "true".equals(val2);
             } else {
                 System.out.println("error val1 is not boolean");
             }
             if (op.equals("!")) {
-                result = String.valueOf(!b1);
+                result = String.valueOf(!b2);
             }
         }
         return result;
