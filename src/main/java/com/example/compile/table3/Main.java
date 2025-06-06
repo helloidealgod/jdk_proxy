@@ -367,7 +367,7 @@ public class Main {
         String symbol = null;
         String token = getToken();
         StringBuilder symbolLine = new StringBuilder("");
-        boolean isEnd = false;
+        boolean isError = false;
         do {
             symbol = tokenToSymbol(token);
             if (null == symbol) {
@@ -417,10 +417,6 @@ public class Main {
                                 //结果入栈
                                 valStack.push(result);
                             }
-                            if ("(".equals(opStack.getTop())) {
-                                opStack.pop();
-                                flag = false;
-                            }
                         } else {
                             //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
                             opStack.push(token);
@@ -441,8 +437,7 @@ public class Main {
                     String command = split[0];
                     String param = split.length > 1 ? split[1] : null;
                     if (command.equals("error")) {
-                        isEnd = true;
-                        return;
+                        isError = true;
                     } else if (command.equals("pop")) {
                         stack.pop();
                     } else if (command.contains("push")) {
@@ -450,6 +445,14 @@ public class Main {
                     }
                 }
             }
-        } while (!isEnd);
+        } while (!isError);
+        if (isError) {
+            System.out.println("=======================error=======================");
+            System.out.println("解析：" + symbolLine.toString() + " _" + token + "_");
+            for (int i = 0; i < operateCommandList.size(); i++) {
+                System.out.println(operateCommandList.get(i));
+            }
+            System.out.println("=======================error=======================");
+        }
     }
 }
