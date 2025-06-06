@@ -162,9 +162,9 @@ public class Main {
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push +,Ft',Fe'", "pop;push -,Ft',Fe'", "pop;", "pop;", "pop;", "pop;", ""},
             {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
-            {"pop;push id", "pop; push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
-            {"push E", "push E", "pop;push temp;", "error", "error", "push E", "error", "error", "error", "error", "error", "error", "error", "push E", "error", "error", "error", "error"},
-            {"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
+            {"pop;push id", "pop;push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
+    /*)*/   {"push E","push E","pop;push temp;","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","error"},
+    /*temp*/{"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
