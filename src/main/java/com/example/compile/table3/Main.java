@@ -164,7 +164,7 @@ public class Main {
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
             {"pop;push id", "pop; push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
             {"push E", "push E", "pop;push temp;", "error", "error", "push E", "error", "error", "error", "error", "error", "error", "error", "push E", "error", "error", "error", "error"},
-            {"error", "error", "error", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
+            {"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -383,28 +383,31 @@ public class Main {
             } else if (compare(stack.getTop(), symbol)) {
                 System.out.print(token);
                 stack.pop();
-                if (")".equals(token)) {
-                    stack.push("temp");
-                }
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
                     valStack.push(token);
                 } else if (isOperate(token)) {
-                    //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
-                    if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
-                        //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
-                        String result = operate(opStack.pop());
-                        //结果入栈
-                        valStack.push(result);
-                        //运算符入栈
-                        opStack.push(token);
-                        if (")".equals(opStack.pop())) {
-                            operate(token);
+                    boolean flag = true;
+                    while (flag) {
+                        //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
+                        if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
+                            //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
+                            String result = operate(opStack.pop());
+                            //结果入栈
+                            valStack.push(result);
+                            if("(".equals(opStack.getTop())){
+                                opStack.pop();
+                                flag = false;
+                            }
+                        } else {
+                            //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
+                            opStack.push(token);
+                            flag = false;
                         }
-                    } else {
-                        //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
-                        opStack.push(token);
                     }
+                }
+                if (")".equals(token) && opStack.isEmpty()) {
+                    stack.push("temp");
                 }
                 token = getToken();
             } else {
