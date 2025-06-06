@@ -1,8 +1,6 @@
 package com.example.compile.table3;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     public static PushbackReader pr;
@@ -109,9 +107,13 @@ public class Main {
         }
     }
 
+    // 栈
     public static Stack stack = new Stack();
+    // 操作符栈
     public static Stack opStack = new Stack();
+    // 值栈
     public static Stack valStack = new Stack();
+    //表达式集
     public static String[] exprs = {"E",
             "Le",
             "Lt'",
@@ -127,6 +129,7 @@ public class Main {
             ")",
             "temp"
     };
+    //符号集
     public static String[] tokens = {"id",
             "(",
             ")",
@@ -146,6 +149,7 @@ public class Main {
             "%",
             ";"
     };
+    //语法驱动表
     public static String[][] actionMap = {
             {"pop;push Le", "pop;push Le", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", ""},
             {"pop;push Lf,Lt'", "pop;push Lf,Lt'", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "error", ""},
@@ -204,6 +208,12 @@ public class Main {
         return action;
     }
 
+    /**
+     * 判断是否为操作符
+     *
+     * @param token
+     * @return
+     */
     public static boolean isOperate(String token) {
         boolean result = false;
         if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("%")
@@ -215,6 +225,12 @@ public class Main {
         return result;
     }
 
+    /**
+     * 获取操作符的优先级
+     *
+     * @param token
+     * @return
+     */
     public static int getOperateLevel(String token) {
         int level = 0;
         if (token.equals(")")) {
@@ -262,6 +278,12 @@ public class Main {
         return level2 - level1;
     }
 
+    /**
+     * 操作符计算
+     *
+     * @param op
+     * @return
+     */
     public static String operate(String op) {
         if ("(".equals(op)) {
             return "";
@@ -324,6 +346,16 @@ public class Main {
         return result;
     }
 
+    public static String tokenToSymbol(String token) {
+        String symbol = null;
+        if (null != token && token.matches("\\d*")) {
+            symbol = "id";
+        } else {
+            symbol = token;
+        }
+        return symbol;
+    }
+
     public static void translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
@@ -332,35 +364,26 @@ public class Main {
             return;
         }
         do {
-            if (token.matches("\\d*")) {
-                symbol = "id";
-            } else {
-                symbol = token;
-            }
+            symbol = tokenToSymbol(token);
             if (";".equals(symbol) && stack.isEmpty()) {
-                System.out.println(" end1");
                 //是结束符 pop 操作符栈 进行运算
-                if (!opStack.isEmpty()) {
-                    while (!opStack.isEmpty()) {
-                        //运算
-                        String result = operate(opStack.pop());
-                        //结果入栈
-                        valStack.push(result);
-                    }
+                while (!opStack.isEmpty()) {
+                    //运算
+                    String result = operate(opStack.pop());
+                    //结果入栈
+                    valStack.push(result);
                 }
-                String val = valStack.pop();
-                System.out.println(val);
-
+                if (!valStack.isEmpty()) {
+                    String val = valStack.pop();
+                    System.out.println(val);
+                    System.out.println(" end1");
+                }
                 token = getToken();
                 if (null == token) {
                     System.out.println("end of reading!2");
                     break;
                 }
-                if (token.matches("\\d*")) {
-                    symbol = "id";
-                } else {
-                    symbol = token;
-                }
+                symbol = tokenToSymbol(token);
             }
             if (stack.isEmpty() && symbol != null && !symbol.equals("")) {
                 stack.push("E");
@@ -378,9 +401,6 @@ public class Main {
                     //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
                     if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
                         //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
-//                        if ("(".equals(token)) {
-//                            opStack.push(token);
-//                        } else {
                         String result = operate(opStack.pop());
                         //结果入栈
                         valStack.push(result);
@@ -389,24 +409,10 @@ public class Main {
                         if (")".equals(opStack.pop())) {
                             operate(token);
                         }
-//                        }
                     } else {
                         //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
                         opStack.push(token);
                     }
-                } else if (";".equals(symbol)) {
-                    //是结束符 pop 操作符栈 进行运算
-                    if (!opStack.isEmpty()) {
-                        while (!opStack.isEmpty()) {
-                            //运算
-                            String result = operate(opStack.pop());
-                            //结果入栈
-                            valStack.push(result);
-                        }
-                    }
-                    String val = valStack.pop();
-                    System.out.println(val);
-                    System.out.println("end2");
                 }
 
                 token = getToken();
@@ -414,12 +420,9 @@ public class Main {
                     System.out.println("end of reading!3");
                     break;
                 }
-                if (token.matches("\\d*")) {
-                    symbol = "id";
-                } else {
-                    symbol = token;
-                }
+                symbol = tokenToSymbol(token);
             }
+            //根据栈顶元素与当前token查找下一步动作
             String actions = getAction(stack.getTop(), symbol);
             String[] commands = actions.split(";");
             for (int i = 0; i < commands.length; i++) {
