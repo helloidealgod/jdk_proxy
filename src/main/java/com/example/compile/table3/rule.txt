@@ -1,0 +1,54 @@
+for(;;){}
+if(){} else if(){} else{}
+do{}while()
+while(){}
+int a=1+2*3/4; <>= & | ~
++= -= *= /= %
+int function(){}
+
+program  -> block
+block -> '{' stmts '}'
+stmts -> stmts1 stmt | e
+stmt  -> expr;
+        if(expr) stmt1;
+        for(expr;expr;expr) stmt1
+        while(expr) stmt1;
+        do stmt1 while(expr);
+        block
+expr  -> rel = expr1; | rel
+rel  -> rel1 < add
+        | rel1 <= add
+        | add
+add  -> add1 + term
+        | term
+term  -> term1 * factor
+        |factor
+factor -> (expr)
+        |num
+加减乘除 算式表达式 Formula expression
+E  -> -E
+E  -> TE'
+E' -> +TE'|e
+T  -> FT'
+T' -> *FT'|e
+F  -> (E)|id
+不等式 关系表达式 Relational expression / Comparison Expression
+EE  -> FT'
+T' -> <FT'|<=FT'|>FT'|>=FT'|==FT'|!=FT'|e
+F  -> (EE)|E
+逻辑运算 逻辑表达式 Logical expression
+E0  -> F0T1
+T1 -> &&F0T1|||F0T1|!F0T1|e
+F0  -> (E0)|EE
+
+赋值表达式: 赋值 声明且赋值
+运算表达式：+-*/%
+位运算:  & | ~  <<  >>
+比较类运算表达式： == != < <= > >=
+逻辑运算  || && !
+.
+->
+变量声明
+函数声明、函数定义
+结构声明
+指针、数组

@@ -196,8 +196,8 @@ public class MainTableDrive {
                         System.out.println("MulDiv");
                         String op = stack.pop();
                         String arg1 = stack.pop();
-                        quaternionList.add(new Quaternion(op, arg1, tranceToken));
                         //do MulDiv
+                        quaternionList.add(new Quaternion(op, arg1, tranceToken));
                         stack.push(tranceToken);
                         stack.popStatus();
                         status1 = stack.popStatus();
@@ -207,9 +207,9 @@ public class MainTableDrive {
                         String arg2 = stack.pop();
                         String op = stack.pop();
                         String arg1 = stack.pop();
+                        //do AddSub
                         quaternionList.add(new Quaternion(op, arg1, arg2));
                         stack.push("f");
-                        //do AddSub
                         stack.push(tranceToken);
                         stack.popStatus();
                         stack.popStatus();

@@ -34,5 +34,6 @@ public class Main {
 //        最佳线程数目 = （线程等待时间与线程CPU时间之比 + 1）* CPU数目
 
         Future<Integer> future = executorService.submit(task1);
+        future.get();
     }
 }

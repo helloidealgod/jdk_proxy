@@ -7,12 +7,21 @@ public class Stack {
     public List<String> toKenList = new ArrayList<>();
     public List<Integer> statusList = new ArrayList<>();
     public int topIndex = -1;
-    public int index = 0;
     public int statusTopIndex = -1;
 
     public void push(String token) {
         toKenList.add(token);
         topIndex++;
+    }
+
+    public String pop() {
+        String token = null;
+        if (0 <= topIndex) {
+            token = toKenList.get(topIndex);
+            toKenList.remove(topIndex);
+            topIndex--;
+        }
+        return token;
     }
 
     public void pushStatus(Integer status) {
@@ -30,20 +39,9 @@ public class Stack {
         return token;
     }
 
-    public String pop() {
-        String token = null;
-        if (0 <= topIndex) {
-            token = toKenList.get(topIndex);
-            toKenList.remove(topIndex);
-            topIndex--;
-        }
-        return token;
-    }
-
     public void empty() {
         toKenList = new ArrayList<>();
         topIndex = -1;
-        index = 0;
     }
 
     public void printToken() {
@@ -66,7 +64,7 @@ public class Stack {
         }
     }
 
-    public int peekStatus() {
+    public Integer peekStatus() {
         Integer token = null;
         if (0 <= statusTopIndex) {
             token = statusList.get(statusTopIndex);
