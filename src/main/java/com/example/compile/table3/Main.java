@@ -1,6 +1,8 @@
 package com.example.compile.table3;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static PushbackReader pr;
@@ -163,8 +165,8 @@ public class Main {
             {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
             {"pop;push id", "pop;push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
-    /*)*/   {"push E","push E","pop;push temp;","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","push temp","error"},
-    /*temp*/{"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
+            /*)*/   {"push E", "push E", "pop;push temp;", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "error"},
+            /*temp*/{"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -260,7 +262,9 @@ public class Main {
      * >0, operate2优先级高,先进行operate2压栈
      */
     public static int operateCompare(String operate1, String operate2) {
-        if ("(".equals(operate1)) {
+        if ("(".equals(operate1) && ")".equals(operate2)) {
+            return 0;
+        } else if ("(".equals(operate1)) {
             //(+ 先进行operate2压栈
             return 1;
         } else if (")".equals(operate1)) {
@@ -307,7 +311,8 @@ public class Main {
             val1 = "0";
         }
         String result = operate(op, val1, val2);
-        System.out.println("\n" + op + " " + val1 + " " + val2 + " = " + result);
+        //System.out.println("\n" + op + " " + val1 + " " + val2 + " = " + result);
+        operateCommandList.add(op + " " + val1 + " " + val2 + " = " + result);
         return result;
     }
 
@@ -356,9 +361,13 @@ public class Main {
         return symbol;
     }
 
+    public static List<String> operateCommandList = new ArrayList<>();
+
     public static void translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
+        StringBuilder symbolLine = new StringBuilder("");
+        boolean isEnd = false;
         do {
             symbol = tokenToSymbol(token);
             if (null == symbol) {
@@ -374,14 +383,20 @@ public class Main {
                 }
                 if (!valStack.isEmpty()) {
                     String val = valStack.pop();
-                    System.out.println(val);
-                    System.out.println(" end1");
+                    System.out.println("解析：" + symbolLine.toString());
+                    for (int i = 0; i < operateCommandList.size(); i++) {
+                        System.out.println(operateCommandList.get(i));
+                    }
+                    System.out.println("result = " + val);
                 }
+                operateCommandList.clear();
+                symbolLine = new StringBuilder("");
                 token = getToken();
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push("E");
             } else if (compare(stack.getTop(), symbol)) {
-                System.out.print(token);
+                //System.out.print(token);
+                symbolLine.append(token);
                 stack.pop();
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
@@ -390,12 +405,19 @@ public class Main {
                     boolean flag = true;
                     while (flag) {
                         //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
-                        if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
+                        int level = 0;
+                        if (!opStack.isEmpty() && (level = operateCompare(opStack.getTop(), token)) <= 0) {
                             //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
-                            String result = operate(opStack.pop());
-                            //结果入栈
-                            valStack.push(result);
-                            if("(".equals(opStack.getTop())){
+                            if (0 == level && "(".equals(opStack.getTop())) {
+                                opStack.pop();
+                                flag = false;
+                            } else {
+                                //运算
+                                String result = operate(opStack.pop());
+                                //结果入栈
+                                valStack.push(result);
+                            }
+                            if ("(".equals(opStack.getTop())) {
                                 opStack.pop();
                                 flag = false;
                             }
@@ -419,7 +441,8 @@ public class Main {
                     String command = split[0];
                     String param = split.length > 1 ? split[1] : null;
                     if (command.equals("error")) {
-                        System.out.println("error");
+                        isEnd = true;
+                        return;
                     } else if (command.equals("pop")) {
                         stack.pop();
                     } else if (command.contains("push")) {
@@ -427,6 +450,6 @@ public class Main {
                     }
                 }
             }
-        } while (true);
+        } while (!isEnd);
     }
 }
