@@ -156,7 +156,7 @@ public class Main {
 /*E*/   {"pop;push Le", "pop;push Le", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", ""},
 /*Le*/  {"pop;push Lf,Lt'", "pop;push Lf,Lt'", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "error", ""},
 /*Lt'*/ {"pop;", "pop;", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
-/*Lf*/  {"pop;push Ce", "pop;push (,Le,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Ce", "error", "error", "error", "error", ""},
+/*Lf*/  {"pop;push Ce", "pop;push (,Le,)", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Ce", "error", "error", "error", "error", ""},
 /*Ce*/  {"pop;push Cf,Ct'", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Cf,Ct'", "error", "error", "error", "error", ""},
 /*Ct'*/ {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
 /*Cf*/  {"pop;push Fe", "pop;push (,Ce,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Fe", "error", "error", "error", "error", ""},
@@ -237,18 +237,20 @@ public class Main {
         int level = 0;
         if (token.equals(")")) {
             level = 0;
-        } else if (token.equals("&&") || token.equals("||") || token.equals("!")) {
+        } else if (token.equals("&&") || token.equals("||")) {
             level = 1;
+        } else if (token.equals("!")) {
+            level = 2;
         } else if (token.equals("<") || token.equals("<=")
                 || token.equals(">") || token.equals(">=")
                 || token.equals("==") || token.equals("!=")) {
-            level = 2;
-        } else if (token.equals("+") || token.equals("-")) {
             level = 3;
-        } else if (token.equals("*") || token.equals("/") || token.equals("%")) {
+        } else if (token.equals("+") || token.equals("-")) {
             level = 4;
-        } else if (token.equals("(")) {
+        } else if (token.equals("*") || token.equals("/") || token.equals("%")) {
             level = 5;
+        } else if (token.equals("(")) {
+            level = 6;
         }
         return level;
     }
@@ -304,7 +306,7 @@ public class Main {
         }
         String val2 = valStack.pop();
         String val1 = null;
-        if (!valStack.isEmpty()) {
+        if (!valStack.isEmpty() && !"!".equals(op)) {
             val1 = valStack.pop();
         }
         if ("-".equals(op) && null == val1) {
@@ -345,7 +347,7 @@ public class Main {
             } else if (op.equals("!=")) {
                 result = String.valueOf(int1 != int2);
             }
-        } else if (op.equals("&&") || op.equals("||") || op.equals("!")) {
+        } else if (op.equals("&&") || op.equals("||")) {
             boolean b1 = false;
             boolean b2 = false;
             if ("true".equals(val1) || "false".equals(val1)) {
@@ -363,6 +365,16 @@ public class Main {
                 result = String.valueOf(b1 && b2);
             } else if (op.equals("||")) {
                 result = String.valueOf(b1 || b2);
+            }
+        } else if (op.equals("!")) {
+            boolean b1 = false;
+            if ("true".equals(val1) || "false".equals(val1)) {
+                b1 = "true".equals(val1);
+            } else {
+                System.out.println("error val1 is not boolean");
+            }
+            if (op.equals("!")) {
+                result = String.valueOf(!b1);
             }
         }
         return result;
