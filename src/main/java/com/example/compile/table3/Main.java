@@ -153,20 +153,20 @@ public class Main {
     };
     //语法驱动表
     public static String[][] actionMap = {
-            {"pop;push Le", "pop;push Le", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", ""},
-            {"pop;push Lf,Lt'", "pop;push Lf,Lt'", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "error", ""},
-            {"pop;", "pop;", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
-            {"pop;push Ce", "pop;push (,Le,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Ce", "error", "error", "error", "error", ""},
-            {"pop;push Cf,Ct'", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Cf,Ct'", "error", "error", "error", "error", ""},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
-            {"pop;push Fe", "pop;push (,Ce,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Fe", "error", "error", "error", "error", ""},
-            {"pop;push Ft,Fe'", "pop;push Ft,Fe'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push -,Fe", "error", "error", "error", "error", ""},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push +,Ft',Fe'", "pop;push -,Ft',Fe'", "pop;", "pop;", "pop;", "pop;", ""},
-            {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
-            {"pop;push id", "pop;push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
-            /*)*/   {"push E", "push E", "pop;push temp;", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "error"},
-            /*temp*/{"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
+/*E*/   {"pop;push Le", "pop;push Le", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", ""},
+/*Le*/  {"pop;push Lf,Lt'", "pop;push Lf,Lt'", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "error", ""},
+/*Lt'*/ {"pop;", "pop;", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
+/*Lf*/  {"pop;push Ce", "pop;push (,Le,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Ce", "error", "error", "error", "error", ""},
+/*Ce*/  {"pop;push Cf,Ct'", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Cf,Ct'", "error", "error", "error", "error", ""},
+/*Ct'*/ {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", ""},
+/*Cf*/  {"pop;push Fe", "pop;push (,Ce,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Fe", "error", "error", "error", "error", ""},
+/*Fe*/  {"pop;push Ft,Fe'", "pop;push Ft,Fe'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push -,Fe", "error", "error", "error", "error", ""},
+/*Fe'*/ {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push +,Ft',Fe'", "pop;push -,Ft',Fe'", "pop;", "pop;", "pop;", "pop;", ""},
+/*Ft*/  {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
+/*Ft'*/ {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
+/*F*/   {"pop;push id", "pop;push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
+/*)*/   {"push E", "push E", "pop;push temp;", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "error"},
+/*temp*/{"error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -346,7 +346,24 @@ public class Main {
                 result = String.valueOf(int1 != int2);
             }
         } else if (op.equals("&&") || op.equals("||") || op.equals("!")) {
+            boolean b1 = false;
+            boolean b2 = false;
+            if ("true".equals(val1) || "false".equals(val1)) {
+                b1 = "true".equals(val1);
+            } else {
+                System.out.println("error val1 is not boolean");
+            }
+            if ("true".equals(val2) || "false".equals(val2)) {
+                b2 = "true".equals(val2);
+            } else {
+                System.out.println("error val2 is not boolean");
+            }
 
+            if (op.equals("&&")) {
+                result = String.valueOf(b1 && b2);
+            } else if (op.equals("||")) {
+                result = String.valueOf(b1 || b2);
+            }
         }
         return result;
     }
@@ -424,6 +441,7 @@ public class Main {
                         }
                     }
                 }
+                //当前符号为),栈内无内容(无表达式内容)说明刚刚pop(即刚刚解析完表达式
                 if (")".equals(token) && opStack.isEmpty()) {
                     stack.push("temp");
                 }
