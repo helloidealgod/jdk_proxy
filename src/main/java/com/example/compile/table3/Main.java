@@ -359,13 +359,12 @@ public class Main {
     public static void translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
-        if (null == token) {
-            System.out.println("end of reading!1");
-            return;
-        }
         do {
             symbol = tokenToSymbol(token);
-            if (";".equals(symbol) && stack.isEmpty()) {
+            if (null == symbol) {
+                System.out.println("end of reading!");
+                return;
+            } else if (";".equals(symbol) && stack.isEmpty()) {
                 //是结束符 pop 操作符栈 进行运算
                 while (!opStack.isEmpty()) {
                     //运算
@@ -379,16 +378,9 @@ public class Main {
                     System.out.println(" end1");
                 }
                 token = getToken();
-                if (null == token) {
-                    System.out.println("end of reading!2");
-                    break;
-                }
-                symbol = tokenToSymbol(token);
-            }
-            if (stack.isEmpty() && symbol != null && !symbol.equals("")) {
+            } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push("E");
-            }
-            if (compare(stack.getTop(), symbol)) {
+            } else if (compare(stack.getTop(), symbol)) {
                 System.out.print(token);
                 stack.pop();
                 if (")".equals(token)) {
@@ -414,27 +406,22 @@ public class Main {
                         opStack.push(token);
                     }
                 }
-
                 token = getToken();
-                if (null == token) {
-                    System.out.println("end of reading!3");
-                    break;
-                }
-                symbol = tokenToSymbol(token);
-            }
-            //根据栈顶元素与当前token查找下一步动作
-            String actions = getAction(stack.getTop(), symbol);
-            String[] commands = actions.split(";");
-            for (int i = 0; i < commands.length; i++) {
-                String[] split = commands[i].split(" ");
-                String command = split[0];
-                String param = split.length > 1 ? split[1] : null;
-                if (command.equals("error")) {
-                    System.out.println("error");
-                } else if (command.equals("pop")) {
-                    stack.pop();
-                } else if (command.contains("push")) {
-                    stack.push(param);
+            } else {
+                //根据栈顶元素与当前token查找下一步动作
+                String actions = getAction(stack.getTop(), symbol);
+                String[] commands = actions.split(";");
+                for (int i = 0; i < commands.length; i++) {
+                    String[] split = commands[i].split(" ");
+                    String command = split[0];
+                    String param = split.length > 1 ? split[1] : null;
+                    if (command.equals("error")) {
+                        System.out.println("error");
+                    } else if (command.equals("pop")) {
+                        stack.pop();
+                    } else if (command.contains("push")) {
+                        stack.push(param);
+                    }
                 }
             }
         } while (true);
