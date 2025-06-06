@@ -123,7 +123,10 @@ public class Main {
             "Fe'",
             "Ft",
             "Ft'",
-            "F"};
+            "F",
+            ")",
+            "temp"
+    };
     public static String[] tokens = {"id",
             "(",
             ")",
@@ -156,6 +159,8 @@ public class Main {
             {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
             {"pop;push id", "pop; push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
+            {"push E","push E","pop;push temp;","error","error","push E","error","error","error","error","error","error","error","push E","error","error","error","error"},
+            {"error","error","error","pop;push &&,Lf,Lt'","pop;push ||,Lf,Lt'","pop;push !,Le","pop;push <,Cf,Ct'","pop;push <=,Cf,Ct'","pop;push >,Cf,Ct'","pop;push >=,Cf,Ct'","pop;push ==,Cf,Ct'","pop;push !=,Cf,Ct'","pop;push !=,Cf,Ct'","pop;push +,Ft',Fe'","pop;push *,F,Ft'","pop;push /,F,Ft'","pop;push %,F,Ft'","pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -221,6 +226,8 @@ public class Main {
             level = 3;
         } else if (token.equals("*") || token.equals("/") || token.equals("%")) {
             level = 4;
+        } else if (token.equals("(") || token.equals(")")) {
+            level = 5;
         }
         return level;
     }
@@ -296,17 +303,17 @@ public class Main {
             }
             if (";".equals(symbol) && stack.isEmpty()) {
                 System.out.println(" end");
-                //是结束符 pop 操作符栈 进行运算
-                if (!opStack.isEmpty()) {
-                    while (!opStack.isEmpty()) {
-                        //运算
-                        String result = operate(opStack.pop());
-                        //结果入栈
-                        valStack.push(result);
-                    }
-                }
-                String val = valStack.pop();
-                System.out.println(val);
+//                //是结束符 pop 操作符栈 进行运算
+//                if (!opStack.isEmpty()) {
+//                    while (!opStack.isEmpty()) {
+//                        //运算
+//                        String result = operate(opStack.pop());
+//                        //结果入栈
+//                        valStack.push(result);
+//                    }
+//                }
+//                String val = valStack.pop();
+//                System.out.println(val);
                 token = getToken();
                 if (null == token) {
                     System.out.println("end of reading!");
@@ -324,34 +331,37 @@ public class Main {
             if (compare(stack.getTop(), symbol)) {
                 System.out.print(token);
                 stack.pop();
+                if(")".equals(token)){
+                    stack.push("temp");
+                }
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
-                    valStack.push(token);
+//                    valStack.push(token);
                 } else if (isOperate(token)) {
-                    //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
-                    if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
-                        //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
-                        String result = operate(opStack.pop());
-                        //结果入栈
-                        valStack.push(result);
-                        //运算符入栈
-                        opStack.push(token);
-                    } else {
-                        //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
-                        opStack.push(token);
-                    }
+//                    //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
+//                    if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
+//                        //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
+//                        String result = operate(opStack.pop());
+//                        //结果入栈
+//                        valStack.push(result);
+//                        //运算符入栈
+//                        opStack.push(token);
+//                    } else {
+//                        //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
+//                        opStack.push(token);
+//                    }
                 } else if (";".equals(symbol)) {
                     //是结束符 pop 操作符栈 进行运算
-                    if (!opStack.isEmpty()) {
-                        while (!opStack.isEmpty()) {
-                            //运算
-                            String result = operate(opStack.pop());
-                            //结果入栈
-                            valStack.push(result);
-                        }
-                    }
-                    String val = valStack.pop();
-                    System.out.println(val);
+//                    if (!opStack.isEmpty()) {
+//                        while (!opStack.isEmpty()) {
+//                            //运算
+//                            String result = operate(opStack.pop());
+//                            //结果入栈
+//                            valStack.push(result);
+//                        }
+//                    }
+//                    String val = valStack.pop();
+//                    System.out.println(val);
                 }
 
                 token = getToken();
@@ -367,17 +377,17 @@ public class Main {
             }
             if (";".equals(symbol) && stack.isEmpty()) {
                 System.out.println(" end");
-                //是结束符 pop 操作符栈 进行运算
-                if (!opStack.isEmpty()) {
-                    while (!opStack.isEmpty()) {
-                        //运算
-                        String result = operate(opStack.pop());
-                        //结果入栈
-                        valStack.push(result);
-                    }
-                }
-                String val = valStack.pop();
-                System.out.println(val);
+//                //是结束符 pop 操作符栈 进行运算
+//                if (!opStack.isEmpty()) {
+//                    while (!opStack.isEmpty()) {
+//                        //运算
+//                        String result = operate(opStack.pop());
+//                        //结果入栈
+//                        valStack.push(result);
+//                    }
+//                }
+//                String val = valStack.pop();
+//                System.out.println(val);
                 token = getToken();
                 if (null == token) {
                     System.out.println("end of reading!");
@@ -395,7 +405,9 @@ public class Main {
                 String[] split = commands[i].split(" ");
                 String command = split[0];
                 String param = split.length > 1 ? split[1] : null;
-                if (command.equals("pop")) {
+                if(command.equals("error")){
+                    System.out.println("error");
+                }else if (command.equals("pop")) {
                     stack.pop();
                 } else if (command.contains("push")) {
                     stack.push(param);
