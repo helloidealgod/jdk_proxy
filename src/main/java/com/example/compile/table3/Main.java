@@ -159,8 +159,8 @@ public class Main {
             {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", ""},
             {"pop;push id", "pop; push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", ""},
-            {"push E","push E","pop;push temp;","error","error","push E","error","error","error","error","error","error","error","push E","error","error","error","error"},
-            {"error","error","error","pop;push &&,Lf,Lt'","pop;push ||,Lf,Lt'","pop;push !,Le","pop;push <,Cf,Ct'","pop;push <=,Cf,Ct'","pop;push >,Cf,Ct'","pop;push >=,Cf,Ct'","pop;push ==,Cf,Ct'","pop;push !=,Cf,Ct'","pop;push !=,Cf,Ct'","pop;push +,Ft',Fe'","pop;push *,F,Ft'","pop;push /,F,Ft'","pop;push %,F,Ft'","pop;"},
+            {"push E", "push E", "pop;push temp;", "error", "error", "push E", "error", "error", "error", "error", "error", "error", "error", "push E", "error", "error", "error", "error"},
+            {"error", "error", "error", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -197,7 +197,7 @@ public class Main {
         String action = null;
         int tokensIndex = getTokensIndex(token);
         int exprIndex = getExprIndex(stackTop);
-        if(-1 == tokensIndex || -1 == exprIndex){
+        if (-1 == tokensIndex || -1 == exprIndex) {
             System.out.println("");
         }
         action = actionMap[exprIndex][tokensIndex];
@@ -208,7 +208,8 @@ public class Main {
         boolean result = false;
         if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("%")
                 || token.equals("<") || token.equals("<=") || token.equals(">") || token.equals(">=") || token.equals("==") || token.equals("!=")
-                || token.equals("&&") || token.equals("||") || token.equals("!")) {
+                || token.equals("&&") || token.equals("||") || token.equals("!")
+                || token.equals("(") || token.equals(")")) {
             result = true;
         }
         return result;
@@ -216,7 +217,9 @@ public class Main {
 
     public static int getOperateLevel(String token) {
         int level = 0;
-        if (token.equals("&&") || token.equals("||") || token.equals("!")) {
+        if (token.equals(")")) {
+            level = 0;
+        } else if (token.equals("&&") || token.equals("||") || token.equals("!")) {
             level = 1;
         } else if (token.equals("<") || token.equals("<=")
                 || token.equals(">") || token.equals(">=")
@@ -226,19 +229,50 @@ public class Main {
             level = 3;
         } else if (token.equals("*") || token.equals("/") || token.equals("%")) {
             level = 4;
-        } else if (token.equals("(") || token.equals(")")) {
+        } else if (token.equals("(")) {
             level = 5;
         }
         return level;
     }
 
+    /**
+     * 比较两个操作符的优先级
+     *
+     * @param operate1
+     * @param operate2
+     * @return <=0, operate1优先级高,先进行operate1计算
+     * >0, operate2优先级高,先进行operate2压栈
+     */
     public static int operateCompare(String operate1, String operate2) {
+        if ("(".equals(operate1)) {
+            //(+ 先进行operate2压栈
+            return 1;
+        } else if (")".equals(operate1)) {
+            //)+ 先进行operate1计算
+            return -1;
+        } else if ("(".equals(operate2)) {
+            //+( 先进行operate2压栈
+            return 1;
+        } else if (")".equals(operate2)) {
+            //+) 先进行operate1计算
+            return -1;
+        }
         int level1 = getOperateLevel(operate1);
         int level2 = getOperateLevel(operate2);
         return level2 - level1;
     }
 
     public static String operate(String op) {
+        if ("(".equals(op)) {
+            return "";
+        } else if (")".equals(op)) {
+            if ("(".equals(opStack.getTop())) {
+                opStack.pop();
+            } else {
+                System.out.println("error");
+            }
+            return "";
+        }
         if (1 > valStack.size()) {
             System.out.println("error val length < 1");
         }
@@ -250,7 +284,9 @@ public class Main {
         if ("-".equals(op) && null == val1) {
             val1 = "0";
         }
-        return operate(op, val1, val2);
+        String result = operate(op, val1, val2);
+        System.out.println("\n" + op + " " + val1 + " " + val2 + " = " + result);
+        return result;
     }
 
     public static String operate(String op, String val1, String val2) {
@@ -292,7 +328,7 @@ public class Main {
         String symbol = null;
         String token = getToken();
         if (null == token) {
-            System.out.println("end of reading!");
+            System.out.println("end of reading!1");
             return;
         }
         do {
@@ -302,21 +338,22 @@ public class Main {
                 symbol = token;
             }
             if (";".equals(symbol) && stack.isEmpty()) {
-                System.out.println(" end");
-//                //是结束符 pop 操作符栈 进行运算
-//                if (!opStack.isEmpty()) {
-//                    while (!opStack.isEmpty()) {
-//                        //运算
-//                        String result = operate(opStack.pop());
-//                        //结果入栈
-//                        valStack.push(result);
-//                    }
-//                }
-//                String val = valStack.pop();
-//                System.out.println(val);
+                System.out.println(" end1");
+                //是结束符 pop 操作符栈 进行运算
+                if (!opStack.isEmpty()) {
+                    while (!opStack.isEmpty()) {
+                        //运算
+                        String result = operate(opStack.pop());
+                        //结果入栈
+                        valStack.push(result);
+                    }
+                }
+                String val = valStack.pop();
+                System.out.println(val);
+
                 token = getToken();
                 if (null == token) {
-                    System.out.println("end of reading!");
+                    System.out.println("end of reading!2");
                     break;
                 }
                 if (token.matches("\\d*")) {
@@ -331,66 +368,50 @@ public class Main {
             if (compare(stack.getTop(), symbol)) {
                 System.out.print(token);
                 stack.pop();
-                if(")".equals(token)){
+                if (")".equals(token)) {
                     stack.push("temp");
                 }
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
-//                    valStack.push(token);
+                    valStack.push(token);
                 } else if (isOperate(token)) {
-//                    //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
-//                    if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
-//                        //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
-//                        String result = operate(opStack.pop());
-//                        //结果入栈
-//                        valStack.push(result);
-//                        //运算符入栈
-//                        opStack.push(token);
-//                    } else {
-//                        //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
-//                        opStack.push(token);
-//                    }
+                    //是运算符 与前一个运算符做优先级比较 高于前一个 压入操作符栈 ，低于前一个 pop 操作符栈，进行运算
+                    if (!opStack.isEmpty() && operateCompare(opStack.getTop(), token) <= 0) {
+                        //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
+//                        if ("(".equals(token)) {
+//                            opStack.push(token);
+//                        } else {
+                        String result = operate(opStack.pop());
+                        //结果入栈
+                        valStack.push(result);
+                        //运算符入栈
+                        opStack.push(token);
+                        if (")".equals(opStack.pop())) {
+                            operate(token);
+                        }
+//                        }
+                    } else {
+                        //前面无运算符或当前运算符优先级高于前一个，压入操作符栈
+                        opStack.push(token);
+                    }
                 } else if (";".equals(symbol)) {
                     //是结束符 pop 操作符栈 进行运算
-//                    if (!opStack.isEmpty()) {
-//                        while (!opStack.isEmpty()) {
-//                            //运算
-//                            String result = operate(opStack.pop());
-//                            //结果入栈
-//                            valStack.push(result);
-//                        }
-//                    }
-//                    String val = valStack.pop();
-//                    System.out.println(val);
+                    if (!opStack.isEmpty()) {
+                        while (!opStack.isEmpty()) {
+                            //运算
+                            String result = operate(opStack.pop());
+                            //结果入栈
+                            valStack.push(result);
+                        }
+                    }
+                    String val = valStack.pop();
+                    System.out.println(val);
+                    System.out.println("end2");
                 }
 
                 token = getToken();
                 if (null == token) {
-                    System.out.println("end of reading!");
-                    break;
-                }
-                if (token.matches("\\d*")) {
-                    symbol = "id";
-                } else {
-                    symbol = token;
-                }
-            }
-            if (";".equals(symbol) && stack.isEmpty()) {
-                System.out.println(" end");
-//                //是结束符 pop 操作符栈 进行运算
-//                if (!opStack.isEmpty()) {
-//                    while (!opStack.isEmpty()) {
-//                        //运算
-//                        String result = operate(opStack.pop());
-//                        //结果入栈
-//                        valStack.push(result);
-//                    }
-//                }
-//                String val = valStack.pop();
-//                System.out.println(val);
-                token = getToken();
-                if (null == token) {
-                    System.out.println("end of reading!");
+                    System.out.println("end of reading!3");
                     break;
                 }
                 if (token.matches("\\d*")) {
@@ -405,9 +426,9 @@ public class Main {
                 String[] split = commands[i].split(" ");
                 String command = split[0];
                 String param = split.length > 1 ? split[1] : null;
-                if(command.equals("error")){
+                if (command.equals("error")) {
                     System.out.println("error");
-                }else if (command.equals("pop")) {
+                } else if (command.equals("pop")) {
                     stack.pop();
                 } else if (command.contains("push")) {
                     stack.push(param);
