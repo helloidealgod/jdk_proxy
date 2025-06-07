@@ -69,6 +69,8 @@ public class Main {
         return stateMap;
     }
 
+    public static final String topSym = "EList";
+
     public static String getToken() throws IOException {
         int read;
         char c;
@@ -117,7 +119,7 @@ public class Main {
     public static Stack valStack = new Stack();
     //表达式集
     public static String[] exprs = {
-            "EList",
+            topSym,
             "Et'",
             "Ef",
             "E",
@@ -156,7 +158,7 @@ public class Main {
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;"},
             {"pop;push id", "pop;push id", "pop;push id", "pop;push id", "pop;push (,Fe,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;push consv", "pop;push variv", "pop;push funcv", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"push E", "push E", "push E", "push E", "push E", "pop;push temp;", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "error", "error"},
+            {"push " + topSym, "push " + topSym, "push " + topSym, "push " + topSym, "push " + topSym, "pop;push temp;", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "push temp", "error", "error"},
             {"error", "error", "error", "error", "error", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;"},
     };
 
@@ -212,7 +214,8 @@ public class Main {
         if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("%")
                 || token.equals("<") || token.equals("<=") || token.equals(">") || token.equals(">=") || token.equals("==") || token.equals("!=")
                 || token.equals("&&") || token.equals("||") || token.equals("!")
-                || token.equals("(") || token.equals(")")) {
+                || token.equals("(") || token.equals(")")
+                || token.equals(",")) {
             result = true;
         }
         return result;
@@ -270,6 +273,15 @@ public class Main {
             //+) 先进行operate1计算
             return -1;
         }
+        if (",".equals(operate2) && ",".equals(operate1)) {
+            return 0;
+        } else if (",".equals(operate2)) {
+            //+, 先进行operate1计算
+            return -1;
+        } else if (",".equals(operate1)) {
+            //,+ 先进行operate2压栈
+            return 1;
+        }
         int level1 = getOperateLevel(operate1);
         int level2 = getOperateLevel(operate2);
         return level2 - level1;
@@ -291,6 +303,9 @@ public class Main {
                 System.out.println("error");
             }
             return "";
+        }
+        if (",".equals(op)) {
+            return valStack.pop();
         }
         if (1 > valStack.size()) {
             System.out.println("error val length < 1");
@@ -396,10 +411,15 @@ public class Main {
             } else if (";".equals(symbol) && stack.isEmpty()) {
                 //是结束符 pop 操作符栈 进行运算
                 while (!opStack.isEmpty()) {
+                    String op = opStack.pop();
                     //运算
-                    String result = operate(opStack.pop());
-                    //结果入栈
-                    valStack.push(result);
+                    String result = operate(op);
+                    if (",".equals(op)) {
+                        System.out.print("输出：" + result + op);
+                    } else {
+                        //结果入栈
+                        valStack.push(result);
+                    }
                 }
                 if (!valStack.isEmpty()) {
                     String val = valStack.pop();
@@ -413,7 +433,7 @@ public class Main {
                 symbolLine = new StringBuilder("");
                 token = getToken();
             } else if (!symbol.equals("") && stack.isEmpty()) {
-                stack.push("E");
+                stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
                 //System.out.print(token);
                 symbolLine.append(token);
@@ -430,6 +450,9 @@ public class Main {
                             //前面运算符优先级高于或等于当前运算符优先级，pop 操作符栈 进行运算
                             if (0 == level && "(".equals(opStack.getTop())) {
                                 opStack.pop();
+                                flag = false;
+                            } else if (0 == level && ",".equals(opStack.getTop())) {
+                                opStack.push(token);
                                 flag = false;
                             } else {
                                 //运算

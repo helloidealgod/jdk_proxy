@@ -15,10 +15,10 @@ public class Stack {
     }
 
     public void push(String token) {
-        if (token.contains(",")) {
+        if (token.contains(",") && !token.equals(",")) {
             String[] split = token.split(",");
             for (int i = split.length - 1; i >= 0; i--) {
-                stack.add(split[i].replaceAll("comma",","));
+                stack.add(split[i].replaceAll("comma", ","));
             }
         } else {
             stack.add(token);
