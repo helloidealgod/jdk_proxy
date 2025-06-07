@@ -1,8 +1,0 @@
-if
-for
-while
-function
-指针
-结构体
-变量
-算术
