@@ -1,44 +1,66 @@
-program  -> block
-block -> '{' stmts '}'
-stmts -> stmts1 stmt | e
-stmt  -> expr;
-        if(expr) stmt1;
-        for(expr;expr;expr) stmt1
-        while(expr) stmt1;
-        do stmt1 while(expr);
-        block
-类型：基层类型、结构体、指针、数组 T -> int | struct name {} | T*
-T ->
+语句列表：stmts: (stmt)[1,n]| e
+stmts->stmt stmt'
+      |e
+stmt'->stmt stmt'
+      |e
+语句：表达式、代码块、声明、声明并赋值、if语句、for语句、while语句
+stmt->expr
+      |block
+      |TyNa
+      |TyNa=E
+      |TyNa(VdList)
+      |TyNa(VdList)block
+      |Na(EList)
+      |Na=expr
+      |for(expr;expr;expr) block
+      |while(expr) block
+      |do block while(expr);
+      |if语句
+if语句：if(expr) stmt [else stmt]
+Ifs -> IfElse'
+If -> if(expr) stmt
+Else'-> else stmt
+     |e
+
 变量声明:类型+变量名 E -> T name
-E -> TF
-T ->void
-    |int
-    |short
-    |float
-    |long
-    |char
-    |string
-    |T'复合类型
-F ->name [a-zA-Z]?[a-zA-Z0-9]
-变量声明列表 E -> 变量声明 | 变量声明,变量声明 | e
-
-函数声明:类型+函数名(变量声明1,变量声明2,...)
-E -> TF(E')
-T ->
-F ->name
-E'->
-
+Vd ->TyNa
+Na ->name [a-zA-Z]?[a-zA-Z0-9]
 变量声明并赋值：类型+变量名=表达式;
+Vd -> TyNa=E
+函数声明:类型+函数名(变量声明1,变量声明2,...)
+Fd -> TyNa(VdList)
 函数声明并定义：类型+函数名(变量声明1,变量声明2,...)block
+Fd' ->TyNa(VdList)block
+block ->{stmts}
+
 函数调用：函数名(表达式列表)
+Func->Na(EList)
+变量赋值：类型+变量名=表达式;
+Vd -> Na=E
+
+变量声明列表 VdList -> 变量声明[,变量声明] | e
+VdList ->VdfVdt'
+        |e
+Vdt'   ->,Vdf
+        |e
+Vdf    ->VdVdt'
+
+类型：基层类型、结构体、指针、数组 T -> int | struct name {} | T*
+Ty ->void
+     |int
+     |short
+     |float
+     |long
+     |char
+     |string
+     |T'复合类型
 
 表达式列表：expr_list -> expr[,expr] | e
-expr_list -> expr'expr''
-            |e
-expr' -> expr expr''
-expr''-> ,expr'
-        |e
-
+EList->EfEt'
+      |e
+Et'-> ,Ef
+      |e
+Ef -> EEt'
 
 expr最终为一个值
 ========================================expr start===========================

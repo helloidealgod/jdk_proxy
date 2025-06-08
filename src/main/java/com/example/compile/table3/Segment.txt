@@ -1,0 +1,98 @@
+Stmts
+	Stmt Stmt'
+		stmt'
+			stmt stmt'
+			e
+		stmt
+			Block
+				{stmts}
+			for(E;E;E) block
+			while(E) block
+			do block while(E);
+			IfElse'
+				If
+					if(E) stmt
+				Else'
+					else stmt
+					e
+			TypNa
+				Typ
+					void
+					int
+					short
+					float
+					long
+					char
+				Na
+					=E 变量声明并赋值
+					变量声明
+					(VdList)
+						VdList
+							VdfVdt'
+								Vdt'
+									,Vdf
+									e
+								Vdf
+									VdVdt'
+							e
+						)函数声明
+						block 函数声明并定义
+			Na
+				=E变量赋值
+				(EList)temp1函数调用
+					EList
+						EfEt'
+							Et'
+								,Ef
+								e
+							Ef
+								EEt'
+						e
+					,Ef
+				变量temp1
+					,Ef
+			E
+				Le逻辑表达式
+					!Le
+					LfLt'
+						Lt'
+							&&LfLt'
+							||LfLt'
+							e
+						Lf
+							(Le)temp1结果可以逻辑、比较、运算
+							!Lf
+							Ce关系表达式
+								CfCt'
+									Ct'
+										<CfCt'
+										<=CfCt'
+										>CfCt'
+										>=CfCt'
+										==CfCt'
+										!=CfCt'
+										e
+									Cf
+										(Ce)temp2结果可以比较+计算
+										Fe算式表达式
+											-Fe
+											FtFe'
+												Fe'
+													+FtFe'
+													-FtFe'
+													e
+												Ft
+													(Fe)temp3结果可以+-*/%
+													FFt'
+														Ft'
+															*FFt'
+															/FFt'
+															%FFt'
+															e
+														F
+															(Fe)temp3结果可以+-*/%
+															id
+																consv
+																Na
+																	(EList)函数调用
+																	e
