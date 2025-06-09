@@ -126,6 +126,12 @@ public class Main2 {
             "Stmts",
             "Stmt'",
             "Stmt",
+            "ForstList",
+            "Forst'",
+            "Forst",
+            "ForetList",
+            "Foret'",
+            "Foret",
             "Block",
             "If",
             "Else'",
@@ -133,7 +139,6 @@ public class Main2 {
             "Tempdef'",
             "Funcall",
             "Temp'",
-            "Temp0",
             "VdList",
             "Vdt'",
             "Vdf",
@@ -162,17 +167,22 @@ public class Main2 {
     public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}", "$"};
     //语法驱动表
     public static String[][] actionMap = {
-            {"pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error"},
-            {"pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;"},
-            {"pop;push E", "pop;push Funcall", "pop;push Typ,Nadef", "pop;push for,(,E,;,E,;,E,),Block", "pop;push while,(,E,),Block", "pop;push do,Block,while,(,E,),;", "pop;push If,Else'", "error", "pop;push E", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "pop;push Block", "error", "error"},
+            {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error"},
+            {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;printf1", "pop;", "pop;push Stmt,Stmt';printf0", "pop;printf1", "pop;printf1"},
+            {"pop;push E", "pop;push Funcall", "pop;push Typ,Nadef", "pop;push for,(,ForstList,semi,E,semi,ForetList,),Block", "pop;push while,(,E,),Block", "pop;push do,Block,while,(,E,),semi", "pop;push If,Else'", "error", "pop;push E", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "pop;push Block", "error", "error"},
+            {"pop;", "pop;push Forst,Forst'", "pop;push Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Forst,Forst'", "pop;", "pop;", "pop;"},
+            {"error", "pop;push Na,=,E", "pop;if2eqpush Na,=,Typ,Na,=,E;if2eqpush Na,semi,Typ,Na;if2eqpush Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;push Foret,Foret'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Foret,Foret'", "pop;", "pop;", "pop;"},
+            {"error", "pop;ifeqpush =,Na,=,E;ifeqpush (,Na,(,EList,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push {,Stmts,}", "error", "error"},
             {"error", "error", "error", "error", "error", "error", "pop;push if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"error", "pop;ifeqpush =,Na,=,E;ifnepush =,Na,Temp'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push (,EList,),Temp0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push comma,Ef", "pop;push Temp1", "pop;push Temp1", "error"},
+            {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Temp',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push (,EList,),semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;push Vdf,Vdt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Vdf", "pop;", "pop;", "pop;"},
             {"error", "error", "pop;push Vd,Vdt'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
@@ -192,7 +202,7 @@ public class Main2 {
             {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "pop;push (,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;push id", "pop;push id", "error", "error", "error", "error", "error", "error", "pop;push (,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push consv", "pop;ifeqpush (,Na(EList);ifnepush (,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push consv", "pop;ifeqpush (,Na,(,EList,);ifnepush (,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "error"},
             {"pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
@@ -428,6 +438,8 @@ public class Main2 {
             symbol = "consv";
         } else if (null != token && token.matches("void|char|short|int|long|float")) {
             symbol = "Typ";
+        } else if (null != token && token.matches("do|for|if|while|else")) {
+            symbol = token;
         } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
             symbol = "Na";
         } else if (null != token) {
@@ -477,6 +489,10 @@ public class Main2 {
                 //System.out.print(token);
                 symbolLine.append(token);
                 stack.pop();
+                if ("Stmt'".equals(stack.getTop())) {
+                    System.out.println("语句解析结束：" + symbolLine.toString());
+                    symbolLine = new StringBuilder("");
+                }
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
                     valStack.push(token);
@@ -521,6 +537,22 @@ public class Main2 {
                         isError = true;
                     } else if (command.equals("pop")) {
                         stack.pop();
+                    } else if (command.contains("if2eqpush")) {
+                        //获取下一个token，
+                        String nextToken1 = getToken();
+                        String nextToken2 = getToken();
+                        String symbol1 = tokenToSymbol(nextToken1);
+                        String symbol2 = tokenToSymbol(nextToken2);
+                        tokenStack.push(nextToken2);
+                        tokenStack.push(nextToken1);
+                        String[] param2 = param.split(",");
+                        param2[1] = param2[1].replaceAll("comma", ",");
+                        param2[1] = param2[1].replaceAll("semi", ";");
+                        if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
+                            for (int j = param2.length - 1; j > 1; j--) {
+                                stack.push(param2[j]);
+                            }
+                        }
                     } else if (command.contains("ifeqpush")) {
                         //获取下一个token，
                         String nextToken = getToken();
@@ -543,6 +575,11 @@ public class Main2 {
                         }
                     } else if (command.contains("push")) {
                         stack.push(param);
+                    } else if (command.contains("printf0")) {
+                        System.out.println("语句解析开始");
+                    } else if (command.contains("printf1")) {
+//                        System.out.println("语句解析结束2：" + symbolLine.toString());
+//                        symbolLine = new StringBuilder("");
                     }
                 }
             }
