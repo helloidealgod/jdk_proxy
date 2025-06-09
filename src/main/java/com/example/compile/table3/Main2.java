@@ -164,12 +164,12 @@ public class Main2 {
     public static String[][] actionMap = {
             {"pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error"},
             {"pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt'", "pop;"},
-            {"pop;push E", "pop;push Funcall", "pop;push TypNadef", "pop;push for,(,E,;,E,;,E,),Block", "pop;push while,(,E,),Block", "pop;push do,Block,while,(,E,),;", "pop;push If,Else'", "error", "pop;push E", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "pop;push Block", "error"},
+            {"pop;push E", "pop;push Funcall", "pop;push Typ,Nadef", "pop;push for,(,E,;,E,;,E,),Block", "pop;push while,(,E,),Block", "pop;push do,Block,while,(,E,),;", "pop;push If,Else'", "error", "pop;push E", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "pop;push Block", "error"},
             {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push {,Stmts,}", "error"},
             {"error", "error", "error", "error", "error", "error", "pop;push if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E;ifnepush =,Na,Tempdef'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push   (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E;ifnepush =,Na,Temp'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push (,EList,),Temp0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push comma,Ef", "pop;push Temp1", "pop;push Temp1"},
@@ -426,6 +426,8 @@ public class Main2 {
         String symbol = null;
         if (null != token && token.matches("\\d*")) {
             symbol = "consv";
+        } else if (null != token && token.matches("void|char|short|int|long|float")) {
+            symbol = "Typ";
         } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
             symbol = "Na";
         } else {
@@ -459,9 +461,9 @@ public class Main2 {
                         valStack.push(result);
                     }
                 }
+                System.out.println("解析：" + symbolLine.toString());
                 if (!valStack.isEmpty()) {
                     String val = valStack.pop();
-                    System.out.println("解析：" + symbolLine.toString());
                     for (int i = 0; i < operateCommandList.size(); i++) {
                         System.out.println(operateCommandList.get(i));
                     }
@@ -495,8 +497,10 @@ public class Main2 {
                             } else {
                                 //运算
                                 String result = operate(opStack.pop());
-                                //结果入栈
-                                valStack.push(result);
+                                if (null != result) {
+                                    //结果入栈
+                                    valStack.push(result);
+                                }
                             }
                         } else {
                             //前面无运算符或当前运算符优先级高于前一个，压入操作符栈

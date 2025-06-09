@@ -18,7 +18,9 @@ public class Stack {
         if (token.contains(",") && !token.equals(",")) {
             String[] split = token.split(",");
             for (int i = split.length - 1; i >= 0; i--) {
-                stack.add(split[i].replaceAll("comma", ","));
+                String comma = split[i].replaceAll("comma", ",");
+                comma = comma.replaceAll("semi", ";");
+                stack.add(comma);
             }
         } else {
             stack.add(token);
