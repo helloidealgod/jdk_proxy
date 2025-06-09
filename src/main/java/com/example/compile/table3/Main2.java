@@ -159,7 +159,7 @@ public class Main2 {
             "Temp3"
     };
     //符号集
-    public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}"};
+    public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}","$"};
     //语法驱动表
     public static String[][] actionMap = {
             {"pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "pop;push Stmt,Stmt'", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt'", "error"},
@@ -168,8 +168,8 @@ public class Main2 {
             {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push {,Stmts,}", "error"},
             {"error", "error", "error", "error", "error", "error", "pop;push if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"error", "pop;ifeqpush =,Na,=,E;ifnepush =,Na,Tempdef'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E;ifnepush =,Na,Temp'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push (,EList,),Temp0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push Temp1", "pop;push comma,Ef", "pop;push Temp1", "pop;push Temp1"},
@@ -423,7 +423,7 @@ public class Main2 {
     }
 
     public static String tokenToSymbol(String token) {
-        String symbol = null;
+        String symbol = "$";
         if (null != token && token.matches("\\d*")) {
             symbol = "consv";
         } else if (null != token && token.matches("void|char|short|int|long|float")) {
@@ -445,33 +445,32 @@ public class Main2 {
         boolean isError = false;
         do {
             symbol = tokenToSymbol(token);
-            if (null == symbol) {
-                System.out.println("end of reading!");
+            if ("$".equals(symbol) && stack.isEmpty()) {
+                System.out.println("语法解析结束！");
                 return;
-            } else if (";".equals(symbol) && stack.isEmpty()) {
                 //是结束符 pop 操作符栈 进行运算
-                while (!opStack.isEmpty()) {
-                    String op = opStack.pop();
-                    //运算
-                    String result = operate(op);
-                    if (",".equals(op)) {
-                        System.out.print("输出：" + result + op);
-                    } else {
-                        //结果入栈
-                        valStack.push(result);
-                    }
-                }
-                System.out.println("解析：" + symbolLine.toString());
-                if (!valStack.isEmpty()) {
-                    String val = valStack.pop();
-                    for (int i = 0; i < operateCommandList.size(); i++) {
-                        System.out.println(operateCommandList.get(i));
-                    }
-                    System.out.println("result = " + val);
-                }
-                operateCommandList.clear();
-                symbolLine = new StringBuilder("");
-                token = getToken();
+//                while (!opStack.isEmpty()) {
+//                    String op = opStack.pop();
+//                    //运算
+//                    String result = operate(op);
+//                    if (",".equals(op)) {
+//                        System.out.print("输出：" + result + op);
+//                    } else {
+//                        //结果入栈
+//                        valStack.push(result);
+//                    }
+//                }
+//                System.out.println("解析：" + symbolLine.toString());
+//                if (!valStack.isEmpty()) {
+//                    String val = valStack.pop();
+//                    for (int i = 0; i < operateCommandList.size(); i++) {
+//                        System.out.println(operateCommandList.get(i));
+//                    }
+//                    System.out.println("result = " + val);
+//                }
+//                operateCommandList.clear();
+//                symbolLine = new StringBuilder("");
+//                token = getToken();
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {

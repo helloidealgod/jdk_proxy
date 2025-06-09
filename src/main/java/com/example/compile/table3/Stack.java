@@ -23,7 +23,9 @@ public class Stack {
                 stack.add(comma);
             }
         } else {
-            stack.add(token);
+            String comma = token.replaceAll("comma", ",");
+            comma = comma.replaceAll("semi", ";");
+            stack.add(comma);
         }
     }
 
