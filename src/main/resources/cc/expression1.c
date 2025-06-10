@@ -1,3 +1,4 @@
+
 for(int a,int b=3,c=4;2<3;a=23,function()){
  int a;
 }
@@ -100,3 +101,5 @@ for(int a=1+2;2<3; b=6-2){
     function2(2,3,4);
     int c= function2(2,3,4)+123+function1(1);
 }
+
+12+asm+xsd+23*32-we/23

@@ -120,7 +120,7 @@ public class Main2 {
     // 操作符栈
     public static Stack opStack = new Stack();
     // 值栈
-    public static Stack valStack = new Stack();
+    public static StackE valStack = new StackE();
     //表达式集
     public static String[] exprs = {
             "Stmts",
@@ -339,16 +339,16 @@ public class Main2 {
      * @param op
      * @return
      */
-    public static String operate(String op) {
+    public static SegmentE operate(String op) {
         if ("(".equals(op)) {
-            return "";
+            return null;
         } else if (")".equals(op)) {
             if ("(".equals(opStack.getTop())) {
                 opStack.pop();
             } else {
                 System.out.println("error");
             }
-            return "";
+            return null;
         }
         if (",".equals(op)) {
             return valStack.pop();
@@ -356,79 +356,109 @@ public class Main2 {
         if (1 > valStack.size()) {
             System.out.println("error val length < 1");
         }
-        String val2 = valStack.pop();
-        String val1 = null;
+        SegmentE e2 = valStack.pop();
+        SegmentE e1 = null;
         if (!valStack.isEmpty() && !"!".equals(op)) {
-            val1 = valStack.pop();
+            e1 = valStack.pop();
         }
-        if ("-".equals(op) && null == val1) {
-            val1 = "0";
+        if ("-".equals(op) && null == e1) {
+            e1 = new SegmentE("int", "0", "0");
         }
-        String result = operate(op, val1, val2);
-        //System.out.println("\n" + op + " " + val1 + " " + val2 + " = " + result);
-        operateCommandList.add(op + " " + val1 + " " + val2 + " = " + result);
+        SegmentE result = operate(op, e1, e2);
         return result;
     }
 
-    public static String operate(String op, String val1, String val2) {
-        String result = null;
+    public static SegmentE operate(String op, SegmentE val1, SegmentE val2) {
+        SegmentE result = null;
         if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("%")
                 || op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("==") || op.equals("!=")) {
-            Integer int1 = Integer.valueOf(val1);
-            Integer int2 = Integer.valueOf(val2);
-            if (op.equals("+")) {
-                result = String.valueOf(int1 + int2);
-            } else if (op.equals("-")) {
-                result = String.valueOf(int1 - int2);
-            } else if (op.equals("*")) {
-                result = String.valueOf(int1 * int2);
-            } else if (op.equals("/")) {
-                result = String.valueOf(int1 / int2);
-            } else if (op.equals("%")) {
-                result = String.valueOf(int1 % int2);
-            } else if (op.equals("<")) {
-                result = String.valueOf(int1 < int2);
-            } else if (op.equals("<=")) {
-                result = String.valueOf(int1 <= int2);
-            } else if (op.equals(">")) {
-                result = String.valueOf(int1 > int2);
-            } else if (op.equals(">=")) {
-                result = String.valueOf(int1 >= int2);
-            } else if (op.equals("==")) {
-                result = String.valueOf(int1 == int2);
-            } else if (op.equals("!=")) {
-                result = String.valueOf(int1 != int2);
+
+            Integer int1 = val1.value == null ? null : Integer.valueOf(val1.value);
+            Integer int2 = val2.value == null ? null : Integer.valueOf(val2.value);
+
+            if (null != int1 && null != int2) {
+                if (op.equals("+")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 + int2));
+                } else if (op.equals("-")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 - int2));
+                } else if (op.equals("*")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 * int2));
+                } else if (op.equals("/")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 / int2));
+                } else if (op.equals("%")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 % int2));
+                } else if (op.equals("<")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 < int2));
+                } else if (op.equals("<=")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 <= int2));
+                } else if (op.equals(">")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 > int2));
+                } else if (op.equals(">=")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 >= int2));
+                } else if (op.equals("==")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 == int2));
+                } else if (op.equals("!=")) {
+                    result = new SegmentE("int", "", String.valueOf(int1 != int2));
+                }
+            } else {
+                if (val1.op != null) {
+                    SegmentEList.add(val1);
+                }
+                if (val2.op != null) {
+                    SegmentEList.add(val2);
+                }
+                result = new SegmentE("int", op, val1, val2);
             }
         } else if (op.equals("&&") || op.equals("||")) {
-            boolean b1 = false;
-            boolean b2 = false;
-            if ("true".equals(val1) || "false".equals(val1)) {
-                b1 = "true".equals(val1);
-            } else {
-                System.out.println("error val1 is not boolean");
-            }
-            if ("true".equals(val2) || "false".equals(val2)) {
-                b2 = "true".equals(val2);
-            } else {
-                System.out.println("error val2 is not boolean");
-            }
+            Boolean b1 = null;
+            Boolean b2 = null;
+            String s1 = val1.value == null ? "" : val1.value;
+            String s2 = val2.value == null ? "" : val2.value;
 
-            if (op.equals("&&")) {
-                result = String.valueOf(b1 && b2);
-            } else if (op.equals("||")) {
-                result = String.valueOf(b1 || b2);
+            if ("true".equals(s1) || "false".equals(s1)) {
+                b1 = "true".equals(s1);
+            }
+            if ("true".equals(s2) || "false".equals(s2)) {
+                b2 = "true".equals(s2);
+            }
+            if (null != b1 && null != b2) {
+                if (op.equals("&&")) {
+                    result = new SegmentE("Boolean", "", String.valueOf(b1 && b2));
+                } else if (op.equals("||")) {
+                    result = new SegmentE("Boolean", "", String.valueOf(b1 || b2));
+                }
+            } else {
+                if (val1.op != null) {
+                    SegmentEList.add(val1);
+                }
+                if (val2.op != null) {
+                    SegmentEList.add(val2);
+                }
+                result = new SegmentE("Boolean", op, val1, val2);
             }
         } else if (op.equals("!")) {
-            boolean b2 = false;
-            if ("true".equals(val2) || "false".equals(val2)) {
-                b2 = "true".equals(val2);
-            } else {
-                System.out.println("error val1 is not boolean");
+            Boolean b2 = null;
+            String s2 = val2.value == null ? "" : val2.value;
+            if ("true".equals(s2) || "false".equals(s2)) {
+                b2 = "true".equals(s2);
             }
-            if (op.equals("!")) {
-                result = String.valueOf(!b2);
+            if (null != b2) {
+                result = new SegmentE("Boolean", "", String.valueOf(!b2));
+            } else {
+                if (val2.op != null) {
+                    SegmentEList.add(val2);
+                }
+                result = new SegmentE("Boolean", op, null, val2);
             }
         }
+//        if (null != result && null != result.e1 && null != result.e2) {
+//            String var1 = result.e1.value == null ? result.e1.name : result.e1.value;
+//            String var2 = result.e2.value == null ? result.e2.name : result.e2.value;
+//            System.out.println(result.op + " " + var1 + " " + var2);
+//        } else if (null != result && null == result.e1 && null != result.e2) {
+//            String var2 = result.e2.value == null ? result.e2.name : result.e2.value;
+//            System.out.println(result.op + " " + var2);
+//        }
         return result;
     }
 
@@ -449,6 +479,7 @@ public class Main2 {
     }
 
     public static List<String> operateCommandList = new ArrayList<>();
+    public static List<SegmentE> SegmentEList = new ArrayList<>();
 
     public static void translationUnit() throws IOException {
         String symbol = null;
@@ -459,30 +490,31 @@ public class Main2 {
             symbol = tokenToSymbol(token);
             if ("$".equals(symbol) && stack.isEmpty()) {
                 System.out.println("语法解析结束！");
-                return;
                 //是结束符 pop 操作符栈 进行运算
-//                while (!opStack.isEmpty()) {
-//                    String op = opStack.pop();
-//                    //运算
-//                    String result = operate(op);
-//                    if (",".equals(op)) {
-//                        System.out.print("输出：" + result + op);
-//                    } else {
-//                        //结果入栈
-//                        valStack.push(result);
-//                    }
-//                }
-//                System.out.println("解析：" + symbolLine.toString());
-//                if (!valStack.isEmpty()) {
-//                    String val = valStack.pop();
-//                    for (int i = 0; i < operateCommandList.size(); i++) {
-//                        System.out.println(operateCommandList.get(i));
-//                    }
-//                    System.out.println("result = " + val);
-//                }
-//                operateCommandList.clear();
-//                symbolLine = new StringBuilder("");
-//                token = getToken();
+                while (!opStack.isEmpty()) {
+                    String op = opStack.pop();
+                    //运算
+                    SegmentE result = operate(op);
+                    if (",".equals(op)) {
+                        //System.out.print("输出：" + result + op);
+                    } else {
+                        //结果入栈
+                        valStack.push(result);
+                    }
+                }
+                if (!valStack.isEmpty()) {
+                    SegmentE val = valStack.pop();
+                    SegmentEList.add(val);
+                }
+                if (SegmentEList.size() == 1) {
+                    SegmentE e = SegmentEList.get(0);
+                    String var1 = e.value == null ? e.name : e.value;
+                    System.out.println(" " + var1);
+                }
+                for (SegmentE item : SegmentEList) {
+                    Utils.printSegmentE(item);
+                }
+                return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
@@ -503,8 +535,14 @@ public class Main2 {
                 //TypNadef
                 //Funcall
                 //是数值 压入值栈
-                if (token.matches("\\d*")) {
-                    valStack.push(token);
+                if (null != token && token.matches("\\d*")) {
+                    valStack.push(new SegmentE("int", "", token));
+                } else if (null != token && token.matches("void|char|short|int|long|float")) {
+
+                } else if (null != token && token.matches("do|for|if|while|else")) {
+
+                } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
+                    valStack.push(new SegmentE("int", token, null));
                 } else if (isOperate(token)) {
                     boolean flag = true;
                     while (flag) {
@@ -520,7 +558,7 @@ public class Main2 {
                                 flag = false;
                             } else {
                                 //运算
-                                String result = operate(opStack.pop());
+                                SegmentE result = operate(opStack.pop());
                                 if (null != result) {
                                     //结果入栈
                                     valStack.push(result);

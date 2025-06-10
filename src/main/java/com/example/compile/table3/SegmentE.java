@@ -14,4 +14,11 @@ public class SegmentE {
         this.name = name;
         this.value = value;
     }
+
+    public SegmentE(String type, String op, SegmentE e1, SegmentE e2) {
+        this.type = type;
+        this.op = op;
+        this.e1 = e1;
+        this.e2 = e2;
+    }
 }
