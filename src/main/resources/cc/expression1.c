@@ -1,6 +1,21 @@
 for(int a,int b=3,c=4;2<3;a=23,function()){
  int a;
 }
+do{
+    int a = 123;
+    function0();
+}while(1);
+while(1){
+    int a = 123;
+    function0();
+}
+(1+2*(4-1)*(1+3)%(4-2))*10
+1
+2
+asdf;
+for(int a,int b=3,c=4;2<3;a=23,function()){
+ int a;
+}
 1
 1+2
 int a;

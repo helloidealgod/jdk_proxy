@@ -1,0 +1,17 @@
+package com.example.compile.table3;
+
+public class SegmentE {
+    public String type;
+    public String op;
+    public String name;
+    public String value;
+
+    public SegmentE e1;
+    public SegmentE e2;
+
+    public SegmentE(String type, String name, String value) {
+        this.type = type;
+        this.name = name;
+        this.value = value;
+    }
+}

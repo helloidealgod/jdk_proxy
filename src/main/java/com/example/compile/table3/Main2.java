@@ -169,7 +169,7 @@ public class Main2 {
     public static String[][] actionMap = {
             {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error"},
             {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;printf1", "pop;", "pop;push Stmt,Stmt';printf0", "pop;printf1", "pop;printf1"},
-            {"pop;push E;SegTypeE","pop;push Funcall;SegTypeCall","pop;push Typ,Nadef;SegTypeDef","pop;push for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor","pop;push while,(,E,),Block;SegTypeWhile","pop;push do,Block,while,(,E,),semi;SegTypeDo","pop;push If,Else';SegTypeElse","error","pop;push E;SegTypeE","error","error","error","pop;push E;SegTypeE","error","error","error","error","error","error","error","pop;push E;SegTypeE","error","error","error","error","error","pop;push Block;SegTypeBlock","error","error"},
+            {"pop;push E;SegTypeE", "pop;push Funcall;SegTypeCall", "pop;push Typ,Nadef;SegTypeDef", "pop;push for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push while,(,E,),Block;SegTypeWhile", "pop;push do,Block,while,(,E,),semi;SegTypeDo", "pop;push If,Else';SegTypeElse", "error", "pop;push E;SegTypeE", "error", "error", "error", "pop;push E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push E;SegTypeE", "error", "error", "error", "error", "error", "pop;push Block;SegTypeBlock", "error", "error"},
             {"pop;", "pop;push Forst,Forst'", "pop;push Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Forst,Forst'", "pop;", "pop;", "pop;"},
             {"error", "pop;push Na,=,E", "pop;if2eqpush Na,=,Typ,Na,=,E;if2eqpush Na,semi,Typ,Na;if2eqpush Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
@@ -492,7 +492,7 @@ public class Main2 {
                 if ("Stmt'".equals(stack.getTop())) {
                     System.out.println("语句解析结束：" + symbolLine.toString());
                     symbolLine = new StringBuilder("");
-                }else if ("Lt'".equals(stack.getTop())) {
+                } else if ("Lt'".equals(stack.getTop())) {
                     System.out.println("E结束：" + symbolLine.toString());
                     symbolLine = new StringBuilder("");
                 }
@@ -550,34 +550,42 @@ public class Main2 {
                         //获取下一个token，
                         String nextToken1 = getToken();
                         String nextToken2 = getToken();
-                        String symbol1 = tokenToSymbol(nextToken1);
-                        String symbol2 = tokenToSymbol(nextToken2);
-                        tokenStack.push(nextToken2);
-                        tokenStack.push(nextToken1);
-                        String[] param2 = param.split(",");
-                        param2[1] = param2[1].replaceAll("comma", ",");
-                        param2[1] = param2[1].replaceAll("semi", ";");
-                        if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
-                            for (int j = param2.length - 1; j > 1; j--) {
-                                stack.push(param2[j]);
+                        if (null != nextToken1 && null != nextToken2) {
+                            String symbol1 = tokenToSymbol(nextToken1);
+                            String symbol2 = tokenToSymbol(nextToken2);
+                            tokenStack.push(nextToken2);
+                            String[] param2 = param.split(",");
+                            param2[1] = param2[1].replaceAll("comma", ",");
+                            param2[1] = param2[1].replaceAll("semi", ";");
+                            if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
+                                for (int j = param2.length - 1; j > 1; j--) {
+                                    stack.push(param2[j]);
+                                }
                             }
+                        }
+                        if (null != nextToken1) {
+                            tokenStack.push(nextToken1);
                         }
                     } else if (command.contains("ifeqpush")) {
                         //获取下一个token，
                         String nextToken = getToken();
-                        tokenStack.push(nextToken);
-                        String[] param2 = param.split(",");
-                        if (nextToken.equals(param2[0])) {
-                            for (int j = param2.length - 1; j > 0; j--) {
-                                stack.push(param2[j]);
+                        if (null != nextToken) {
+                            tokenStack.push(nextToken);
+                            String[] param2 = param.split(",");
+                            if (nextToken.equals(param2[0])) {
+                                for (int j = param2.length - 1; j > 0; j--) {
+                                    stack.push(param2[j]);
+                                }
                             }
                         }
                     } else if (command.contains("ifnepush")) {
                         //获取下一个token，
                         String nextToken = getToken();
-                        tokenStack.push(nextToken);
+                        if (null != nextToken) {
+                            tokenStack.push(nextToken);
+                        }
                         String[] param2 = param.split(",");
-                        if (!nextToken.equals(param2[0])) {
+                        if (null == nextToken || !nextToken.equals(param2[0])) {
                             for (int j = param2.length - 1; j > 0; j--) {
                                 stack.push(param2[j]);
                             }
@@ -590,7 +598,7 @@ public class Main2 {
 //                        System.out.println("语句解析结束2：" + symbolLine.toString());
 //                        symbolLine = new StringBuilder("");
                     } else if (command.contains("SegType")) {
-                        switch (command){
+                        switch (command) {
                             case "SegTypeE":
                                 System.out.println(command);
                                 break;

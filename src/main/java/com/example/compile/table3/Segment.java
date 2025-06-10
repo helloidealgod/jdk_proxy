@@ -1,5 +1,8 @@
 package com.example.compile.table3;
 
-public class Segment {
+public abstract class Segment {
     public String type;
+    public String name;
+
+    public abstract int execute();
 }
