@@ -169,7 +169,7 @@ public class Main2 {
     public static String[][] actionMap = {
             {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error"},
             {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;printf1", "pop;", "pop;push Stmt,Stmt';printf0", "pop;printf1", "pop;printf1"},
-            {"pop;push E", "pop;push Funcall", "pop;push Typ,Nadef", "pop;push for,(,ForstList,semi,E,semi,ForetList,),Block", "pop;push while,(,E,),Block", "pop;push do,Block,while,(,E,),semi", "pop;push If,Else'", "error", "pop;push E", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "error", "error", "pop;push E", "error", "error", "error", "error", "error", "pop;push Block", "error", "error"},
+            {"pop;push E;SegTypeE","pop;push Funcall;SegTypeCall","pop;push Typ,Nadef;SegTypeDef","pop;push for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor","pop;push while,(,E,),Block;SegTypeWhile","pop;push do,Block,while,(,E,),semi;SegTypeDo","pop;push If,Else';SegTypeElse","error","pop;push E;SegTypeE","error","error","error","pop;push E;SegTypeE","error","error","error","error","error","error","error","pop;push E;SegTypeE","error","error","error","error","error","pop;push Block;SegTypeBlock","error","error"},
             {"pop;", "pop;push Forst,Forst'", "pop;push Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Forst,Forst'", "pop;", "pop;", "pop;"},
             {"error", "pop;push Na,=,E", "pop;if2eqpush Na,=,Typ,Na,=,E;if2eqpush Na,semi,Typ,Na;if2eqpush Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
@@ -180,9 +180,9 @@ public class Main2 {
             {"error", "error", "error", "error", "error", "error", "pop;push if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push (,VdList,),Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push (,VdList,),Stmt;SegTypeFunDef", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Temp',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push (,EList,),semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
+            {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push (,EList,),semi;SegTypeFunCall", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
             {"pop;", "pop;", "pop;push Vdf,Vdt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Vdf", "pop;", "pop;", "pop;"},
             {"error", "error", "pop;push Vd,Vdt'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
@@ -492,7 +492,16 @@ public class Main2 {
                 if ("Stmt'".equals(stack.getTop())) {
                     System.out.println("语句解析结束：" + symbolLine.toString());
                     symbolLine = new StringBuilder("");
+                }else if ("Lt'".equals(stack.getTop())) {
+                    System.out.println("E结束：" + symbolLine.toString());
+                    symbolLine = new StringBuilder("");
                 }
+                //ForstForst'
+                //ForetForet'
+                //do Block while(E);
+                //while(E) Block
+                //TypNadef
+                //Funcall
                 //是数值 压入值栈
                 if (token.matches("\\d*")) {
                     valStack.push(token);
@@ -580,6 +589,41 @@ public class Main2 {
                     } else if (command.contains("printf1")) {
 //                        System.out.println("语句解析结束2：" + symbolLine.toString());
 //                        symbolLine = new StringBuilder("");
+                    } else if (command.contains("SegType")) {
+                        switch (command){
+                            case "SegTypeE":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeBlock":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeIf":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeDo":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeWhile":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeFor":
+                                System.out.println(command);
+                                break;
+                            case "SegTypeDef"://变量声明、变量声明赋值
+                                System.out.println(command);
+                                break;
+                            case "SegTypeFunDef"://函数定义
+                                System.out.println(command);
+                                break;
+                            case "SegTypeCall"://赋值、表达式
+                                System.out.println(command);
+                                break;
+                            case "SegTypeFunCall"://函数调用
+                                System.out.println(command);
+                                break;
+                            default:
+                                System.out.println(command);
+                        }
                     }
                 }
             }

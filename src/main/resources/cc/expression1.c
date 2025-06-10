@@ -1,3 +1,6 @@
+for(int a,int b=3,c=4;2<3;a=23,function()){
+ int a;
+}
 1
 1+2
 int a;
@@ -67,7 +70,7 @@ while(1<3){
     function2(2,3,4);
 }
 
-for(1+2;2<3;6-2){
+for(int a=1+2;2<3; b=6-2){
 	int q=90;
 	while(1<3){
         int a = 123;
@@ -80,5 +83,5 @@ for(1+2;2<3;6-2){
     function0();
     function1(1);
     function2(2,3,4);
-    int c= function2(2,3,4);
+    int c= function2(2,3,4)+123+function1(1);
 }
