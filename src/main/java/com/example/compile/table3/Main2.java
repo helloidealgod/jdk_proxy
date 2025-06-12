@@ -5,6 +5,7 @@ import com.example.compile.table3.segment.impl.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main2 {
@@ -170,45 +171,45 @@ public class Main2 {
     public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}", "$"};
     //语法驱动表
     public static String[][] actionMap = {
-            {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error", "error", "error", "error", "pop;push Stmt,Stmt';printf0", "error", "error"},
-            {"pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;push Stmt,Stmt';printf0", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Stmt,Stmt';printf0", "pop;", "pop;", "pop;", "pop;printf1", "pop;", "pop;push Stmt,Stmt';printf0", "pop;printf1", "pop;printf1"},
-            {"pop;push E;SegTypeE", "pop;push Funcall;SegTypeCall", "pop;push Typ,Nadef;SegTypeDef", "pop;push for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push while,(,E,),Block;SegTypeWhile", "pop;push do,Block,while,(,E,),semi;SegTypeDo", "pop;push If,Else';SegTypeElse", "error", "pop;push E;SegTypeE", "error", "error", "error", "pop;push E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push E;SegTypeE", "error", "error", "error", "error", "error", "pop;push Block;SegTypeBlock", "error", "error"},
-            {"pop;", "pop;push Forst,Forst'", "pop;push Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Forst,Forst'", "pop;", "pop;", "pop;"},
-            {"error", "pop;push Na,=,E", "pop;if2eqpush Na,=,Typ,Na,=,E;if2eqpush Na,semi,Typ,Na;if2eqpush Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;push Foret,Foret'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Foret,Foret'", "pop;", "pop;", "pop;"},
-            {"error", "pop;ifeqpush =,Na,=,E;ifeqpush (,Na,(,EList,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push {,Stmts,}", "error", "error"},
-            {"error", "error", "error", "error", "error", "error", "pop;push if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push (,VdList,),Stmt;SegTypeFunDef", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"error", "pop;ifeqpush =,Na,=,E,semi;ifnepush =,Na,Temp',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push (,EList,),semi;SegTypeFunCall", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;push Vdf,Vdt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Vdf", "pop;", "pop;", "pop;"},
-            {"error", "error", "pop;push Vd,Vdt'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"error", "error", "pop;push Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Ef,Et'", "pop;push Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Ef,Et'", "pop;", "pop;", "pop;", "pop;push Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push comma,Ef", "pop;", "pop;", "pop;"},
-            {"pop;push E,Et'", "pop;push E,Et'", "error", "error", "error", "error", "error", "error", "pop;push E,Et'", "error", "error", "error", "pop;push E,Et'", "error", "error", "error", "error", "error", "error", "error", "pop;push E,Et'", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Le", "pop;push Le", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Le", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Lf,Lt'", "pop;push Lf,Lt'", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "pop;push !,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push Lf,Lt'", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;push Ce", "pop;push Ce", "error", "error", "error", "error", "error", "error", "pop;push (,Le,),Temp1", "error", "error", "error", "pop;push !,Lf", "error", "error", "error", "error", "error", "error", "error", "pop;push Ce", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Cf,Ct'", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;push Fe", "pop;push Fe", "error", "error", "error", "error", "error", "error", "pop;push (,Ce,),Temp2", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Ft,Fe'", "pop;push Ft,Fe'", "error", "error", "error", "error", "error", "error", "pop;push Ft,Fe'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push -,Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push +,Ft,Fe'", "pop;push -,Ft,Fe'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;push F,Ft'", "pop;push F,Ft'", "error", "error", "error", "error", "error", "error", "pop;push (,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
-            {"pop;push id", "pop;push id", "error", "error", "error", "error", "error", "error", "pop;push (,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push consv", "pop;ifeqpush (,Na,(,EList,);ifnepush (,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-            {"pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push &&,Lf,Lt'", "pop;push ||,Lf,Lt'", "pop;push !,Le", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "pop;push Temp2", "error"},
-            {"pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push <,Cf,Ct'", "pop;push <=,Cf,Ct'", "pop;push >,Cf,Ct'", "pop;push >=,Cf,Ct'", "pop;push ==,Cf,Ct'", "pop;push !=,Cf,Ct'", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "pop;push Temp3", "error"},
-            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push !=,Cf,Ct'", "pop;push +,Ft',Fe'", "pop;push *,F,Ft'", "pop;push /,F,Ft'", "pop;push %,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error"},
+            {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop", "pop;", "pop;push 0,Stmt,Stmt'", "pop", "pop"},
+            {"pop;push 0,E;SegTypeE", "pop;push 0,Funcall;SegTypeCall", "pop;push 0,Typ,Nadef;SegTypeDef", "pop;push 0,for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push 0,while,(,E,),Block;SegTypeWhile", "pop;push 0,do,Block,while,(,E,),semi;SegTypeDo", "pop;push 0,If,Else';SegTypeElse", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "pop;push 0,Block;SegTypeBlock", "error", "error"},
+            {"pop;", "pop;push 0,Forst,Forst'", "pop;push 0,Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Forst,Forst'", "pop;", "pop;", "pop;"},
+            {"error", "pop;push 0,Na,=,E", "pop;push 2,eq,Na,=,Typ,Na,=,E;push 2,eq,Na,semi,Typ,Na;push 2,eq,Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;push 0,Foret,Foret'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Foret,Foret'", "pop;", "pop;", "pop;"},
+            {"error", "pop;push 1,eq,=,Na,=,E;push 1,eq,(,Na,(,EList,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,{,Stmts,}", "error", "error"},
+            {"error", "error", "error", "error", "error", "error", "pop;push 0,if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"error", "pop;push 1,eq,=,Na,=,E,semi;push 1,ne,=,Na,Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push 0,(,VdList,),Stmt;SegTypeFunDef", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"error", "pop;push 1,eq,=,Na,=,E,semi;push 1,ne,=,Na,Temp',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push 0,(,EList,),semi;SegTypeFunCall", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;push 0,Vdf,Vdt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Vdf", "pop;", "pop;", "pop;"},
+            {"error", "error", "pop;push 0,Vd,Vdt'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"error", "error", "pop;push 0,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Ef,Et'", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Ef", "pop;", "pop;", "pop;"},
+            {"pop;push 0,E,Et'", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Le", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Lf,Lt'", "pop;push 0,Lf,Lt'", "error", "error", "error", "error", "error", "error", "pop;push 0,Lf,Lt'", "error", "error", "error", "pop;push 0,!,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Lf,Lt'", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,&&,Lf,Lt'", "pop;push 0,||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;push 0,Ce", "pop;push 0,Ce", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Le,),Temp1", "error", "error", "error", "pop;push 0,!,Lf", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Ce", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Cf,Ct'", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,<,Cf,Ct'", "pop;push 0,<=,Cf,Ct'", "pop;push 0,>,Cf,Ct'", "pop;push 0,>=,Cf,Ct'", "pop;push 0,==,Cf,Ct'", "pop;push 0,!=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;push 0,Fe", "pop;push 0,Fe", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Ce,),Temp2", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Ft,Fe'", "pop;push 0,Ft,Fe'", "error", "error", "error", "error", "error", "error", "pop;push 0,Ft,Fe'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,-,Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,+,Ft,Fe'", "pop;push 0,-,Ft,Fe'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;push 0,F,Ft'", "pop;push 0,F,Ft'", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,*,F,Ft'", "pop;push 0,/,F,Ft'", "pop;push 0,%,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
+            {"pop;push 0,id", "pop;push 0,id", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,consv", "pop;push 1,eq,(,Na,(,EList,);push 1,ne,(,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
+            {"pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,&&,Lf,Lt'", "pop;push 0,||,Lf,Lt'", "pop;push 0,!,Le", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "error"},
+            {"pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,<,Cf,Ct'", "pop;push 0,<=,Cf,Ct'", "pop;push 0,>,Cf,Ct'", "pop;push 0,>=,Cf,Ct'", "pop;push 0,==,Cf,Ct'", "pop;push 0,!=,Cf,Ct'", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "error"},
+            {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,!=,Cf,Ct'", "pop;push 0,+,Ft',Fe'", "pop;push 0,*,F,Ft'", "pop;push 0,/,F,Ft'", "pop;push 0,%,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
     };
 
     public static int getTokensIndex(String token) {
@@ -477,7 +478,6 @@ public class Main2 {
     public static List<SegmentExprOp> segmentExprOpList = new ArrayList<>();
 
     public static Segment segment;
-    public static StackSegment stackSegment = new StackSegment();
 
     public static void translationUnit() throws IOException {
         String symbol = null;
@@ -517,28 +517,21 @@ public class Main2 {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
                 symbolLine.append(token);
+                System.out.println(token);
                 stack.pop();
-                if ("Stmt'".equals(stack.getTop())) {
-                    System.out.println("语句解析结束：" + symbolLine.toString());
-                    symbolLine = new StringBuilder("");
-                } else if ("Lt'".equals(stack.getTop())) {
-                    System.out.println("E结束：" + symbolLine.toString());
-                    symbolLine = new StringBuilder("");
-                }
-                segment.execute(token);
                 //是数值 压入值栈
                 if (null != token && token.matches("\\d*")) {
-                    if (segment instanceof SegTypeExpr) {
-                        valStack.push(new SegmentExprOp("int", "", token));
-                    }
+//                    if (segment instanceof SegTypeExpr) {
+                    valStack.push(new SegmentExprOp("int", "", token));
+//                    }
                 } else if (null != token && token.matches("void|char|short|int|long|float")) {
 
                 } else if (null != token && token.matches("do|for|if|while|else")) {
 
                 } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
-                    if (segment instanceof SegTypeExpr) {
-                        valStack.push(new SegmentExprOp("int", token, null));
-                    }
+//                    if (segment instanceof SegTypeExpr) {
+                    valStack.push(new SegmentExprOp("int", token, null));
+//                    }
                 } else if (isOperate(token)) {
                     boolean flag = true;
                     while (flag) {
@@ -569,9 +562,15 @@ public class Main2 {
                 }
                 token = getToken();
             } else {
+                //如果栈顶是do action 动作
+                String top = stack.getTop();
+                if (top.startsWith("doAction")) {
+                    isError = true;
+                }
                 //根据栈顶元素与当前token查找下一步动作
-                String actions = getAction(stack.getTop(), symbol);
+                String actions = getAction(top, symbol);
                 String[] commands = actions.split(";");
+                //do push
                 for (int i = 0; i < commands.length; i++) {
                     String[] split = commands[i].split(" ");
                     String command = split[0];
@@ -580,100 +579,56 @@ public class Main2 {
                         isError = true;
                     } else if (command.equals("pop")) {
                         stack.pop();
-                    } else if (command.contains("if2eqpush")) {
-                        //获取下一个token，
-                        String nextToken1 = getToken();
-                        String nextToken2 = getToken();
-                        if (null != nextToken1 && null != nextToken2) {
-                            String symbol1 = tokenToSymbol(nextToken1);
-                            String symbol2 = tokenToSymbol(nextToken2);
-                            tokenStack.push(nextToken2);
-                            String[] param2 = param.split(",");
-                            param2[1] = param2[1].replaceAll("comma", ",");
-                            param2[1] = param2[1].replaceAll("semi", ";");
-                            if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
-                                for (int j = param2.length - 1; j > 1; j--) {
-                                    stack.push(param2[j]);
-                                }
-                            }
-                        }
-                        if (null != nextToken1) {
-                            tokenStack.push(nextToken1);
-                        }
-                    } else if (command.contains("ifeqpush")) {
-                        //获取下一个token，
-                        String nextToken = getToken();
-                        if (null != nextToken) {
-                            tokenStack.push(nextToken);
-                            String[] param2 = param.split(",");
-                            if (nextToken.equals(param2[0])) {
-                                for (int j = param2.length - 1; j > 0; j--) {
-                                    stack.push(param2[j]);
-                                }
-                            }
-                        }
-                    } else if (command.contains("ifnepush")) {
-                        //获取下一个token，
-                        String nextToken = getToken();
-                        if (null != nextToken) {
-                            tokenStack.push(nextToken);
-                        }
-                        String[] param2 = param.split(",");
-                        if (null == nextToken || !nextToken.equals(param2[0])) {
-                            for (int j = param2.length - 1; j > 0; j--) {
-                                stack.push(param2[j]);
-                            }
-                        }
                     } else if (command.contains("push")) {
-                        stack.push(param);
-                    } else if (command.contains("printf0")) {
-                        System.out.println("语句解析开始");
-                    } else if (command.contains("SegType")) {
-                        switch (command) {
-                            case "SegTypeE":
-                                System.out.println(command);
-                                segment = new SegTypeExpr();
-                                break;
-                            case "SegTypeBlock":
-                                System.out.println(command);
-                                segment = new SegTypeBlock();
-                                break;
-                            case "SegTypeIf":
-                                System.out.println(command);
-                                segment = new SegTypeIf();
-                                break;
-                            case "SegTypeDo":
-                                System.out.println(command);
-                                segment = new SegTypeDo();
-                                break;
-                            case "SegTypeWhile":
-                                System.out.println(command);
-                                segment = new SegTypeWhile();
-                                break;
-                            case "SegTypeFor":
-                                System.out.println(command);
-                                segment = new SegTypeFor();
-                                break;
-                            case "SegTypeDef"://变量声明、变量声明赋值
-                                System.out.println(command);
-                                segment = new SegTypeDef();
-                                break;
-                            case "SegTypeFunDef"://函数定义
-                                System.out.println(command);
-                                segment = new SegTypeFunDef();
-                                break;
-                            case "SegTypeCall"://赋值、表达式
-                                System.out.println(command);
-                                segment = new SegTypeCall(token);
-                                break;
-                            case "SegTypeFunCall"://函数调用
-                                System.out.println(command);
-                                segment = new SegTypeFunCall(segment.name);
-                                break;
-                            default:
-                                System.out.println(command);
-                        }
+                        doPush(null == param ? null : param.split(","));
                     }
+//                    else if (command.contains("if2eqpush")) {
+//                        //获取下一个token，
+//                        String nextToken1 = getToken();
+//                        String nextToken2 = getToken();
+//                        if (null != nextToken1 && null != nextToken2) {
+//                            String symbol1 = tokenToSymbol(nextToken1);
+//                            String symbol2 = tokenToSymbol(nextToken2);
+//                            tokenStack.push(nextToken2);
+//                            String[] param2 = param.split(",");
+//                            param2[1] = param2[1].replaceAll("comma", ",");
+//                            param2[1] = param2[1].replaceAll("semi", ";");
+//                            if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
+//                                for (int j = param2.length - 1; j > 1; j--) {
+//                                    stack.push(param2[j]);
+//                                }
+//                            }
+//                        }
+//                        if (null != nextToken1) {
+//                            tokenStack.push(nextToken1);
+//                        }
+//                    } else if (command.contains("ifeqpush")) {
+//                        //获取下一个token，
+//                        String nextToken = getToken();
+//                        if (null != nextToken) {
+//                            tokenStack.push(nextToken);
+//                            String[] param2 = param.split(",");
+//                            if (nextToken.equals(param2[0])) {
+//                                for (int j = param2.length - 1; j > 0; j--) {
+//                                    stack.push(param2[j]);
+//                                }
+//                            }
+//                        }
+//                    } else if (command.contains("ifnepush")) {
+//                        //获取下一个token，
+//                        String nextToken = getToken();
+//                        if (null != nextToken) {
+//                            tokenStack.push(nextToken);
+//                        }
+//                        String[] param2 = param.split(",");
+//                        if (null == nextToken || !nextToken.equals(param2[0])) {
+//                            for (int j = param2.length - 1; j > 0; j--) {
+//                                stack.push(param2[j]);
+//                            }
+//                        }
+//                    } else if (command.contains("push")) {
+//                        stack.push(param);
+//                    }
                 }
             }
         } while (!isError);
@@ -684,6 +639,113 @@ public class Main2 {
                 System.out.println(operateCommandList.get(i));
             }
             System.out.println("=======================error=======================");
+        }
+    }
+
+    public static void doPush(String[] params) throws IOException {
+        if (null == params) {
+            return;
+        }
+        for (int i = 0; i < params.length; i++) {
+            params[i] = params[i].replaceAll("comma", ",").replaceAll("semi", ";");
+        }
+
+        Integer nextTokens = Integer.valueOf(params[0]);
+        String[] pushParams = null;
+        boolean match = true;
+        boolean isEqual = true;
+        List<String> symbolList = new ArrayList<>();
+        if (nextTokens == 0) {
+            //push 0,Cf,Ct';
+            pushParams = Arrays.copyOfRange(params, 1, params.length);
+        } else if (nextTokens == 1) {
+            match = false;
+            //push 1,eq,(,Na;
+            pushParams = Arrays.copyOfRange(params, 3, params.length);
+            symbolList.add(params[2]);
+            if ("ne".equals(params[1])) {
+                isEqual = false;
+            }
+        } else if (nextTokens == 2) {
+            match = false;
+            //push 2,ne,(,Na,(,EList,);
+            pushParams = Arrays.copyOfRange(params, 4, params.length);
+            symbolList.add(params[2]);
+            symbolList.add(params[3]);
+            if ("ne".equals(params[1])) {
+                isEqual = false;
+            }
+        }
+        //读取下N个token
+        List<String> tokenList = new ArrayList<>();
+        for (int i = nextTokens; i > 0; i--) {
+            String token = getToken();
+            if (null != token) {
+                tokenList.add(token);
+            }
+        }
+        if (tokenList.size() != symbolList.size()) {
+            match = true;
+        } else {
+            for (int i = 0; i < symbolList.size(); i++) {
+                if (2 == nextTokens) {
+                    boolean b = isEqual == symbolList.get(i).equals(tokenToSymbol(tokenList.get(i)));
+                    if (b) {
+                        match = true;
+                    } else {
+                        match = false;
+                        break;
+                    }
+                } else {
+                    boolean b = isEqual == tokenList.get(i).equals(symbolList.get(i));
+                    if (b) {
+                        match = true;
+                    } else {
+                        match = false;
+                        break;
+                    }
+                }
+            }
+        }
+        //将N个token压回去
+        for (int j = tokenList.size() - 1; j >= 0; j--) {
+            tokenStack.push(tokenList.get(j));
+        }
+        if (null == pushParams) {
+            return;
+        }
+        if (!match) {
+            return;
+        }
+        for (int j = pushParams.length - 1; j >= 0; j--) {
+            stack.push(pushParams[j]);
+        }
+    }
+
+    /**
+     * do' push 0,Cf,Ct'
+     * do' push 1,eq,(,Na
+     * do' push 2,ne,(,Na,(,EList,)
+     *
+     * @param commands
+     * @throws IOException
+     */
+    public static void doAction(String commands) throws IOException {
+        if (null == commands) {
+            return;
+        }
+        String[] split = commands.split(" ");
+        String command = split[0];
+        switch (command) {
+            case "pop":
+                stack.pop();
+                break;
+            case "push":
+                String[] params = split[1].split(",");
+                doPush(params);
+                break;
+            default:
+                System.out.println("error");
         }
     }
 }

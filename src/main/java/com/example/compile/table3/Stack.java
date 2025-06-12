@@ -29,6 +29,10 @@ public class Stack {
         }
     }
 
+    public void pushCommand(String command) {
+        stack.add(command);
+    }
+
     public String getTop() {
         String token = null;
         if (!stack.isEmpty()) {
