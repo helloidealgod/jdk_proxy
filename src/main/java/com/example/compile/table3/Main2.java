@@ -1,5 +1,8 @@
 package com.example.compile.table3;
 
+import com.example.compile.table3.segment.Segment;
+import com.example.compile.table3.segment.impl.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -339,7 +342,7 @@ public class Main2 {
      * @param op
      * @return
      */
-    public static SegmentE operate(String op) {
+    public static SegmentExprOp operate(String op) {
         if ("(".equals(op)) {
             return null;
         } else if (")".equals(op)) {
@@ -356,20 +359,20 @@ public class Main2 {
         if (1 > valStack.size()) {
             System.out.println("error val length < 1");
         }
-        SegmentE e2 = valStack.pop();
-        SegmentE e1 = null;
+        SegmentExprOp e2 = valStack.pop();
+        SegmentExprOp e1 = null;
         if (!valStack.isEmpty() && !"!".equals(op)) {
             e1 = valStack.pop();
         }
         if ("-".equals(op) && null == e1) {
-            e1 = new SegmentE("int", "0", "0");
+            e1 = new SegmentExprOp("int", "0", "0");
         }
-        SegmentE result = operate(op, e1, e2);
+        SegmentExprOp result = operate(op, e1, e2);
         return result;
     }
 
-    public static SegmentE operate(String op, SegmentE val1, SegmentE val2) {
-        SegmentE result = null;
+    public static SegmentExprOp operate(String op, SegmentExprOp val1, SegmentExprOp val2) {
+        SegmentExprOp result = null;
         if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("%")
                 || op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("==") || op.equals("!=")) {
 
@@ -378,36 +381,36 @@ public class Main2 {
 
             if (null != int1 && null != int2) {
                 if (op.equals("+")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 + int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 + int2));
                 } else if (op.equals("-")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 - int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 - int2));
                 } else if (op.equals("*")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 * int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 * int2));
                 } else if (op.equals("/")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 / int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 / int2));
                 } else if (op.equals("%")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 % int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 % int2));
                 } else if (op.equals("<")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 < int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 < int2));
                 } else if (op.equals("<=")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 <= int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 <= int2));
                 } else if (op.equals(">")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 > int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 > int2));
                 } else if (op.equals(">=")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 >= int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 >= int2));
                 } else if (op.equals("==")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 == int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 == int2));
                 } else if (op.equals("!=")) {
-                    result = new SegmentE("int", "", String.valueOf(int1 != int2));
+                    result = new SegmentExprOp("int", "", String.valueOf(int1 != int2));
                 }
             } else {
                 if (val1.op != null) {
-                    SegmentEList.add(val1);
+                    segmentExprOpList.add(val1);
                 }
                 if (val2.op != null) {
-                    SegmentEList.add(val2);
+                    segmentExprOpList.add(val2);
                 }
-                result = new SegmentE("int", op, val1, val2);
+                result = new SegmentExprOp("int", op, val1, val2);
             }
         } else if (op.equals("&&") || op.equals("||")) {
             Boolean b1 = null;
@@ -423,18 +426,18 @@ public class Main2 {
             }
             if (null != b1 && null != b2) {
                 if (op.equals("&&")) {
-                    result = new SegmentE("Boolean", "", String.valueOf(b1 && b2));
+                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 && b2));
                 } else if (op.equals("||")) {
-                    result = new SegmentE("Boolean", "", String.valueOf(b1 || b2));
+                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 || b2));
                 }
             } else {
                 if (val1.op != null) {
-                    SegmentEList.add(val1);
+                    segmentExprOpList.add(val1);
                 }
                 if (val2.op != null) {
-                    SegmentEList.add(val2);
+                    segmentExprOpList.add(val2);
                 }
-                result = new SegmentE("Boolean", op, val1, val2);
+                result = new SegmentExprOp("Boolean", op, val1, val2);
             }
         } else if (op.equals("!")) {
             Boolean b2 = null;
@@ -443,22 +446,14 @@ public class Main2 {
                 b2 = "true".equals(s2);
             }
             if (null != b2) {
-                result = new SegmentE("Boolean", "", String.valueOf(!b2));
+                result = new SegmentExprOp("Boolean", "", String.valueOf(!b2));
             } else {
                 if (val2.op != null) {
-                    SegmentEList.add(val2);
+                    segmentExprOpList.add(val2);
                 }
-                result = new SegmentE("Boolean", op, null, val2);
+                result = new SegmentExprOp("Boolean", op, null, val2);
             }
         }
-//        if (null != result && null != result.e1 && null != result.e2) {
-//            String var1 = result.e1.value == null ? result.e1.name : result.e1.value;
-//            String var2 = result.e2.value == null ? result.e2.name : result.e2.value;
-//            System.out.println(result.op + " " + var1 + " " + var2);
-//        } else if (null != result && null == result.e1 && null != result.e2) {
-//            String var2 = result.e2.value == null ? result.e2.name : result.e2.value;
-//            System.out.println(result.op + " " + var2);
-//        }
         return result;
     }
 
@@ -479,7 +474,10 @@ public class Main2 {
     }
 
     public static List<String> operateCommandList = new ArrayList<>();
-    public static List<SegmentE> SegmentEList = new ArrayList<>();
+    public static List<SegmentExprOp> segmentExprOpList = new ArrayList<>();
+
+    public static Segment segment;
+    public static StackSegment stackSegment = new StackSegment();
 
     public static void translationUnit() throws IOException {
         String symbol = null;
@@ -494,7 +492,7 @@ public class Main2 {
                 while (!opStack.isEmpty()) {
                     String op = opStack.pop();
                     //运算
-                    SegmentE result = operate(op);
+                    SegmentExprOp result = operate(op);
                     if (",".equals(op)) {
                         //System.out.print("输出：" + result + op);
                     } else {
@@ -503,22 +501,21 @@ public class Main2 {
                     }
                 }
                 if (!valStack.isEmpty()) {
-                    SegmentE val = valStack.pop();
-                    SegmentEList.add(val);
+                    SegmentExprOp val = valStack.pop();
+                    segmentExprOpList.add(val);
                 }
-                if (SegmentEList.size() == 1) {
-                    SegmentE e = SegmentEList.get(0);
+                if (segmentExprOpList.size() == 1) {
+                    SegmentExprOp e = segmentExprOpList.get(0);
                     String var1 = e.value == null ? e.name : e.value;
                     System.out.println(" " + var1);
                 }
-                for (SegmentE item : SegmentEList) {
+                for (SegmentExprOp item : segmentExprOpList) {
                     Utils.printSegmentE(item);
                 }
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
-                //System.out.print(token);
                 symbolLine.append(token);
                 stack.pop();
                 if ("Stmt'".equals(stack.getTop())) {
@@ -528,21 +525,20 @@ public class Main2 {
                     System.out.println("E结束：" + symbolLine.toString());
                     symbolLine = new StringBuilder("");
                 }
-                //ForstForst'
-                //ForetForet'
-                //do Block while(E);
-                //while(E) Block
-                //TypNadef
-                //Funcall
+                segment.execute(token);
                 //是数值 压入值栈
                 if (null != token && token.matches("\\d*")) {
-                    valStack.push(new SegmentE("int", "", token));
+                    if (segment instanceof SegTypeExpr) {
+                        valStack.push(new SegmentExprOp("int", "", token));
+                    }
                 } else if (null != token && token.matches("void|char|short|int|long|float")) {
 
                 } else if (null != token && token.matches("do|for|if|while|else")) {
 
                 } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
-                    valStack.push(new SegmentE("int", token, null));
+                    if (segment instanceof SegTypeExpr) {
+                        valStack.push(new SegmentExprOp("int", token, null));
+                    }
                 } else if (isOperate(token)) {
                     boolean flag = true;
                     while (flag) {
@@ -558,7 +554,7 @@ public class Main2 {
                                 flag = false;
                             } else {
                                 //运算
-                                SegmentE result = operate(opStack.pop());
+                                SegmentExprOp result = operate(opStack.pop());
                                 if (null != result) {
                                     //结果入栈
                                     valStack.push(result);
@@ -632,40 +628,47 @@ public class Main2 {
                         stack.push(param);
                     } else if (command.contains("printf0")) {
                         System.out.println("语句解析开始");
-                    } else if (command.contains("printf1")) {
-//                        System.out.println("语句解析结束2：" + symbolLine.toString());
-//                        symbolLine = new StringBuilder("");
                     } else if (command.contains("SegType")) {
                         switch (command) {
                             case "SegTypeE":
                                 System.out.println(command);
+                                segment = new SegTypeExpr();
                                 break;
                             case "SegTypeBlock":
                                 System.out.println(command);
+                                segment = new SegTypeBlock();
                                 break;
                             case "SegTypeIf":
                                 System.out.println(command);
+                                segment = new SegTypeIf();
                                 break;
                             case "SegTypeDo":
                                 System.out.println(command);
+                                segment = new SegTypeDo();
                                 break;
                             case "SegTypeWhile":
                                 System.out.println(command);
+                                segment = new SegTypeWhile();
                                 break;
                             case "SegTypeFor":
                                 System.out.println(command);
+                                segment = new SegTypeFor();
                                 break;
                             case "SegTypeDef"://变量声明、变量声明赋值
                                 System.out.println(command);
+                                segment = new SegTypeDef();
                                 break;
                             case "SegTypeFunDef"://函数定义
                                 System.out.println(command);
+                                segment = new SegTypeFunDef();
                                 break;
                             case "SegTypeCall"://赋值、表达式
                                 System.out.println(command);
+                                segment = new SegTypeCall(token);
                                 break;
                             case "SegTypeFunCall"://函数调用
                                 System.out.println(command);
+                                segment = new SegTypeFunCall(segment.name);
                                 break;
                             default:
                                 System.out.println(command);

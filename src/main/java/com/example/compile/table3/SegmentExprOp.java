@@ -1,21 +1,21 @@
 package com.example.compile.table3;
 
-public class SegmentE {
+public class SegmentExprOp {
     public String type;
     public String op;
     public String name;
     public String value;
 
-    public SegmentE e1;
-    public SegmentE e2;
+    public SegmentExprOp e1;
+    public SegmentExprOp e2;
 
-    public SegmentE(String type, String name, String value) {
+    public SegmentExprOp(String type, String name, String value) {
         this.type = type;
         this.name = name;
         this.value = value;
     }
 
-    public SegmentE(String type, String op, SegmentE e1, SegmentE e2) {
+    public SegmentExprOp(String type, String op, SegmentExprOp e1, SegmentExprOp e2) {
         this.type = type;
         this.op = op;
         this.e1 = e1;

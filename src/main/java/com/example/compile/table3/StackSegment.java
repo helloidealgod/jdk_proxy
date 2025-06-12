@@ -1,27 +1,29 @@
 package com.example.compile.table3;
 
+import com.example.compile.table3.segment.Segment;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class StackE {
-    public List<SegmentExprOp> stack = new ArrayList<>();
+public class StackSegment {
+    public List<Segment> stack = new ArrayList<>();
 
-    public SegmentExprOp pop() {
-        SegmentExprOp e = null;
+    public Segment pop() {
+        Segment e = null;
         if (!this.stack.isEmpty()) {
             e = stack.remove(stack.size() - 1);
         }
         return e;
     }
 
-    public void push(SegmentExprOp e) {
+    public void push(Segment e) {
         if (null != e) {
             stack.add(e);
         }
     }
 
-    public SegmentExprOp getTop() {
-        SegmentExprOp token = null;
+    public Segment getTop() {
+        Segment token = null;
         if (!stack.isEmpty()) {
             token = stack.get(stack.size() - 1);
         }
