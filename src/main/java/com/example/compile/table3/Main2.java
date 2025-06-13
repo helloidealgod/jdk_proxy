@@ -582,53 +582,6 @@ public class Main2 {
                     } else if (command.contains("push")) {
                         doPush(null == param ? null : param.split(","));
                     }
-//                    else if (command.contains("if2eqpush")) {
-//                        //获取下一个token，
-//                        String nextToken1 = getToken();
-//                        String nextToken2 = getToken();
-//                        if (null != nextToken1 && null != nextToken2) {
-//                            String symbol1 = tokenToSymbol(nextToken1);
-//                            String symbol2 = tokenToSymbol(nextToken2);
-//                            tokenStack.push(nextToken2);
-//                            String[] param2 = param.split(",");
-//                            param2[1] = param2[1].replaceAll("comma", ",");
-//                            param2[1] = param2[1].replaceAll("semi", ";");
-//                            if (symbol1.equals(param2[0]) && symbol2.equals(param2[1])) {
-//                                for (int j = param2.length - 1; j > 1; j--) {
-//                                    stack.push(param2[j]);
-//                                }
-//                            }
-//                        }
-//                        if (null != nextToken1) {
-//                            tokenStack.push(nextToken1);
-//                        }
-//                    } else if (command.contains("ifeqpush")) {
-//                        //获取下一个token，
-//                        String nextToken = getToken();
-//                        if (null != nextToken) {
-//                            tokenStack.push(nextToken);
-//                            String[] param2 = param.split(",");
-//                            if (nextToken.equals(param2[0])) {
-//                                for (int j = param2.length - 1; j > 0; j--) {
-//                                    stack.push(param2[j]);
-//                                }
-//                            }
-//                        }
-//                    } else if (command.contains("ifnepush")) {
-//                        //获取下一个token，
-//                        String nextToken = getToken();
-//                        if (null != nextToken) {
-//                            tokenStack.push(nextToken);
-//                        }
-//                        String[] param2 = param.split(",");
-//                        if (null == nextToken || !nextToken.equals(param2[0])) {
-//                            for (int j = param2.length - 1; j > 0; j--) {
-//                                stack.push(param2[j]);
-//                            }
-//                        }
-//                    } else if (command.contains("push")) {
-//                        stack.push(param);
-//                    }
                 }
             }
         } while (!isError);
