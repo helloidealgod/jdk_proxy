@@ -103,3 +103,54 @@ for(int a=1+2;2<3; b=6-2){
 }
 
 12+asm+xsd+23*32-we/23
+
+a=(1+2*(4-1)*(1+3)%(4-2))*10;
+int b=(1+2*(4-1)*(1+3)%(4-2))*10;
+
+
+int a;
+
+int b = 1;
+
+int c = 1 + 2;
+
+if(a > 0){
+
+}else if( b < 0){
+
+}else{
+
+}
+if(a){
+
+}else if(b){
+
+}else{
+
+}
+
+while(a){
+
+}
+while(a>0){
+
+}
+
+
+func4(1);
+
+int a;
+
+int b = 1;
+
+int c = 1 + 2 + b + func3() + func4(1);
+
+if(a > 0){}else if( b < 0){}else{}
+
+if(a){}else if(b){}else{}
+
+while(a){}
+
+while(a>0){}
+
+int func2(int a, int b){}

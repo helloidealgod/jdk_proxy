@@ -119,7 +119,7 @@ public class Main2 {
     }
 
     // 栈
-    public static Stack stack = new Stack();
+    public static InfoStack stack = new InfoStack();
     public static Stack tokenStack = new Stack();
     // 操作符栈
     public static Stack opStack = new Stack();
@@ -171,9 +171,9 @@ public class Main2 {
     public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}", "$"};
     //语法驱动表
     public static String[][] actionMap = {
-            {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error"},
+            {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "pop;", "error"},
             {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop", "pop;", "pop;push 0,Stmt,Stmt'", "pop", "pop"},
-            {"pop;push 0,E,{ae};SegTypeE", "pop;push 0,Funcall;SegTypeCall", "pop;push 0,Typ,Nadef;SegTypeDef", "pop;push 0,for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push 0,while,(,E,),Block;SegTypeWhile", "pop;push 0,do,Block,while,(,E,),semi;SegTypeDo", "pop;push 0,If,Else';SegTypeElse", "error", "pop;push 0,E,{ae};SegTypeE", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "pop;push 0,Block;SegTypeBlock", "error", "error"},
+            {"pop;push 0,E;SegTypeE", "pop;push 0,Funcall;SegTypeCall", "pop;push 0,Typ,Nadef;SegTypeDef", "pop;push 0,for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push 0,while,(,E,),Block;SegTypeWhile", "pop;push 0,do,Block,while,(,E,),semi;SegTypeDo", "pop;push 0,If,Else';SegTypeElse", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "pop;push 0,Block;SegTypeBlock", "pop;", "error"},
             {"pop;", "pop;push 0,Forst,Forst'", "pop;push 0,Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
             {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Forst,Forst'", "pop;", "pop;", "pop;"},
             {"error", "pop;push 0,Na,=,E", "pop;push 2,eq,Na,=,Typ,Na,=,E;push 2,eq,Na,semi,Typ,Na;push 2,eq,Na,comma,Typ,Na", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
@@ -518,10 +518,13 @@ public class Main2 {
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
-            } else if (compare(stack.getTop(), symbol)) {
+            } else if (compare(stack.getTop().name, symbol)) {
+                stack.print();
                 symbolLine.append(token);
                 System.out.println(token);
                 stack.pop();
+                Info top = stack.getTop();
+                doAction(top.name, symbol, token);
                 //是数值 压入值栈
                 if (null != token && token.matches("\\d*")) {
                     valStack.push(new SegmentExprOp("int", "", token));
@@ -560,38 +563,14 @@ public class Main2 {
                     }
                 }
                 token = getToken();
+                stack.print();
             } else {
                 //如果栈顶是do action 动作
-                String top = stack.getTop();
-                if (top.startsWith("doAction")) {
-                    isError = true;
-                } else if ("{ae}".equals(top)) {
-                    System.out.println("E end!");
-                    while (!opStack.isEmpty()) {
-                        String op = opStack.pop();
-                        //运算
-                        SegmentExprOp result = operate(op);
-                        if (",".equals(op)) {
-                            //System.out.print("输出：" + result + op);
-                        } else {
-                            //结果入栈
-                            valStack.push(result);
-                        }
-                    }
-                    if (!valStack.isEmpty()) {
-                        SegmentExprOp val = valStack.pop();
-                        segmentExprOpList.add(val);
-                    }
-                    if (segmentExprOpList.size() == 1) {
-                        SegmentExprOp e = segmentExprOpList.get(0);
-                        String var1 = e.value == null ? e.name : e.value;
-                        System.out.println(" " + var1);
-                    }
-                    for (SegmentExprOp item : segmentExprOpList) {
-                        Utils.printSegmentE(item);
-                    }
-                    stack.pop();
-                    top = stack.getTop();
+                String top = stack.getTop().name;
+                stack.print();
+                top = doAction(top, symbol, token);
+                if (top.equals(symbol)) {
+                    continue;
                 }
                 //根据栈顶元素与当前token查找下一步动作
                 String actions = getAction(top, symbol);
@@ -609,6 +588,7 @@ public class Main2 {
                         doPush(null == param ? null : param.split(","));
                     }
                 }
+                stack.print();
             }
         } while (!isError);
         if (isError) {
@@ -701,31 +681,59 @@ public class Main2 {
         }
     }
 
-    /**
-     * do' push 0,Cf,Ct'
-     * do' push 1,eq,(,Na
-     * do' push 2,ne,(,Na,(,EList,)
-     *
-     * @param commands
-     * @throws IOException
-     */
-    public static void doAction(String commands) throws IOException {
-        if (null == commands) {
-            return;
+    public static String doAction(String top, String symbol, String token) {
+        if ("{ae}".equals(top)) {
+            System.out.println("E end!");
+            while (!opStack.isEmpty()) {
+                String op = opStack.pop();
+                //运算
+                SegmentExprOp result = operate(op);
+                if (",".equals(op)) {
+                } else {
+                    valStack.push(result);
+                }
+            }
+            if (!valStack.isEmpty()) {
+                SegmentExprOp val = valStack.pop();
+                segmentExprOpList.add(val);
+            }
+            if (segmentExprOpList.size() == 1) {
+                SegmentExprOp e = segmentExprOpList.get(0);
+                String var1 = e.value == null ? e.name : e.value;
+                System.out.println(" " + var1);
+            }
+            for (SegmentExprOp item : segmentExprOpList) {
+                Utils.printSegmentE(item);
+            }
+            stack.pop();
+            return stack.getTop().name;
+        } else if ("{atype}".equals(top)) {
+            stack.pop();
+            int topIndex = stack.stack.size() - 1;
+            stack.stack.get(topIndex - 1).type = token;
+            stack.stack.get(topIndex - 1).typeWidth = TypeEnum.getWidthByType(token);
+            return stack.getTop().name;
+        } else if ("{ana0}".equals(top)) {
+            stack.pop();
+            int topIndex = stack.stack.size() - 1;
+            stack.stack.get(topIndex - 4).varName = token;
+            return stack.getTop().name;
+        } else if ("{ana1}".equals(top)) {
+            stack.pop();
+            int topIndex = stack.stack.size() - 1;
+            stack.stack.get(topIndex - 2).varName = token;
+            return stack.getTop().name;
+        } else if ("{ana2}".equals(top)) {
+            stack.pop();
+        } else if ("{ainfo}".equals(top)) {
+            Info pop = stack.pop();
+
+        } else if ("{afd}".equals(top)) {
+            stack.pop();
+        } else {
+            return top;
         }
-        String[] split = commands.split(" ");
-        String command = split[0];
-        switch (command) {
-            case "pop":
-                stack.pop();
-                break;
-            case "push":
-                String[] params = split[1].split(",");
-                doPush(params);
-                break;
-            default:
-                System.out.println("error");
-        }
+        return top;
     }
 
     public static NameTable finddNameTable(String name) {
