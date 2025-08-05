@@ -3,7 +3,7 @@ Stmts
 Stmt' Stmt 
 Stmt' {语句信息} Nadef {记录类型 -2} Typ 
 Stmt' {语句信息} Nadef 
-Stmt' {语句信息} ; Tempdef' {记录名称 -2} Na 
+Stmt' {语句信息} ; Tempdef' {查找Na是否已存在，记录名称，分配地址 -3} Na
 Stmt' {语句信息} ; Tempdef' 
 Stmt' {语句信息} ; 
 Stmt' 
@@ -12,7 +12,7 @@ int b = 1;
 Stmt' Stmt 
 Stmt' {语句信息} Nadef {记录类型 -2} Typ 
 Stmt' {语句信息} Nadef 
-Stmt' {语句信息} ; {记录表达式结果 -2} E = {记录名称 -5} Na 
+Stmt' {语句信息} ; {记录表达式结果 -2} E = {查找Na是否已存在，记录名称，分配地址 -5} Na
 Stmt' {语句信息} ; {记录表达式结果 -2} E = 
 Stmt' {语句信息} ; {记录表达式结果 -2} E 
 Stmt' {语句信息} ; {记录表达式结果 -2} Le 
@@ -33,30 +33,30 @@ Stmt'
 
 func4(1);
 Stmt' Stmt 
-Stmt' Funcall 
-Stmt' ; Temp' Na 
-Stmt' ; Temp' 
-Stmt' ; ) EList ( 
-Stmt' ; ) EList 
-Stmt' ; ) Et' Ef 
-Stmt' ; ) Et' Et' E 
-Stmt' ; ) Et' Et' Le 
-Stmt' ; ) Et' Et' Lt' Lf 
-Stmt' ; ) Et' Et' Lt' Ce 
-Stmt' ; ) Et' Et' Lt' Ct' Cf 
-Stmt' ; ) Et' Et' Lt' Ct' Fe 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' 
-Stmt' ; ) Et' Et' Lt' Ct' Fe' 
-Stmt' ; ) Et' Et' Lt' Ct' 
-Stmt' ; ) Et' Et' Lt' 
-Stmt' ; ) Et' Et' 
-Stmt' ; ) Et' 
-Stmt' ; ) 
-Stmt' ; 
+Stmt' {语句信息} Funcall
+Stmt' {语句信息} ; Temp' {记录名称 -3} Na
+Stmt' {语句信息} ; Temp'
+Stmt' {语句信息} ; ) {函数调用语句 -3} EList (
+Stmt' {语句信息} ; ) {函数调用语句 -3} EList
+Stmt' {语句信息} ; ) Et' Ef
+Stmt' {语句信息} ; ) Et' Et' {入参n} E
+Stmt' {语句信息} ; ) Et' Et' {入参n} Le
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Lf
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ce
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Cf
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' F
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' id
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' consv
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft'
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct' Fe'
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt' Ct'
+Stmt' {语句信息} ; ) Et' Et' {入参n} Lt'
+Stmt' {语句信息} ; ) Et' Et'
+Stmt' {语句信息} ; ) Et'
+Stmt' {语句信息} ; )
+Stmt' {语句信息} ;
 Stmt' 
 
 func3(1,2,3);
@@ -67,54 +67,54 @@ Stmt' ; Temp'
 Stmt' ; ) EList (
 Stmt' ; ) EList
 Stmt' ; ) Et' Ef
-Stmt' ; ) Et' Et' E
-Stmt' ; ) Et' Et' Le
-Stmt' ; ) Et' Et' Lt' Lf
-Stmt' ; ) Et' Et' Lt' Ce
-Stmt' ; ) Et' Et' Lt' Ct' Cf
-Stmt' ; ) Et' Et' Lt' Ct' Fe
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
-Stmt' ; ) Et' Et' Lt' Ct' Fe'
-Stmt' ; ) Et' Et' Lt' Ct'
-Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et' {入参n} E
+Stmt' ; ) Et' Et' {入参n} Le
+Stmt' ; ) Et' Et' {入参n} Lt' Lf
+Stmt' ; ) Et' Et' {入参n} Lt' Ce
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Cf
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct'
+Stmt' ; ) Et' Et' {入参n} Lt'
 Stmt' ; ) Et' Et'
 Stmt' ; ) Et' Ef ,
 Stmt' ; ) Et' Ef
-Stmt' ; ) Et' Et' E
-Stmt' ; ) Et' Et' Le
-Stmt' ; ) Et' Et' Lt' Lf
-Stmt' ; ) Et' Et' Lt' Ce
-Stmt' ; ) Et' Et' Lt' Ct' Cf
-Stmt' ; ) Et' Et' Lt' Ct' Fe
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
-Stmt' ; ) Et' Et' Lt' Ct' Fe'
-Stmt' ; ) Et' Et' Lt' Ct'
-Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et' {入参n} E
+Stmt' ; ) Et' Et' {入参n} Le
+Stmt' ; ) Et' Et' {入参n} Lt' Lf
+Stmt' ; ) Et' Et' {入参n} Lt' Ce
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Cf
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct'
+Stmt' ; ) Et' Et' {入参n} Lt'
 Stmt' ; ) Et' Et'
 Stmt' ; ) Et' Ef ,
 Stmt' ; ) Et' Ef
-Stmt' ; ) Et' Et' E
-Stmt' ; ) Et' Et' Le
-Stmt' ; ) Et' Et' Lt' Lf
-Stmt' ; ) Et' Et' Lt' Ce
-Stmt' ; ) Et' Et' Lt' Ct' Cf
-Stmt' ; ) Et' Et' Lt' Ct' Fe
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
-Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
-Stmt' ; ) Et' Et' Lt' Ct' Fe'
-Stmt' ; ) Et' Et' Lt' Ct'
-Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et' {入参n} E
+Stmt' ; ) Et' Et' {入参n} Le
+Stmt' ; ) Et' Et' {入参n} Lt' Lf
+Stmt' ; ) Et' Et' {入参n} Lt' Ce
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Cf
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct' Fe'
+Stmt' ; ) Et' Et' {入参n} Lt' Ct'
+Stmt' ; ) Et' Et' {入参n} Lt'
 Stmt' ; ) Et' Et'
 Stmt' ; ) Et'
 Stmt' ; )

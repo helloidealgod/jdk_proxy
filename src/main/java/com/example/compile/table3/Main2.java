@@ -1,7 +1,6 @@
 package com.example.compile.table3;
 
 import com.example.compile.table3.segment.Segment;
-import com.example.compile.table3.segment.impl.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -479,7 +478,7 @@ public class Main2 {
 
     public static Segment segment;
 
-    public static List<NameTable> nameTableList = new ArrayList<>();
+    public static List<NameInfo> nameTable = new ArrayList<>();
     public static Long offset = 0L;
 
     public static void translationUnit() throws IOException {
@@ -491,30 +490,6 @@ public class Main2 {
             symbol = tokenToSymbol(token);
             if ("$".equals(symbol) && stack.isEmpty()) {
                 System.out.println("语法解析结束！");
-                //是结束符 pop 操作符栈 进行运算
-                while (!opStack.isEmpty()) {
-                    String op = opStack.pop();
-                    //运算
-                    SegmentExprOp result = operate(op);
-                    if (",".equals(op)) {
-                        //System.out.print("输出：" + result + op);
-                    } else {
-                        //结果入栈
-                        valStack.push(result);
-                    }
-                }
-                if (!valStack.isEmpty()) {
-                    SegmentExprOp val = valStack.pop();
-                    segmentExprOpList.add(val);
-                }
-                if (segmentExprOpList.size() == 1) {
-                    SegmentExprOp e = segmentExprOpList.get(0);
-                    String var1 = e.value == null ? e.name : e.value;
-                    System.out.println(" " + var1);
-                }
-                for (SegmentExprOp item : segmentExprOpList) {
-                    Utils.printSegmentE(item);
-                }
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
@@ -727,7 +702,6 @@ public class Main2 {
             stack.pop();
         } else if ("{ainfo}".equals(top)) {
             Info pop = stack.pop();
-
         } else if ("{afd}".equals(top)) {
             stack.pop();
         } else {
@@ -736,23 +710,23 @@ public class Main2 {
         return top;
     }
 
-    public static NameTable finddNameTable(String name) {
-        for (NameTable nameTable : nameTableList) {
-            if (nameTable.name.equals(name)) {
-                return nameTable;
+    public static NameInfo findNameTable(String name) {
+        for (NameInfo nameInfo : nameTable) {
+            if (nameInfo.name.equals(name)) {
+                return nameInfo;
             }
         }
         return null;
     }
 
-    public static NameTable generaNameTable(String name, String type) {
-        NameTable nameTable = new NameTable();
-        nameTable.name = name;
-        nameTable.type = type;
-        nameTable.typeWidth = TypeEnum.getWidthByType(type);
-        nameTable.address = offset;
-        offset += nameTable.typeWidth;
-        nameTableList.add(nameTable);
-        return nameTable;
+    public static NameInfo generaNameTable(String name, String type) {
+        NameInfo nameInfo = new NameInfo();
+        nameInfo.name = name;
+        nameInfo.type = type;
+        nameInfo.typeWidth = TypeEnum.getWidthByType(type);
+        nameInfo.address = offset;
+        offset += nameInfo.typeWidth;
+        nameTable.add(nameInfo);
+        return nameInfo;
     }
 }

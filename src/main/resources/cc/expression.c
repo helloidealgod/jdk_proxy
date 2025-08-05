@@ -1,1 +1,4 @@
-int c = 1 + 2 + b + func0() + func1(1) + func3(1,2,3);
+int a;
+int b = 2;
+int c = 3 + 4;
+a = func2(2,e);
