@@ -1,0 +1,461 @@
+int a;
+Stmts 
+Stmt' Stmt 
+Stmt' {语句信息} Nadef {记录类型 -2} Typ 
+Stmt' {语句信息} Nadef 
+Stmt' {语句信息} ; Tempdef' {记录名称 -2} Na 
+Stmt' {语句信息} ; Tempdef' 
+Stmt' {语句信息} ; 
+Stmt' 
+
+int b = 1;
+Stmt' Stmt 
+Stmt' {语句信息} Nadef {记录类型 -2} Typ 
+Stmt' {语句信息} Nadef 
+Stmt' {语句信息} ; {记录表达式结果 -2} E = {记录名称 -5} Na 
+Stmt' {语句信息} ; {记录表达式结果 -2} E = 
+Stmt' {语句信息} ; {记录表达式结果 -2} E 
+Stmt' {语句信息} ; {记录表达式结果 -2} Le 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Lf 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ce 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Cf 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct' Fe' 
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' Ct'  
+Stmt' {语句信息} ; {记录表达式结果 -2} Lt' 
+Stmt' {语句信息} ; 
+Stmt' 
+
+func4(1);
+Stmt' Stmt 
+Stmt' Funcall 
+Stmt' ; Temp' Na 
+Stmt' ; Temp' 
+Stmt' ; ) EList ( 
+Stmt' ; ) EList 
+Stmt' ; ) Et' Ef 
+Stmt' ; ) Et' Et' E 
+Stmt' ; ) Et' Et' Le 
+Stmt' ; ) Et' Et' Lt' Lf 
+Stmt' ; ) Et' Et' Lt' Ce 
+Stmt' ; ) Et' Et' Lt' Ct' Cf 
+Stmt' ; ) Et' Et' Lt' Ct' Fe 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' 
+Stmt' ; ) Et' Et' Lt' Ct' Fe' 
+Stmt' ; ) Et' Et' Lt' Ct' 
+Stmt' ; ) Et' Et' Lt' 
+Stmt' ; ) Et' Et' 
+Stmt' ; ) Et' 
+Stmt' ; ) 
+Stmt' ; 
+Stmt' 
+
+func3(1,2,3);
+Stmt' Stmt
+Stmt' Funcall
+Stmt' ; Temp' Na
+Stmt' ; Temp'
+Stmt' ; ) EList (
+Stmt' ; ) EList
+Stmt' ; ) Et' Ef
+Stmt' ; ) Et' Et' E
+Stmt' ; ) Et' Et' Le
+Stmt' ; ) Et' Et' Lt' Lf
+Stmt' ; ) Et' Et' Lt' Ce
+Stmt' ; ) Et' Et' Lt' Ct' Cf
+Stmt' ; ) Et' Et' Lt' Ct' Fe
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' Lt' Ct' Fe'
+Stmt' ; ) Et' Et' Lt' Ct'
+Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et'
+Stmt' ; ) Et' Ef ,
+Stmt' ; ) Et' Ef
+Stmt' ; ) Et' Et' E
+Stmt' ; ) Et' Et' Le
+Stmt' ; ) Et' Et' Lt' Lf
+Stmt' ; ) Et' Et' Lt' Ce
+Stmt' ; ) Et' Et' Lt' Ct' Cf
+Stmt' ; ) Et' Et' Lt' Ct' Fe
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' Lt' Ct' Fe'
+Stmt' ; ) Et' Et' Lt' Ct'
+Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et'
+Stmt' ; ) Et' Ef ,
+Stmt' ; ) Et' Ef
+Stmt' ; ) Et' Et' E
+Stmt' ; ) Et' Et' Le
+Stmt' ; ) Et' Et' Lt' Lf
+Stmt' ; ) Et' Et' Lt' Ce
+Stmt' ; ) Et' Et' Lt' Ct' Cf
+Stmt' ; ) Et' Et' Lt' Ct' Fe
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' F
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' id
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft' consv
+Stmt' ; ) Et' Et' Lt' Ct' Fe' Ft'
+Stmt' ; ) Et' Et' Lt' Ct' Fe'
+Stmt' ; ) Et' Et' Lt' Ct'
+Stmt' ; ) Et' Et' Lt'
+Stmt' ; ) Et' Et'
+Stmt' ; ) Et'
+Stmt' ; )
+Stmt' ;
+
+a = 1 + b + c;
+Stmt'
+Stmt' Stmt
+Stmt' Funcall
+Stmt' ; E = Na
+Stmt' ; E =
+Stmt' ; E
+Stmt' ; Le
+Stmt' ; Lt' Lf
+Stmt' ; Lt' Ce
+Stmt' ; Lt' Ct' Cf
+Stmt' ; Lt' Ct' Fe
+Stmt' ; Lt' Ct' Fe' Ft
+Stmt' ; Lt' Ct' Fe' Ft' F
+Stmt' ; Lt' Ct' Fe' Ft' id
+Stmt' ; Lt' Ct' Fe' Ft' consv
+Stmt' ; Lt' Ct' Fe' Ft'
+Stmt' ; Lt' Ct' Fe'
+Stmt' ; Lt' Ct' Fe' Ft +
+Stmt' ; Lt' Ct' Fe' Ft
+Stmt' ; Lt' Ct' Fe' Ft' F
+Stmt' ; Lt' Ct' Fe' Ft' id
+Stmt' ; Lt' Ct' Fe' Ft' Na
+Stmt' ; Lt' Ct' Fe' Ft'
+Stmt' ; Lt' Ct' Fe'
+Stmt' ; Lt' Ct' Fe' Ft +
+Stmt' ; Lt' Ct' Fe' Ft
+Stmt' ; Lt' Ct' Fe' Ft' F
+Stmt' ; Lt' Ct' Fe' Ft' id
+Stmt' ; Lt' Ct' Fe' Ft' Na
+Stmt' ; Lt' Ct' Fe' Ft'
+Stmt' ; Lt' Ct' Fe'
+Stmt' ; Lt' Ct'
+Stmt' ; Lt'
+Stmt' ;
+Stmt'
+
+int c = 1 + 2 + b + func3() + func4(1);
+Stmt' Stmt 
+Stmt' {语句信息} Nadef {记录类型 -2} Typ 
+Stmt' {语句信息} Nadef 
+Stmt' {语句信息} ; {记录表达式结果 -2} E = {记录名称 -5} Na 
+Stmt' {语句信息} ; E = 
+Stmt' {语句信息} ; E  
+Stmt' {语句信息} ; Le 
+Stmt' {语句信息} ; Lt' Lf 
+Stmt' {语句信息} ; Lt' Ce 
+Stmt' {语句信息} ; Lt' Ct' Cf 
+Stmt' {语句信息} ; Lt' Ct' Fe 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft + 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft + 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' Na 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft + 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList ( Na 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList ( 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft + 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList ( Na 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList ( 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) EList 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Ef 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' E 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Le 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Lf 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ce  
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Cf 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' Ft 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' Ct' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' Lt' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' Et' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) Et' 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' ) 
+Stmt' {语句信息} ; Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} ; Lt' Ct' Fe' 
+Stmt' {语句信息} ; Lt' Ct' 
+Stmt' {语句信息} ; Lt' 
+Stmt' {语句信息} ; 
+Stmt' 
+
+if(a > 0){}else if( b < 0){}else{}
+Stmt' Stmt 
+Stmt' {语句信息} Else' If 
+Stmt' {语句信息} Else' Stmt ) E ( if 
+Stmt' {语句信息} Else' Stmt ) E ( 
+Stmt' {语句信息} Else' Stmt ) E 
+Stmt' {语句信息} Else' Stmt ) Le 
+Stmt' {语句信息} Else' Stmt ) Lt' Lf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ce 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' Na 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf > 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' 
+Stmt' {语句信息} Else' Stmt ) Lt' 
+Stmt' {语句信息} Else' Stmt ) 
+Stmt' {语句信息} Else' Stmt 
+Stmt' {语句信息} Else' Block 
+Stmt' {语句信息} Else' } Stmts { 
+Stmt' {语句信息} Else' } Stmts 
+Stmt' {语句信息} Else' } 
+Stmt' {语句信息} Else' 
+Stmt' {语句信息} Stmt else 
+Stmt' {语句信息} Stmt 
+Stmt' {语句信息} Else' If 
+Stmt' {语句信息} Else' Stmt ) E ( if 
+Stmt' {语句信息} Else' Stmt ) E ( 
+Stmt' {语句信息} Else' Stmt ) E 
+Stmt' {语句信息} Else' Stmt ) Le 
+Stmt' {语句信息} Else' Stmt ) Lt' Lf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ce 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' Na 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf < 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Cf 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' consv 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' Fe' 
+Stmt' {语句信息} Else' Stmt ) Lt' Ct' 
+Stmt' {语句信息} Else' Stmt ) Lt' 
+Stmt' {语句信息} Else' Stmt ) 
+Stmt' {语句信息} Else' Stmt 
+Stmt' {语句信息} Else' Block 
+Stmt' {语句信息} Else' } Stmts { 
+Stmt' {语句信息} Else' } Stmts 
+Stmt' {语句信息} Else' } 
+Stmt' {语句信息} Else' 
+Stmt' {语句信息} Stmt else 
+Stmt' {语句信息} Stmt 
+Stmt' {语句信息} Block 
+Stmt' {语句信息} } Stmts { 
+Stmt' {语句信息} } Stmts 
+Stmt' {语句信息} } 
+Stmt' 
+
+if(a){}else if(b){}else{}
+Stmt' Stmt 
+Stmt' Else' If 
+Stmt' Else' Stmt ) E ( if 
+Stmt' Else' Stmt ) E ( 
+Stmt' Else' Stmt ) E 
+Stmt' Else' Stmt ) Le 
+Stmt' Else' Stmt ) Lt' Lf 
+Stmt' Else' Stmt ) Lt' Ce  
+Stmt' Else' Stmt ) Lt' Ct' Cf 
+Stmt' Else' Stmt ) Lt' Ct' Fe 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' Na 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' Else' Stmt ) Lt' Ct' Fe'  
+Stmt' Else' Stmt ) Lt' Ct' 
+Stmt' Else' Stmt ) Lt' 
+Stmt' Else' Stmt ) 
+Stmt' Else' Stmt 
+Stmt' Else' Block 
+Stmt' Else' } Stmts { 
+Stmt' Else' } Stmts 
+Stmt' Else' } 
+Stmt' Else' 
+Stmt' Stmt else 
+Stmt' Stmt 
+Stmt' Else' If 
+Stmt' Else' Stmt ) E ( if 
+Stmt' Else' Stmt ) E ( 
+Stmt' Else' Stmt ) E 
+Stmt' Else' Stmt ) Le 
+Stmt' Else' Stmt ) Lt' Lf 
+Stmt' Else' Stmt ) Lt' Ce 
+Stmt' Else' Stmt ) Lt' Ct' Cf 
+Stmt' Else' Stmt ) Lt' Ct' Fe 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' F 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' id 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' Na 
+Stmt' Else' Stmt ) Lt' Ct' Fe' Ft' 
+Stmt' Else' Stmt ) Lt' Ct' Fe' 
+Stmt' Else' Stmt ) Lt' Ct' 
+Stmt' Else' Stmt ) Lt' 
+Stmt' Else' Stmt ) 
+Stmt' Else' Stmt 
+Stmt' Else' Block 
+Stmt' Else' } Stmts { 
+Stmt' Else' } Stmts 
+Stmt' Else' } 
+Stmt' Else' 
+Stmt' Stmt else 
+Stmt' Stmt 
+Stmt' Block 
+Stmt' } Stmts { 
+Stmt' } Stmts 
+Stmt' } 
+Stmt' 
+
+while(a){}
+Stmt' Stmt 
+Stmt' Block ) E ( while 
+while
+Stmt' Block ) E ( 
+Stmt' Block ) E 
+Stmt' Block ) Le 
+Stmt' Block ) Lt' Lf 
+Stmt' Block ) Lt' Ce 
+Stmt' Block ) Lt' Ct' Cf 
+Stmt' Block ) Lt' Ct' Fe 
+Stmt' Block ) Lt' Ct' Fe' Ft 
+Stmt' Block ) Lt' Ct' Fe' Ft' F 
+Stmt' Block ) Lt' Ct' Fe' Ft' id 
+Stmt' Block ) Lt' Ct' Fe' Ft' Na 
+Stmt' Block ) Lt' Ct' Fe' Ft' 
+Stmt' Block ) Lt' Ct' Fe' 
+Stmt' Block ) Lt' Ct' 
+Stmt' Block ) Lt' 
+Stmt' Block ) 
+Stmt' Block 
+Stmt' } Stmts { 
+Stmt' } Stmts 
+Stmt' } 
+Stmt' 
+
+while(a>0){}
+Stmt' Stmt 
+Stmt' Block ) E ( while 
+Stmt' Block ) E ( 
+Stmt' Block ) E 
+Stmt' Block ) Le 
+Stmt' Block ) Lt' Lf 
+Stmt' Block ) Lt' Ce 
+Stmt' Block ) Lt' Ct' Cf 
+Stmt' Block ) Lt' Ct' Fe 
+Stmt' Block ) Lt' Ct' Fe' Ft 
+Stmt' Block ) Lt' Ct' Fe' Ft' F 
+Stmt' Block ) Lt' Ct' Fe' Ft' id 
+Stmt' Block ) Lt' Ct' Fe' Ft' Na 
+Stmt' Block ) Lt' Ct' Fe' Ft' 
+Stmt' Block ) Lt' Ct' Fe' 
+Stmt' Block ) Lt' Ct' 
+Stmt' Block ) Lt' Ct' Cf > 
+Stmt' Block ) Lt' Ct' Cf 
+Stmt' Block ) Lt' Ct' Fe 
+Stmt' Block ) Lt' Ct' Fe' Ft 
+Stmt' Block ) Lt' Ct' Fe' Ft' F 
+Stmt' Block ) Lt' Ct' Fe' Ft' id 
+Stmt' Block ) Lt' Ct' Fe' Ft' consv 
+Stmt' Block ) Lt' Ct' Fe' Ft' 
+Stmt' Block ) Lt' Ct' Fe' 
+Stmt' Block ) Lt' Ct' 
+Stmt' Block ) Lt' 
+Stmt' Block ) 
+Stmt' Block 
+Stmt' } Stmts { 
+Stmt' } Stmts 
+Stmt' } 
+Stmt' 
+
+int func2(int a, int b){}
+Stmt' Stmt 
+Stmt' Nadef Typ 
+Stmt' Nadef  
+Stmt' ; Tempdef' Na 
+Stmt' ; Tempdef' 
+Stmt' Stmt ) VdList ( 
+Stmt' Stmt ) VdList 
+Stmt' Stmt ) Vdt' Vdf 
+Stmt' Stmt ) Vdt' Vdt' Vd 
+Stmt' Stmt ) Vdt' Vdt' Na Typ 
+Stmt' Stmt ) Vdt' Vdt' Na 
+Stmt' Stmt ) Vdt' Vdt' 
+Stmt' Stmt ) Vdt' Vdf , 
+Stmt' Stmt ) Vdt' Vdf 
+Stmt' Stmt ) Vdt' Vdt' Vd 
+Stmt' Stmt ) Vdt' Vdt' Na Typ 
+Stmt' Stmt ) Vdt' Vdt' Na 
+Stmt' Stmt ) Vdt' Vdt' 
+Stmt' Stmt ) Vdt' 
+Stmt' Stmt ) 
+Stmt' Stmt 
+Stmt' Block 
+Stmt' } Stmts { 
+Stmt' } Stmts 
+Stmt' } 
+Stmt' 
