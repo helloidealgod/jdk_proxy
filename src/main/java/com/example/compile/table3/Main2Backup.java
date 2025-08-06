@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Main2 {
+public class Main2Backup {
     public static PushbackReader pr;
     public static int[][] stateMap = initStateMap();
 

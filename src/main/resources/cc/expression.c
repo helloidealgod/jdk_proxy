@@ -1,4 +1,2 @@
-int a;
-int b = 2;
-int c = 3 + 4;
-a = func2(2,e);
+
+int c = 3 + 4 + b + func();

@@ -154,3 +154,8 @@ while(a){}
 while(a>0){}
 
 int func2(int a, int b){}
+
+int a;
+int b = 2;
+int c = 3 + 4;
+a = func2(2,e);
