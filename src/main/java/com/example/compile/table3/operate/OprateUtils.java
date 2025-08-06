@@ -1,7 +1,6 @@
 package com.example.compile.table3.operate;
 
-import com.example.compile.table3.Stack;
-import com.example.compile.table3.StackE;
+import com.example.compile.table3.stack.Stack;
 
 import java.util.ArrayList;
 import java.util.List;

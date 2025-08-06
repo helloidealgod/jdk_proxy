@@ -1,7 +1,5 @@
 package com.example.compile.table3.name;
 
-import com.example.compile.table3.TypeEnum;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,6 @@
-package com.example.compile.table3;
+package com.example.compile.table3.stack;
+
+import com.example.compile.table3.Info;
 
 import java.util.ArrayList;
 import java.util.List;

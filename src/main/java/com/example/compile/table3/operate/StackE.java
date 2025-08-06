@@ -1,4 +1,4 @@
-package com.example.compile.table3;
+package com.example.compile.table3.operate;
 
 import com.example.compile.table3.operate.SegmentExprOp;
 

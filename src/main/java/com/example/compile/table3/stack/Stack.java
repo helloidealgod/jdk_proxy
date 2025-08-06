@@ -1,4 +1,4 @@
-package com.example.compile.table3;
+package com.example.compile.table3.stack;
 
 import java.util.ArrayList;
 import java.util.List;
