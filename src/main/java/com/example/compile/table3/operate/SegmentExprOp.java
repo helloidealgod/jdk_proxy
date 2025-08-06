@@ -1,4 +1,4 @@
-package com.example.compile.table3;
+package com.example.compile.table3.operate;
 
 public class SegmentExprOp {
     public String type;

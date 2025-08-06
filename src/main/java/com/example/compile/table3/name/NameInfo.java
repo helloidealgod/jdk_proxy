@@ -1,4 +1,4 @@
-package com.example.compile.table3;
+package com.example.compile.table3.name;
 
 public class NameInfo {
     public String name;

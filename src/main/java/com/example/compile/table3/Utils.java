@@ -1,5 +1,7 @@
 package com.example.compile.table3;
 
+import com.example.compile.table3.operate.SegmentExprOp;
+
 public class Utils {
     public static void printSegmentE(SegmentExprOp e) {
         if (e.op != null) {

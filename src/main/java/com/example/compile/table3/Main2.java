@@ -1,11 +1,16 @@
 package com.example.compile.table3;
 
+import com.example.compile.table3.name.NameInfo;
+import com.example.compile.table3.operate.SegmentExprOp;
 import com.example.compile.table3.segment.Segment;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.compile.table3.name.NameTableUtils.*;
+import static com.example.compile.table3.operate.OprateUtils.*;
 
 public class Main2 {
     public static PushbackReader pr;
@@ -34,42 +39,7 @@ public class Main2 {
     }
 
     public static int[][] initStateMap() {
-        int[][] stateMap = {{-3, 4, 1, 3, -2, 16, 18, 2, 0, 0, 12, 6, 0, 9, -2, 14, 3, 0, 0, 26, 24, 30, 0, 0, 3, 0, -2, 0, -2, 3, -2, 3, 0, 21, 0, 0},
-                {1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                {2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-                {-1, -2, -2, -2, -2, -1, -1, -2, -1, -1, -1, -1, -1, -1, 3, -1, 3, -1, -1, -1, -1, -1, -1, -2, 3, -1, -2, -1, -2, 3, -2, 3, -1, -1, -1, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, 5, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -1, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -1, -2, -2, -2, -2, -1, -1, -1, -2, 7, -2, -2, -2, -2, -1, -2, -2, -2, 8, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2},
-                {-1, -2, -1, -2, -2, -2, -2, -1, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -1, -1, -2, -2, -2, -2, 10, -2, -2, -1, -2, -2, -2, 11, 34, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -1, -2, -2, -1, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -1, -1, -2, -1, -2, -2, -2, -1, -2, -2, -2, 13, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, 15, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, 17, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, 19, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, 20, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -1, -1, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, 23, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, 22, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -1, -2, -2, -2, -2, -1, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, 25, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -1, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, 27, 28, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, 29, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, 32, 31, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2},
-                {-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -1, -2, -2, -2, -2, -1, -2, -1, -2, -2, -2, -2}};
-        return stateMap;
+        return Constant.stateMap;
     }
 
     public static final String topSym = "Stmts";
@@ -120,101 +90,11 @@ public class Main2 {
     // 栈
     public static InfoStack stack = new InfoStack();
     public static Stack tokenStack = new Stack();
-    // 操作符栈
-    public static Stack opStack = new Stack();
-    // 值栈
-    public static StackE valStack = new StackE();
-    //表达式集
-    public static String[] exprs = {
-            "Stmts",
-            "Stmt'",
-            "Stmt",
-            "ForstList",
-            "Forst'",
-            "Forst",
-            "ForetList",
-            "Foret'",
-            "Foret",
-            "Block",
-            "If",
-            "Else'",
-            "Nadef",
-            "Tempdef'",
-            "Funcall",
-            "Temp'",
-            "VdList",
-            "Vdt'",
-            "Vdf",
-            "Vd",
-            "EList",
-            "Et'",
-            "Ef",
-            "E",
-            "Le",
-            "Lt'",
-            "Lf",
-            "Ce",
-            "Ct'",
-            "Cf",
-            "Fe",
-            "Fe'",
-            "Ft",
-            "Ft'",
-            "F",
-            "id",
-            "Temp1",
-            "Temp2",
-            "Temp3"
-    };
-    //符号集
-    public static String[] tokens = {"consv", "Na", "Typ", "for", "while", "do", "if", "else", "(", ")", "&&", "||", "!", "<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%", ";", ",", "{", "}", "$"};
-    //语法驱动表
-    public static String[][] actionMap = {
-/*Stmts*/       {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "error", "error", "error", "error", "error", "pop;push 0,Stmt,Stmt'", "pop;", "error"},
-/*Stmt'*/       {"pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;push 0,Stmt,Stmt'", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Stmt,Stmt'", "pop;", "pop;", "pop;", "pop", "pop;", "pop;push 0,Stmt,Stmt'", "pop", "pop"},
-/*Stmt*/        {"pop;push 0,E;SegTypeE", "pop;push 0,Funcall;SegTypeCall", "pop;push 0,Typ,Nadef;SegTypeDef", "pop;push 0,for,(,ForstList,semi,E,semi,ForetList,),Block;SegTypeFor", "pop;push 0,while,(,E,),Block;SegTypeWhile", "pop;push 0,do,Block,while,(,E,),semi;SegTypeDo", "pop;push 0,If,Else';SegTypeElse", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E;SegTypeE", "error", "error", "error", "error", "error", "pop;push 0,Block;SegTypeBlock", "pop;", "error"},
-/*ForstList*/   {"pop;", "pop;push 0,Forst,Forst'", "pop;push 0,Forst,Forst'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Forst'*/      {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Forst,Forst'", "pop;", "pop;", "pop;"},
-/*Forst*/       {"error", "pop;push 0,Na,{aNa},=,E", "pop;push 2,eq,Na,{aNa},=,Typ,Na,{aNa},=,E;push 2,eq,Na,{aNa},semi,Typ,Na,{aNa};push 2,eq,Na,{aNa},comma,Typ,Na,{aNa}", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*ForetList*/   {"pop;", "pop;push 0,Foret,Foret'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Foret'*/      {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Foret,Foret'", "pop;", "pop;", "pop;"},
-/*Foret*/       {"error", "pop;push 1,eq,=,Na,{aNa},=,E;push 1,eq,(,Na,{aNa},(,EList,)", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Block*/       {"error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,{,Stmts,}", "error", "error"},
-/*If*/          {"error", "error", "error", "error", "error", "error", "pop;push 0,if,(,E,),Stmt", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Else'*/       {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,else,Stmt", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Nadef*/       {"error", "pop;push 1,eq,=,Na,{aNa},=,E,{aE},semi;push 1,ne,=,Na,{aNa},Tempdef',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Tempdef'*/    {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;pop;push 0,(,VdList,),Stmt;SegTypeFunDef", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Funcall*/     {"error", "pop;push 1,eq,=,Na,{aNa1},=,E,{aE},semi;push 1,ne,=,Na,{aNa1},Temp',semi", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Temp'*/       {"error", "error", "error", "error", "error", "error", "error", "error", "pop;pop;push 0,(,EList,),semi;SegTypeFunCall", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;", "error", "error", "error", "error"},
-/*VdList*/      {"pop;", "pop;", "pop;push 0,Vdf,Vdt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Vdt'*/        {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Vdf", "pop;", "pop;", "pop;"},
-/*Vdf*/         {"error", "error", "pop;push 0,Vd,Vdt'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Vd*/          {"error", "error", "pop;push 0,Typ,Na,{aNa}", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*EList*/       {"pop;push 0,Ef,Et'", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,Ef,Et'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Et'*/         {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,comma,Ef", "pop;", "pop;", "pop;"},
-/*Ef*/          {"pop;push 0,E,Et'", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,E,Et'", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*E*/           {"pop;push 0,Le", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Le", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Le*/          {"pop;push 0,Lf,Lt'", "pop;push 0,Lf,Lt'", "error", "error", "error", "error", "error", "error", "pop;push 0,Lf,Lt'", "error", "error", "error", "pop;push 0,!,Le", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Lf,Lt'", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Lt'*/         {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,&&,Lf,Lt'", "pop;push 0,||,Lf,Lt'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Lf*/          {"pop;push 0,Ce", "pop;push 0,Ce", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Le,),Temp1", "error", "error", "error", "pop;push 0,!,Lf", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Ce", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Ce*/          {"pop;push 0,Cf,Ct'", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Cf,Ct'", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Ct'*/         {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,<,Cf,Ct'", "pop;push 0,<=,Cf,Ct'", "pop;push 0,>,Cf,Ct'", "pop;push 0,>=,Cf,Ct'", "pop;push 0,==,Cf,Ct'", "pop;push 0,!=,Cf,Ct'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Cf*/          {"pop;push 0,Fe", "pop;push 0,Fe", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Ce,),Temp2", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Fe*/          {"pop;push 0,Ft,Fe'", "pop;push 0,Ft,Fe'", "error", "error", "error", "error", "error", "error", "pop;push 0,Ft,Fe'", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "pop;push 0,-,Fe", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Fe'*/         {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,+,Ft,Fe'", "pop;push 0,-,Ft,Fe'", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*Ft*/          {"pop;push 0,F,Ft'", "pop;push 0,F,Ft'", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Ft'*/         {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,*,F,Ft'", "pop;push 0,/,F,Ft'", "pop;push 0,%,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
-/*F*/           {"pop;push 0,id", "pop;push 0,id", "error", "error", "error", "error", "error", "error", "pop;push 0,(,Fe,),Temp3", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*id*/          {"pop;push 0,consv,{aConsv}", "pop;push 1,eq,(,Na,{aFna},(,EList,);push 1,ne,(,Na,{aNa2}", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error", "error"},
-/*Temp1*/       {"pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,&&,Lf,Lt'", "pop;push 0,||,Lf,Lt'", "pop;push 0,!,Le", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "pop;push 0,Temp2", "error"},
-/*Temp2*/       {"pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,<,Cf,Ct'", "pop;push 0,<=,Cf,Ct'", "pop;push 0,>,Cf,Ct'", "pop;push 0,>=,Cf,Ct'", "pop;push 0,==,Cf,Ct'", "pop;push 0,!=,Cf,Ct'", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "pop;push 0,Temp3", "error"},
-/*Temp3*/       {"pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;", "pop;push 0,!=,Cf,Ct'", "pop;push 0,+,Ft',Fe'", "pop;push 0,*,F,Ft'", "pop;push 0,/,F,Ft'", "pop;push 0,%,F,Ft'", "pop;", "pop;", "pop;", "pop;", "pop;"},
-    };
 
     public static int getTokensIndex(String token) {
         int index = -1;
-        for (int i = 0; i < tokens.length; i++) {
-            if (token.equals(tokens[i])) {
+        for (int i = 0; i < Constant.tokens.length; i++) {
+            if (token.equals(Constant.tokens[i])) {
                 index = i;
                 break;
             }
@@ -224,8 +104,8 @@ public class Main2 {
 
     public static int getExprIndex(String stackTop) {
         int index = -1;
-        for (int i = 0; i < exprs.length; i++) {
-            if (stackTop.equals(exprs[i])) {
+        for (int i = 0; i < Constant.exprs.length; i++) {
+            if (stackTop.equals(Constant.exprs[i])) {
                 index = i;
                 break;
             }
@@ -248,213 +128,8 @@ public class Main2 {
         if (-1 == tokensIndex || -1 == exprIndex) {
             System.out.println("[stackTop,token]=[" + stackTop + "," + token + "]");
         }
-        action = actionMap[exprIndex][tokensIndex];
+        action = Constant.actionMap[exprIndex][tokensIndex];
         return action;
-    }
-
-    /**
-     * 判断是否为操作符
-     *
-     * @param token
-     * @return
-     */
-    public static boolean isOperate(String token) {
-        boolean result = false;
-        if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("%")
-                || token.equals("<") || token.equals("<=") || token.equals(">") || token.equals(">=") || token.equals("==") || token.equals("!=")
-                || token.equals("&&") || token.equals("||") || token.equals("!")
-                || token.equals("(") || token.equals(")")
-                || token.equals(",")) {
-            result = true;
-        }
-        return result;
-    }
-
-    /**
-     * 获取操作符的优先级
-     *
-     * @param token
-     * @return
-     */
-    public static int getOperateLevel(String token) {
-        int level = 0;
-        if (token.equals(")")) {
-            level = 0;
-        } else if (token.equals("&&") || token.equals("||")) {
-            level = 1;
-        } else if (token.equals("!")) {
-            level = 2;
-        } else if (token.equals("<") || token.equals("<=")
-                || token.equals(">") || token.equals(">=")
-                || token.equals("==") || token.equals("!=")) {
-            level = 3;
-        } else if (token.equals("+") || token.equals("-")) {
-            level = 4;
-        } else if (token.equals("*") || token.equals("/") || token.equals("%")) {
-            level = 5;
-        } else if (token.equals("(")) {
-            level = 6;
-        }
-        return level;
-    }
-
-    /**
-     * 比较两个操作符的优先级
-     *
-     * @param operate1
-     * @param operate2
-     * @return <=0, operate1优先级高,先进行operate1计算
-     * >0, operate2优先级高,先进行operate2压栈
-     */
-    public static int operateCompare(String operate1, String operate2) {
-        if ("(".equals(operate1) && ")".equals(operate2)) {
-            return 0;
-        } else if ("(".equals(operate1)) {
-            //(+ 先进行operate2压栈
-            return 1;
-        } else if (")".equals(operate1)) {
-            //)+ 先进行operate1计算
-            return -1;
-        } else if ("(".equals(operate2)) {
-            //+( 先进行operate2压栈
-            return 1;
-        } else if (")".equals(operate2)) {
-            //+) 先进行operate1计算
-            return -1;
-        }
-        if (",".equals(operate2) && ",".equals(operate1)) {
-            return 0;
-        } else if (",".equals(operate2)) {
-            //+, 先进行operate1计算
-            return -1;
-        } else if (",".equals(operate1)) {
-            //,+ 先进行operate2压栈
-            return 1;
-        }
-        int level1 = getOperateLevel(operate1);
-        int level2 = getOperateLevel(operate2);
-        return level2 - level1;
-    }
-
-    /**
-     * 操作符计算
-     *
-     * @param op
-     * @return
-     */
-    public static SegmentExprOp operate(String op) {
-        if ("(".equals(op)) {
-            return null;
-        } else if (")".equals(op)) {
-            if ("(".equals(opStack.getTop())) {
-                opStack.pop();
-            } else {
-                System.out.println("error");
-            }
-            return null;
-        }
-        if (",".equals(op)) {
-            return valStack.pop();
-        }
-        if (1 > valStack.size()) {
-            System.out.println("error val length < 1");
-        }
-        SegmentExprOp e2 = valStack.pop();
-        SegmentExprOp e1 = null;
-        if (!valStack.isEmpty() && !"!".equals(op)) {
-            e1 = valStack.pop();
-        }
-        if ("-".equals(op) && null == e1) {
-            e1 = new SegmentExprOp("int", "0", "0");
-        }
-        SegmentExprOp result = operate(op, e1, e2);
-        return result;
-    }
-
-    public static SegmentExprOp operate(String op, SegmentExprOp val1, SegmentExprOp val2) {
-        SegmentExprOp result = null;
-        if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("%")
-                || op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("==") || op.equals("!=")) {
-
-            Integer int1 = val1.value == null ? null : Integer.valueOf(val1.value);
-            Integer int2 = val2.value == null ? null : Integer.valueOf(val2.value);
-
-            if (null != int1 && null != int2) {
-                if (op.equals("+")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 + int2));
-                } else if (op.equals("-")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 - int2));
-                } else if (op.equals("*")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 * int2));
-                } else if (op.equals("/")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 / int2));
-                } else if (op.equals("%")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 % int2));
-                } else if (op.equals("<")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 < int2));
-                } else if (op.equals("<=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 <= int2));
-                } else if (op.equals(">")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 > int2));
-                } else if (op.equals(">=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 >= int2));
-                } else if (op.equals("==")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 == int2));
-                } else if (op.equals("!=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 != int2));
-                }
-            } else {
-                if (val1.op != null) {
-                    segmentExprOpList.add(val1);
-                }
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("int", op, val1, val2);
-            }
-        } else if (op.equals("&&") || op.equals("||")) {
-            Boolean b1 = null;
-            Boolean b2 = null;
-            String s1 = val1.value == null ? "" : val1.value;
-            String s2 = val2.value == null ? "" : val2.value;
-
-            if ("true".equals(s1) || "false".equals(s1)) {
-                b1 = "true".equals(s1);
-            }
-            if ("true".equals(s2) || "false".equals(s2)) {
-                b2 = "true".equals(s2);
-            }
-            if (null != b1 && null != b2) {
-                if (op.equals("&&")) {
-                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 && b2));
-                } else if (op.equals("||")) {
-                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 || b2));
-                }
-            } else {
-                if (val1.op != null) {
-                    segmentExprOpList.add(val1);
-                }
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("Boolean", op, val1, val2);
-            }
-        } else if (op.equals("!")) {
-            Boolean b2 = null;
-            String s2 = val2.value == null ? "" : val2.value;
-            if ("true".equals(s2) || "false".equals(s2)) {
-                b2 = "true".equals(s2);
-            }
-            if (null != b2) {
-                result = new SegmentExprOp("Boolean", "", String.valueOf(!b2));
-            } else {
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("Boolean", op, null, val2);
-            }
-        }
-        return result;
     }
 
     public static String tokenToSymbol(String token) {
@@ -474,12 +149,8 @@ public class Main2 {
     }
 
     public static List<String> operateCommandList = new ArrayList<>();
-    public static List<SegmentExprOp> segmentExprOpList = new ArrayList<>();
 
     public static Segment segment;
-
-    public static List<NameInfo> nameTable = new ArrayList<>();
-    public static Long offset = 0L;
 
     public static void translationUnit() throws IOException {
         String symbol = null;
@@ -508,15 +179,8 @@ public class Main2 {
                 stack.pop();
                 Info top = stack.getTop();
                 doAction(top.name, symbol, token);
-                //是数值 压入值栈
-                if (null != token && token.matches("\\d*")) {
-                    //valStack.push(new SegmentExprOp("int", "", token));
-                } else if (null != token && token.matches("void|char|short|int|long|float")) {
+                if (",".equals(token)) {
 
-                } else if (null != token && token.matches("do|for|if|while|else")) {
-
-                } else if (null != token && token.matches("[A-Za-z]+[A-Za-z0-9]*")) {
-                    //valStack.push(new SegmentExprOp("int", token, null));
                 } else if (isOperate(token)) {
                     boolean flag = true;
                     while (flag) {
@@ -692,6 +356,17 @@ public class Main2 {
                 System.out.println(" " + pop);
             }
             return stack.getTop().name;
+        } else if ("{aE1}".equals(top)) {
+            stack.pop();
+            if (!valStack.isEmpty()) {
+                SegmentExprOp e = valStack.pop();
+                System.out.println(" " + e.value);
+            }
+            if (!opStack.isEmpty()) {
+                String pop = opStack.pop();
+                System.out.println(" " + pop);
+            }
+            return stack.getTop().name;
         } else if ("{aConsv}".equals(top)) {
             stack.pop();
             valStack.push(new SegmentExprOp("int", "", token));
@@ -706,25 +381,5 @@ public class Main2 {
         } else {
             return top;
         }
-    }
-
-    public static NameInfo findNameTable(String name) {
-        for (NameInfo nameInfo : nameTable) {
-            if (nameInfo.name.equals(name)) {
-                return nameInfo;
-            }
-        }
-        return null;
-    }
-
-    public static NameInfo generaNameTable(String name, String type) {
-        NameInfo nameInfo = new NameInfo();
-        nameInfo.name = name;
-        nameInfo.type = type;
-        nameInfo.typeWidth = TypeEnum.getWidthByType(type);
-        nameInfo.address = offset;
-        offset += nameInfo.typeWidth;
-        nameTable.add(nameInfo);
-        return nameInfo;
     }
 }
