@@ -1,14 +1,12 @@
 package com.example.compile.table3;
 
+import com.example.compile.table3.action.Segment;
 import com.example.compile.table3.action.Utils;
 import com.example.compile.table3.operate.SegmentExprOp;
-import com.example.compile.table3.segment.Segment;
 import com.example.compile.table3.stack.InfoStack;
 import com.example.compile.table3.stack.Stack;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.compile.table3.action.Utils.doPush;
 import static com.example.compile.table3.operate.OprateUtils.*;
@@ -148,7 +146,7 @@ public class Main2 {
         }
         return symbol;
     }
-    
+
     public static void translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
@@ -169,13 +167,13 @@ public class Main2 {
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
-            } else if (compare(stack.getTop().name, symbol)) {
+            } else if (compare(stack.getTop().expr, symbol)) {
                 stack.print();
                 symbolLine.append(token);
                 System.out.println(token);
                 stack.pop();
-                Info top = stack.getTop();
-                Utils.doAction(top.name, symbol, token);
+                Segment top = stack.getTop();
+                Utils.doAction(top.expr, symbol, token);
                 if (",".equals(token)) {
                 } else if (isOperate(token)) {
                     boolean flag = true;
@@ -209,7 +207,7 @@ public class Main2 {
                 stack.print();
             } else {
                 //如果栈顶是do action 动作
-                String top = stack.getTop().name;
+                String top = stack.getTop().expr;
                 stack.print();
                 while (top.startsWith("{")) {
                     top = Utils.doAction(top, symbol, token);

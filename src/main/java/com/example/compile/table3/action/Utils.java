@@ -102,14 +102,14 @@ public class Utils {
             if (null == nameTable1) {
                 System.out.println("找不到符号：" + token);
             }
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aNa}".equals(top)) {
             stack.pop();
             generaNameTable(token, "int");
             for (int i = 0; i < nameTable.size(); i++) {
                 System.out.println("nameTable:" + nameTable.get(i).name);
             }
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aE}".equals(top)) {
             stack.pop();
             if (!valStack.isEmpty()) {
@@ -120,7 +120,7 @@ public class Utils {
                 String pop = opStack.pop();
                 System.out.println(" " + pop);
             }
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aE1}".equals(top)) {
             stack.pop();
             if (!valStack.isEmpty()) {
@@ -131,21 +131,21 @@ public class Utils {
                 String pop = opStack.pop();
                 System.out.println(" " + pop);
             }
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aConsv}".equals(top)) {
             stack.pop();
             valStack.push(new SegmentExprOp("int", "", token));
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aFna}".equals(top)) {
             stack.pop();
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aNa2}".equals(top)) {
             stack.pop();
             valStack.push(new SegmentExprOp("int", token, null));
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else if ("{aFcall}".equals(top)) {
             stack.pop();
-            return stack.getTop().name;
+            return stack.getTop().expr;
         } else {
             return top;
         }

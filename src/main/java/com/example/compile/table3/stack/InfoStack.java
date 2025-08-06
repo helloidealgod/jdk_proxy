@@ -1,15 +1,15 @@
 package com.example.compile.table3.stack;
 
-import com.example.compile.table3.Info;
+import com.example.compile.table3.action.Segment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InfoStack {
-    public List<Info> stack = new ArrayList<>();
+    public List<Segment> stack = new ArrayList<>();
 
-    public Info pop() {
-        Info token = null;
+    public Segment pop() {
+        Segment token = null;
         if (!this.stack.isEmpty()) {
             token = stack.remove(stack.size() - 1);
         }
@@ -22,24 +22,24 @@ public class InfoStack {
             for (int i = split.length - 1; i >= 0; i--) {
                 String comma = split[i].replaceAll("comma", ",");
                 comma = comma.replaceAll("semi", ";");
-                Info info = new Info(comma);
-                stack.add(info);
+                Segment segment = new Segment(comma);
+                stack.add(segment);
             }
         } else {
             String comma = token.replaceAll("comma", ",");
             comma = comma.replaceAll("semi", ";");
-            Info info = new Info(comma);
-            stack.add(info);
+            Segment segment = new Segment(comma);
+            stack.add(segment);
         }
     }
 
     public void pushCommand(String command) {
-        Info info = new Info(command);
-        stack.add(info);
+        Segment segment = new Segment(command);
+        stack.add(segment);
     }
 
-    public Info getTop() {
-        Info token = null;
+    public Segment getTop() {
+        Segment token = null;
         if (!stack.isEmpty()) {
             token = stack.get(stack.size() - 1);
         }
@@ -59,8 +59,8 @@ public class InfoStack {
     }
 
     public void print() {
-        for (Info info : stack) {
-            System.out.print(info.name+" ");
+        for (Segment segment : stack) {
+            System.out.print(segment.expr + " ");
         }
         System.out.println("");
     }
