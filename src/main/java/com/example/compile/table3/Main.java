@@ -3,13 +3,14 @@ package com.example.compile.table3;
 import com.example.compile.table3.action.Segment;
 import com.example.compile.table3.action.Utils;
 import com.example.compile.table3.constant.Constant;
-import com.example.compile.table3.operate.SegmentExprOp;
+import com.example.compile.table3.middle.Result;
 import com.example.compile.table3.stack.SegmentStack;
 import com.example.compile.table3.stack.Stack;
 
 import java.io.*;
 
 import static com.example.compile.table3.action.Utils.doPush;
+import static com.example.compile.table3.middle.Utils.resultList;
 import static com.example.compile.table3.operate.OprateUtils.*;
 
 public class Main {
@@ -158,18 +159,15 @@ public class Main {
             if ("$".equals(symbol) && stack.isEmpty()) {
                 System.out.println("语法解析结束！");
                 if (!valStack.isEmpty()) {
-                    SegmentExprOp e = valStack.pop();
+                    Result e = valStack.pop();
                     System.out.println(" " + e.value);
                 }
                 if (!opStack.isEmpty()) {
                     String pop = opStack.pop();
                     System.out.println(" " + pop);
                 }
-                if (!segmentExprOpList.isEmpty()) {
-                    for (SegmentExprOp item : segmentExprOpList) {
-
-                    }
-                    System.out.println("");
+                if (!resultList.isEmpty()) {
+                    com.example.compile.table3.middle.Utils.printResult();
                 }
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
@@ -198,7 +196,7 @@ public class Main {
                                 flag = false;
                             } else {
                                 //运算
-                                SegmentExprOp result = operate(opStack.pop());
+                                Result result = operate(opStack.pop());
                                 if (null != result) {
                                     //结果入栈
                                     valStack.push(result);
@@ -242,8 +240,8 @@ public class Main {
                 stack.print();
             }
         } while (!isError);
-        if (!segmentExprOpList.isEmpty()) {
-            for (SegmentExprOp item : segmentExprOpList) {
+        if (!resultList.isEmpty()) {
+            for (Result item : resultList) {
 
             }
             System.out.println("");

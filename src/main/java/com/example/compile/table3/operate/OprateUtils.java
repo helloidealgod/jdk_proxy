@@ -1,17 +1,17 @@
 package com.example.compile.table3.operate;
 
+import com.example.compile.table3.middle.Result;
 import com.example.compile.table3.stack.Stack;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.example.compile.table3.middle.Utils.resultList;
 
 public class OprateUtils {
-    public static int tempIndex = 0;
+
     // 操作符栈
     public static Stack opStack = new Stack();
     // 值栈
     public static StackE valStack = new StackE();
-    public static List<SegmentExprOp> segmentExprOpList = new ArrayList<>();
 
     /**
      * 操作符计算
@@ -19,7 +19,7 @@ public class OprateUtils {
      * @param op
      * @return
      */
-    public static SegmentExprOp operate(String op) {
+    public static Result operate(String op) {
         if ("#Fun".equals(op)) {
             return null;
         } else if ("(".equals(op)) {
@@ -38,20 +38,20 @@ public class OprateUtils {
         if (1 > valStack.size()) {
             System.out.println("error val length < 1");
         }
-        SegmentExprOp e2 = valStack.pop();
-        SegmentExprOp e1 = null;
+        Result e2 = valStack.pop();
+        Result e1 = null;
         if (!valStack.isEmpty() && !"!".equals(op)) {
             e1 = valStack.pop();
         }
         if ("-".equals(op) && null == e1) {
-            e1 = new SegmentExprOp("int", "0", "0");
+            e1 = new Result("int", "0", "0");
         }
-        SegmentExprOp result = operate(op, e1, e2);
+        Result result = operate(op, e1, e2);
         return result;
     }
 
-    public static SegmentExprOp operate(String op, SegmentExprOp val1, SegmentExprOp val2) {
-        SegmentExprOp result = null;
+    public static Result operate(String op, Result val1, Result val2) {
+        Result result = null;
         if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("%")
                 || op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("==") || op.equals("!=")) {
 
@@ -60,36 +60,37 @@ public class OprateUtils {
 
             if (null != int1 && null != int2) {
                 if (op.equals("+")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 + int2));
+                    result = new Result("int", "", String.valueOf(int1 + int2));
                 } else if (op.equals("-")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 - int2));
+                    result = new Result("int", "", String.valueOf(int1 - int2));
                 } else if (op.equals("*")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 * int2));
+                    result = new Result("int", "", String.valueOf(int1 * int2));
                 } else if (op.equals("/")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 / int2));
+                    result = new Result("int", "", String.valueOf(int1 / int2));
                 } else if (op.equals("%")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 % int2));
+                    result = new Result("int", "", String.valueOf(int1 % int2));
                 } else if (op.equals("<")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 < int2));
+                    result = new Result("int", "", String.valueOf(int1 < int2));
                 } else if (op.equals("<=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 <= int2));
+                    result = new Result("int", "", String.valueOf(int1 <= int2));
                 } else if (op.equals(">")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 > int2));
+                    result = new Result("int", "", String.valueOf(int1 > int2));
                 } else if (op.equals(">=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 >= int2));
+                    result = new Result("int", "", String.valueOf(int1 >= int2));
                 } else if (op.equals("==")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 == int2));
+                    result = new Result("int", "", String.valueOf(int1 == int2));
                 } else if (op.equals("!=")) {
-                    result = new SegmentExprOp("int", "", String.valueOf(int1 != int2));
+                    result = new Result("int", "", String.valueOf(int1 != int2));
                 }
             } else {
-                if (val1.op != null) {
-                    segmentExprOpList.add(val1);
-                }
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("int", op, val1, val2);
+//                if (val1.op != null) {
+//                    resultList.add(val1);
+//                }
+//                if (val2.op != null) {
+//                    resultList.add(val2);
+//                }
+                result = new Result("int", op, val1, val2);
+                resultList.add(result);
             }
         } else if (op.equals("&&") || op.equals("||")) {
             Boolean b1 = null;
@@ -105,18 +106,19 @@ public class OprateUtils {
             }
             if (null != b1 && null != b2) {
                 if (op.equals("&&")) {
-                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 && b2));
+                    result = new Result("Boolean", "", String.valueOf(b1 && b2));
                 } else if (op.equals("||")) {
-                    result = new SegmentExprOp("Boolean", "", String.valueOf(b1 || b2));
+                    result = new Result("Boolean", "", String.valueOf(b1 || b2));
                 }
             } else {
-                if (val1.op != null) {
-                    segmentExprOpList.add(val1);
-                }
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("Boolean", op, val1, val2);
+//                if (val1.op != null) {
+//                    resultList.add(val1);
+//                }
+//                if (val2.op != null) {
+//                    resultList.add(val2);
+//                }
+                result = new Result("Boolean", op, val1, val2);
+                resultList.add(result);
             }
         } else if (op.equals("!")) {
             Boolean b2 = null;
@@ -125,12 +127,13 @@ public class OprateUtils {
                 b2 = "true".equals(s2);
             }
             if (null != b2) {
-                result = new SegmentExprOp("Boolean", "", String.valueOf(!b2));
+                result = new Result("Boolean", "", String.valueOf(!b2));
             } else {
-                if (val2.op != null) {
-                    segmentExprOpList.add(val2);
-                }
-                result = new SegmentExprOp("Boolean", op, null, val2);
+//                if (val2.op != null) {
+//                    resultList.add(val2);
+//                }
+                result = new Result("Boolean", op, null, val2);
+                resultList.add(result);
             }
         }
         return result;

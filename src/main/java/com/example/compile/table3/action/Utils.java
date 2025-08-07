@@ -1,7 +1,7 @@
 package com.example.compile.table3.action;
 
 import com.example.compile.table3.name.NameInfo;
-import com.example.compile.table3.operate.SegmentExprOp;
+import com.example.compile.table3.middle.Result;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.compile.table3.Main.*;
+import static com.example.compile.table3.middle.Utils.resultList;
 import static com.example.compile.table3.name.NameTableUtils.*;
 import static com.example.compile.table3.name.NameTableUtils.nameTable;
 import static com.example.compile.table3.operate.OprateUtils.*;
@@ -132,13 +133,13 @@ public class Utils {
             //{aE -2}
             Segment segment = stack.stack.get(stack.size() - 3);
             if (!opStack.isEmpty()) {
-                SegmentExprOp result = operate(opStack.pop());
+                Result result = operate(opStack.pop());
                 if (null != result) {
                     //结果入栈
                     valStack.push(result);
                 }
             }
-            SegmentExprOp e = valStack.pop();
+            Result e = valStack.pop();
             segment.e = e;
             stack.pop();
             return stack.getTop().expr;
@@ -147,20 +148,20 @@ public class Utils {
             Segment aE1 = stack.getTop();
             Segment segment = stack.stack.get(stack.size() - 6);
             while (aE1.opStackIndex < opStack.size() - 1) {
-                SegmentExprOp result = operate(opStack.pop());
+                Result result = operate(opStack.pop());
                 if (null != result) {
                     //结果入栈
                     valStack.push(result);
                 }
             }
-            SegmentExprOp e = valStack.pop();
+            Result e = valStack.pop();
             segment.funcVars.add(e);
             stack.pop();
             return stack.getTop().expr;
         } else if ("{aConsv}".equals(top)) {
             //{aConsv 入栈}
             stack.pop();
-            valStack.push(new SegmentExprOp("int", "", token));
+            valStack.push(new Result("int", "", token));
             return stack.getTop().expr;
         } else if ("{aFna}".equals(top)) {
             //{aFna -6}
@@ -171,17 +172,13 @@ public class Utils {
         } else if ("{aNa2}".equals(top)) {
             //{aNa2 入栈}
             stack.pop();
-            valStack.push(new SegmentExprOp("int", token, null));
+            valStack.push(new Result("int", token, null));
             return stack.getTop().expr;
         } else if ("{aFcall}".equals(top)) {
             Segment aFcall = stack.pop();
-            for (int i = aFcall.funcVars.size() - 1; i >= 0; i--) {
-                SegmentExprOp exprOp = new SegmentExprOp("push", aFcall.funcVars.get(i).name, aFcall.funcVars.get(i).value);
-                segmentExprOpList.add(exprOp);
-            }
-            SegmentExprOp exprOp = new SegmentExprOp("call", aFcall.funName, null);
-            segmentExprOpList.add(exprOp);
-            valStack.push(new SegmentExprOp("int", "aFcallReuslt", null));
+            Result exprOp = new Result("int", "call", aFcall.funName, aFcall.funcVars);
+            resultList.add(exprOp);
+            valStack.push(new Result("int", exprOp.resultName, null));
             return stack.getTop().expr;
         } else if ("{aTyp}".equals(top)) {
             //{aTyp -2}
