@@ -2,6 +2,7 @@ package com.example.compile.table3;
 
 import com.example.compile.table3.action.Segment;
 import com.example.compile.table3.action.Utils;
+import com.example.compile.table3.constant.Constant;
 import com.example.compile.table3.operate.SegmentExprOp;
 import com.example.compile.table3.stack.SegmentStack;
 import com.example.compile.table3.stack.Stack;
@@ -11,7 +12,7 @@ import java.io.*;
 import static com.example.compile.table3.action.Utils.doPush;
 import static com.example.compile.table3.operate.OprateUtils.*;
 
-public class Main2 {
+public class Main {
     public static PushbackReader pr;
     public static int[][] stateMap = initStateMap();
 
@@ -164,6 +165,12 @@ public class Main2 {
                     String pop = opStack.pop();
                     System.out.println(" " + pop);
                 }
+                if (!segmentExprOpList.isEmpty()) {
+                    for (SegmentExprOp item : segmentExprOpList) {
+
+                    }
+                    System.out.println("");
+                }
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
@@ -235,6 +242,12 @@ public class Main2 {
                 stack.print();
             }
         } while (!isError);
+        if (!segmentExprOpList.isEmpty()) {
+            for (SegmentExprOp item : segmentExprOpList) {
+
+            }
+            System.out.println("");
+        }
         if (isError) {
             System.out.println("=======================error=======================");
             System.out.println("解析：" + symbolLine.toString() + " _" + token + "_");

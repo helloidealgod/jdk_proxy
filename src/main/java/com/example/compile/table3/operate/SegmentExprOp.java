@@ -20,5 +20,6 @@ public class SegmentExprOp {
         this.op = op;
         this.e1 = e1;
         this.e2 = e2;
+        this.name = "temp" + OprateUtils.tempIndex++;
     }
 }

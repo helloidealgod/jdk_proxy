@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.compile.table3.Main2.*;
+import static com.example.compile.table3.Main.*;
 import static com.example.compile.table3.name.NameTableUtils.*;
 import static com.example.compile.table3.name.NameTableUtils.nameTable;
 import static com.example.compile.table3.operate.OprateUtils.*;
@@ -174,7 +174,13 @@ public class Utils {
             valStack.push(new SegmentExprOp("int", token, null));
             return stack.getTop().expr;
         } else if ("{aFcall}".equals(top)) {
-            stack.pop();
+            Segment aFcall = stack.pop();
+            for (int i = aFcall.funcVars.size() - 1; i >= 0; i--) {
+                SegmentExprOp exprOp = new SegmentExprOp("push", aFcall.funcVars.get(i).name, aFcall.funcVars.get(i).value);
+                segmentExprOpList.add(exprOp);
+            }
+            SegmentExprOp exprOp = new SegmentExprOp("call", aFcall.funName, null);
+            segmentExprOpList.add(exprOp);
             valStack.push(new SegmentExprOp("int", "aFcallReuslt", null));
             return stack.getTop().expr;
         } else if ("{aTyp}".equals(top)) {

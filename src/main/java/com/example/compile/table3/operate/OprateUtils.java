@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OprateUtils {
+    public static int tempIndex = 0;
     // 操作符栈
     public static Stack opStack = new Stack();
     // 值栈

@@ -1,4 +1,4 @@
-package com.example.compile.table3;
+package com.example.compile.table3.constant;
 
 public class Constant {
     public static int[][] stateMap = {{-3, 4, 1, 3, -2, 16, 18, 2, 0, 0, 12, 6, 0, 9, -2, 14, 3, 0, 0, 26, 24, 30, 0, 0, 3, 0, -2, 0, -2, 3, -2, 3, 0, 21, 0, 0},
