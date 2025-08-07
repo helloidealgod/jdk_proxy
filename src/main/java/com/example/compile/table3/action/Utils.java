@@ -2,6 +2,7 @@ package com.example.compile.table3.action;
 
 import com.example.compile.table3.name.NameInfo;
 import com.example.compile.table3.middle.Result;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,15 +114,28 @@ public class Utils {
      */
     public static String doAction(String top, String symbol, String token) {
         if ("{aNa1}".equals(top)) {
+            //{aNa1 -5}
+            Segment segment = stack.stack.get(stack.size() - 6);
+            segment.varName = token;
             stack.pop();
-            NameInfo nameTable1 = findNameTable(token);
-            if (null == nameTable1) {
-                System.out.println("找不到符号：" + token);
+            generaNameTable(token, "int");
+            for (int i = 0; i < nameTable.size(); i++) {
+                System.out.println("nameTable:" + nameTable.get(i).name);
             }
             return stack.getTop().expr;
         } else if ("{aNa}".equals(top)) {
             //{aNa -5}
             Segment segment = stack.stack.get(stack.size() - 6);
+            segment.varName = token;
+            stack.pop();
+            generaNameTable(token, "int");
+            for (int i = 0; i < nameTable.size(); i++) {
+                System.out.println("nameTable:" + nameTable.get(i).name);
+            }
+            return stack.getTop().expr;
+        } else if ("{aNa3}".equals(top)) {
+            //{aNa -3}
+            Segment segment = stack.stack.get(stack.size() - 4);
             segment.varName = token;
             stack.pop();
             generaNameTable(token, "int");
@@ -187,7 +201,10 @@ public class Utils {
             stack.pop();
             return stack.getTop().expr;
         } else if ("{aSeg}".equals(top)) {
-            stack.pop();
+            Segment segment = stack.pop();
+            if (!StringUtils.isEmpty(segment.varName) && null != segment.e) {
+                resultList.add(new Result("int", "setValue", segment.varName, segment.e, null));
+            }
             return stack.getTop().expr;
         } else if ("{aF(}".equals(top)) {
             return stack.pop().expr;

@@ -19,6 +19,9 @@ public class Utils {
                     System.out.print((StringUtils.isEmpty(var.value) ? var.resultName : var.value) + " ");
                 }
                 System.out.println(result.resultName);
+            } else if ("setValue".equals(result.op)) {
+                System.out.print((StringUtils.isEmpty(result.e1.value) ? result.e1.resultName : result.e1.value) + " ");
+                System.out.println(result.varName);
             } else {
                 System.out.print((StringUtils.isEmpty(result.e1.value) ? result.e1.resultName : result.e1.value) + " ");
                 System.out.print((StringUtils.isEmpty(result.e2.value) ? result.e2.resultName : result.e2.value) + " ");

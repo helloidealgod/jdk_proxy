@@ -240,12 +240,6 @@ public class Main {
                 stack.print();
             }
         } while (!isError);
-        if (!resultList.isEmpty()) {
-            for (Result item : resultList) {
-
-            }
-            System.out.println("");
-        }
         if (isError) {
             System.out.println("=======================error=======================");
             System.out.println("解析：" + symbolLine.toString() + " _" + token + "_");

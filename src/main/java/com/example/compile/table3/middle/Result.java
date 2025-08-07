@@ -12,6 +12,7 @@ public class Result {
     public Result e1;
     public Result e2;
 
+    public String varName;
     public String funName;
     public List<Result> funcVars = new ArrayList<>();
 
@@ -35,5 +36,13 @@ public class Result {
         this.funName = funName;
         this.funcVars = funcVars;
         this.resultName = "funTemp_" + Utils.funTempIndex++;
+    }
+
+    public Result(String type, String op, String varName, Result e, Result e2) {
+        this.type = type;
+        this.op = op;
+        this.varName = varName;
+        this.e1 = e;
+        this.e2 = e2;
     }
 }

@@ -83,12 +83,6 @@ public class OprateUtils {
                     result = new Result("int", "", String.valueOf(int1 != int2));
                 }
             } else {
-//                if (val1.op != null) {
-//                    resultList.add(val1);
-//                }
-//                if (val2.op != null) {
-//                    resultList.add(val2);
-//                }
                 result = new Result("int", op, val1, val2);
                 resultList.add(result);
             }
@@ -111,12 +105,6 @@ public class OprateUtils {
                     result = new Result("Boolean", "", String.valueOf(b1 || b2));
                 }
             } else {
-//                if (val1.op != null) {
-//                    resultList.add(val1);
-//                }
-//                if (val2.op != null) {
-//                    resultList.add(val2);
-//                }
                 result = new Result("Boolean", op, val1, val2);
                 resultList.add(result);
             }
@@ -129,9 +117,6 @@ public class OprateUtils {
             if (null != b2) {
                 result = new Result("Boolean", "", String.valueOf(!b2));
             } else {
-//                if (val2.op != null) {
-//                    resultList.add(val2);
-//                }
                 result = new Result("Boolean", op, null, val2);
                 resultList.add(result);
             }
