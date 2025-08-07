@@ -19,7 +19,9 @@ public class OprateUtils {
      * @return
      */
     public static SegmentExprOp operate(String op) {
-        if ("(".equals(op)) {
+        if ("#Fun".equals(op)) {
+            return null;
+        } else if ("(".equals(op)) {
             return null;
         } else if (")".equals(op)) {
             if ("(".equals(opStack.getTop())) {
@@ -188,7 +190,9 @@ public class OprateUtils {
      * >0, operate2优先级高,先进行operate2压栈
      */
     public static int operateCompare(String operate1, String operate2) {
-        if ("(".equals(operate1) && ")".equals(operate2)) {
+        if ("#Fun".equals(operate1)) {
+            return 1;
+        } else if ("(".equals(operate1) && ")".equals(operate2)) {
             return 0;
         } else if ("(".equals(operate1)) {
             //(+ 先进行operate2压栈

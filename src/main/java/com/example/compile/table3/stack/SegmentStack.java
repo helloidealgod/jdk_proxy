@@ -5,7 +5,7 @@ import com.example.compile.table3.action.Segment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoStack {
+public class SegmentStack {
     public List<Segment> stack = new ArrayList<>();
 
     public Segment pop() {

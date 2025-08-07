@@ -3,7 +3,7 @@ package com.example.compile.table3;
 import com.example.compile.table3.action.Segment;
 import com.example.compile.table3.action.Utils;
 import com.example.compile.table3.operate.SegmentExprOp;
-import com.example.compile.table3.stack.InfoStack;
+import com.example.compile.table3.stack.SegmentStack;
 import com.example.compile.table3.stack.Stack;
 
 import java.io.*;
@@ -87,7 +87,7 @@ public class Main2 {
     }
 
     // 栈
-    public static InfoStack stack = new InfoStack();
+    public static SegmentStack stack = new SegmentStack();
     public static Stack tokenStack = new Stack();
 
     public static int getTokensIndex(String token) {
@@ -173,8 +173,9 @@ public class Main2 {
                 System.out.println(token);
                 stack.pop();
                 Segment top = stack.getTop();
-                Utils.doAction(top.expr, symbol, token);
+                String action = Utils.doAction(top.expr, symbol, token);
                 if (",".equals(token)) {
+                } else if ("{aF(}".equals(action) || "{aF)}".equals(action)) {
                 } else if (isOperate(token)) {
                     boolean flag = true;
                     while (flag) {
