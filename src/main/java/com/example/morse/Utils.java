@@ -36,8 +36,35 @@ public class Utils {
         return code.toString();
     }
 
+    public String morseCodeToString(String msg) {
+        String[] split = msg.split("/");
+        StringBuffer code = new StringBuffer();
+        for (String s : split) {
+            String code1 = "";
+            for (int i = 0; i < letterCode.length; i++) {
+                String letter = letterCode[i];
+                if (letter.equals(s)) {
+                    code1 = String.valueOf((char) (i + 65));
+                    break;
+                }
+            }
+            for (int i = 0; i < numberCode.length; i++) {
+                String letter = numberCode[i];
+                if (letter.equals(s)) {
+                    code1 = i + "";
+                    break;
+                }
+            }
+            if ("#".equals(s)) {
+                code1 = " ";
+            }
+            code.append(code1);
+        }
+        return code.toString();
+    }
+
     public static void main(String[] args) throws LineUnavailableException, InterruptedException {
-        String msg = "CQCQ DE HZ9BYU 73 73 73 73";
+        String msg = "CQCQ DE HZ9BYU 73 73 73 73 HELLO WORLD";
         Utils utils = new Utils();
         String s = utils.stringToMorseCode(msg.toUpperCase());
         int t = 45;
@@ -60,5 +87,10 @@ public class Utils {
             }
         }
         System.out.println(s);
+
+        String dmsg = utils.morseCodeToString(s);
+        System.out.println(dmsg);
+        String dmsg2 = utils.morseCodeToString(".--/---/.-./.-../-../#/.-/--/.-/-/./..-/.-./#/-/-/-/#/-/-/-/--");
+        System.out.println(dmsg2);
     }
 }
