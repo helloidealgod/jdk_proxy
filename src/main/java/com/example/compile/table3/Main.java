@@ -160,11 +160,11 @@ public class Main {
                 System.out.println("语法解析结束！");
                 if (!valStack.isEmpty()) {
                     Result e = valStack.pop();
-                    System.out.println(" " + e.value);
+                    //System.out.println(" " + e.value);
                 }
                 if (!opStack.isEmpty()) {
                     String pop = opStack.pop();
-                    System.out.println(" " + pop);
+                    //System.out.println(" " + pop);
                 }
                 if (!resultList.isEmpty()) {
                     com.example.compile.table3.middle.Utils.printResult();
