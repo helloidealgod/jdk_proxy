@@ -1,5 +1,7 @@
 package com.example.compile.table3.stack;
 
+import com.example.compile.table3.action.Segment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +53,12 @@ public class Stack {
             size = stack.size();
         }
         return size;
+    }
+
+    public void print() {
+        for (String segment : stack) {
+            System.out.print(segment + " ");
+        }
+        System.out.println("");
     }
 }

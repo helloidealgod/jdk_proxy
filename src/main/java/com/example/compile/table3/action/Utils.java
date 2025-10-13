@@ -1,8 +1,8 @@
 package com.example.compile.table3.action;
 
-import com.example.compile.table3.name.NameInfo;
-import com.example.compile.table3.middle.Result;
-import org.springframework.util.StringUtils;
+
+import com.example.compile.table3.tree.impl.SyntaxE;
+import com.example.compile.table3.tree.impl.SyntaxTyp;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,10 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.compile.table3.Main.*;
-import static com.example.compile.table3.middle.Utils.resultList;
-import static com.example.compile.table3.name.NameTableUtils.*;
-import static com.example.compile.table3.name.NameTableUtils.nameTable;
-import static com.example.compile.table3.operate.OprateUtils.*;
 
 public class Utils {
     public static void doPush(String[] params) throws IOException {
@@ -54,6 +50,9 @@ public class Utils {
         List<String> tokenList = new ArrayList<>();
         for (int i = nextTokens; i > 0; i--) {
             String token = getToken();
+            if (null == token) {
+                token = "$";
+            }
             if (null != token) {
                 tokenList.add(token);
             }
@@ -96,129 +95,31 @@ public class Utils {
         }
     }
 
-    /**
-     * {aSeg}
-     * {aTyp -2}
-     * {aE -2}
-     * {aNa -5}
-     * {aConsv 入栈}
-     * {aNa2 入栈}
-     * {aFcall}
-     * {aFna -4}
-     * {aE1 -4}
-     *
-     * @param top
-     * @param symbol
-     * @param token
-     * @return
-     */
     public static String doAction(String top, String symbol, String token) {
-        if ("{aNa1}".equals(top)) {
-            //{aNa1 -5}
-            Segment segment = stack.stack.get(stack.size() - 6);
-            segment.varName = token;
+        if ("{Es}".equals(top)) {
+            syntax = new SyntaxE();
             stack.pop();
-            generaNameTable(token, "int");
-            for (int i = 0; i < nameTable.size(); i++) {
-                System.out.println("nameTable:" + nameTable.get(i).name);
-            }
-            return stack.getTop().expr;
-        } else if ("{aNa}".equals(top)) {
-            //{aNa -5}
-            Segment segment = stack.stack.get(stack.size() - 6);
-            segment.varName = token;
+        } else if ("{Ee}".equals(top)) {
+            syntax.execute("{Ee}");
+            syntaxList.add(syntax);
+            syntax = null;
             stack.pop();
-            generaNameTable(token, "int");
-            for (int i = 0; i < nameTable.size(); i++) {
-                System.out.println("nameTable:" + nameTable.get(i).name);
-            }
-            return stack.getTop().expr;
-        } else if ("{aNa3}".equals(top)) {
-            //{aNa -3}
-            Segment segment = stack.stack.get(stack.size() - 4);
-            segment.varName = token;
+        } else if ("{Es'}".equals(top)) {
+            syntax.execute(top);
             stack.pop();
-            generaNameTable(token, "int");
-            for (int i = 0; i < nameTable.size(); i++) {
-                System.out.println("nameTable:" + nameTable.get(i).name);
-            }
-            return stack.getTop().expr;
-        } else if ("{aE}".equals(top)) {
-            //{aE -2}
-            Segment segment = stack.stack.get(stack.size() - 3);
-            if (!opStack.isEmpty()) {
-                Result result = operate(opStack.pop());
-                if (null != result) {
-                    //结果入栈
-                    valStack.push(result);
-                }
-            }
-            Result e = valStack.pop();
-            segment.e = e;
+        } else if ("{Ee'}".equals(top)) {
+            syntax.execute(top);
             stack.pop();
-            return stack.getTop().expr;
-        } else if ("{aE1}".equals(top)) {
-            //{aE1 -5}
-            Segment aE1 = stack.getTop();
-            Segment segment = stack.stack.get(stack.size() - 6);
-            while (aE1.opStackIndex < opStack.size() - 1) {
-                Result result = operate(opStack.pop());
-                if (null != result) {
-                    //结果入栈
-                    valStack.push(result);
-                }
-            }
-            Result e = valStack.pop();
-            segment.funcVars.add(e);
+        } else if ("{TypS}".equals(top)) {
+            syntax = new SyntaxTyp();
             stack.pop();
-            return stack.getTop().expr;
-        } else if ("{aConsv}".equals(top)) {
-            //{aConsv 入栈}
+        } else if ("{TypE}".equals(top)) {
+            syntaxList.add(syntax);
+            syntax = null;
             stack.pop();
-            valStack.push(new Result("int", "", token));
-            return stack.getTop().expr;
-        } else if ("{aFna}".equals(top)) {
-            //{aFna -6}
-            Segment segment = stack.stack.get(stack.size() - 7);
-            segment.funName = token;
-            stack.pop();
-            return stack.getTop().expr;
-        } else if ("{aNa2}".equals(top)) {
-            //{aNa2 入栈}
-            stack.pop();
-            valStack.push(new Result("int", token, null));
-            return stack.getTop().expr;
-        } else if ("{aFcall}".equals(top)) {
-            Segment aFcall = stack.pop();
-            Result exprOp = new Result("int", "call", aFcall.funName, aFcall.funcVars);
-            resultList.add(exprOp);
-            valStack.push(new Result("int", exprOp.resultName, null));
-            return stack.getTop().expr;
-        } else if ("{aTyp}".equals(top)) {
-            //{aTyp -2}
-            Segment segment = stack.stack.get(stack.size() - 3);
-            segment.type = token;
-            stack.pop();
-            return stack.getTop().expr;
-        } else if ("{aSeg}".equals(top)) {
-            Segment segment = stack.pop();
-            if (!StringUtils.isEmpty(segment.varName) && null != segment.e) {
-                resultList.add(new Result("int", "setValue", segment.varName, segment.e, null));
-            }
-            return stack.getTop().expr;
-        } else if ("{aF(}".equals(top)) {
-            return stack.pop().expr;
-        } else if ("{aF)}".equals(top)) {
-            return stack.pop().expr;
-        } else if ("{aOpm}".equals(top)) {
-            Segment segment = stack.stack.get(stack.size() - 3);
-            segment.valStackIndex = valStack.size() - 1;
-            segment.opStackIndex = opStack.size() - 1;
-            opStack.push("#Fun");
-            stack.pop();
-            return stack.getTop().expr;
         } else {
-            return top;
+            stack.pop();
         }
+        return stack.getTop();
     }
 }

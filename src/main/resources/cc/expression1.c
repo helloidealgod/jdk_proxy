@@ -181,3 +181,19 @@ if(a > 0){
 }else if( b < 0){
 }else{
 }
+1+4+(2-3)*a
+1+(2-3)*a+func(a,b,c)
+int var;
+int var = 1;
+func(1,2,3);
+int var = 1+2*3+func(a,b,c);
+int func(int f1,int f2,int f3){}
+
+while(a>3){
+}
+if(a>3){
+}else if(a>5){
+}else{
+}
+
+1+4+(2-3)*a
