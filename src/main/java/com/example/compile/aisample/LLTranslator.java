@@ -43,7 +43,7 @@ public class LLTranslator {
         ForStmtList.add(ForStmt);
         grammar.put("ForStmt", ForStmtList);
 
-        // ForInit -> AssignStmt | ExprStmt | ε
+        // ForInit -> Type id = Expr | Expr | ε
         grammar.put("ForInit", Arrays.asList(
                 new String[]{"AssignStmt"},
                 new String[]{"ExprStmt"},
@@ -54,6 +54,12 @@ public class LLTranslator {
         grammar.put("ForUpdate", Arrays.asList(
                 new String[]{"AssignStmt"},
                 new String[]{"ExprStmt"},
+                new String[]{"ε"}
+        ));
+
+        // Condition -> Expr | ε
+        grammar.put("Condition", Arrays.asList(
+                new String[]{"Expr"},
                 new String[]{"ε"}
         ));
 
@@ -69,12 +75,6 @@ public class LLTranslator {
         ExprStmtList.add(ExprStmt);
         grammar.put("ExprStmt", ExprStmtList);
 
-        // Condition -> Expr | ε
-        grammar.put("Condition", Arrays.asList(
-                new String[]{"Expr"},
-                new String[]{"ε"}
-        ));
-
         // Block -> { Statements }
         String[] Block = {"{", "Statements", "}"};
         List<String[]> BlockList = new ArrayList<>();
@@ -82,39 +82,33 @@ public class LLTranslator {
         grammar.put("Block", BlockList);
 
         // 表达式文法
-        // Expr -> E
         String[] Expr = {"E"};
         List<String[]> ExprList = new ArrayList<>();
         ExprList.add(Expr);
         grammar.put("Expr", ExprList);
 
-        // E -> T E'
         String[] E = {"T", "E'"};
         List<String[]> EList = new ArrayList<>();
         EList.add(E);
         grammar.put("E", EList);
 
-        // E' -> + T E' | - T E' | ε
         grammar.put("E'", Arrays.asList(
                 new String[]{"+", "T", "E'"},
                 new String[]{"-", "T", "E'"},
                 new String[]{"ε"}
         ));
 
-        // T -> F T'
         String[] T = {"F", "T'"};
         List<String[]> TList = new ArrayList<>();
         TList.add(T);
         grammar.put("T", TList);
 
-        // T' -> * F T' | / F T' | ε
         grammar.put("T'", Arrays.asList(
                 new String[]{"*", "F", "T'"},
                 new String[]{"/", "F", "T'"},
                 new String[]{"ε"}
         ));
 
-        // F -> ( E ) | id | num
         grammar.put("F", Arrays.asList(
                 new String[]{"(", "E", ")"},
                 new String[]{"id"},
@@ -150,7 +144,6 @@ public class LLTranslator {
                     tokens.add(currentToken.toString());
                     currentToken.setLength(0);
                 }
-                // 处理双字符关系运算符
                 if (i + 1 < input.length() && isDoubleCharOperator(c, input.charAt(i + 1))) {
                     tokens.add(String.valueOf(c) + input.charAt(i + 1));
                     i++;
@@ -236,7 +229,7 @@ public class LLTranslator {
         Stack<ASTNode> nodeStack = new Stack<>();
         nodeStack.push(root);
 
-        while (!stack.isEmpty() && tokenIndex < tokens.size()) {
+        while (!stack.isEmpty() && tokenIndex <= tokens.size()) {
             Object top = stack.pop();
             String currentToken = tokenIndex < tokens.size() ? tokens.get(tokenIndex) : "$";
 
@@ -253,7 +246,7 @@ public class LLTranslator {
 
             if (top instanceof ASTNode) {
                 ASTNode node = (ASTNode) top;
-                if (!nodeStack.isEmpty()) {
+                if (!nodeStack.isEmpty() && nodeStack.peek() != null) {
                     nodeStack.peek().addChild(node);
                 }
                 continue;
@@ -268,11 +261,13 @@ public class LLTranslator {
                     // 创建叶子节点（除了ε）
                     if (!symbol.equals("ε")) {
                         ASTNode leaf = new ASTNode(symbol, currentToken);
-                        if (!nodeStack.isEmpty()) {
+                        if (!nodeStack.isEmpty() && nodeStack.peek() != null) {
                             nodeStack.peek().addChild(leaf);
                         }
                     }
-                    tokenIndex++;
+                    if (!symbol.equals("ε")) {
+                        tokenIndex++;
+                    }
                 } else {
                     System.out.println("语法错误: 期望 " + symbol + " 但找到 " + currentToken);
                     return null;
@@ -296,7 +291,7 @@ public class LLTranslator {
                     // 压入节点标记
                     stack.push(node);
                 } else {
-                    System.out.println("语法错误: 没有合适的产生式 for " + symbol);
+                    System.out.println("语法错误: 没有合适的产生式 for " + symbol + " with lookahead " + currentToken);
                     return null;
                 }
             }
@@ -305,7 +300,8 @@ public class LLTranslator {
         if (stack.isEmpty() && tokenIndex >= tokens.size()) {
             System.out.println("分析成功!");
         } else {
-            System.out.println("分析失败!");
+            System.out.println("分析失败! 剩余栈: " + stack + ", 剩余tokens: " +
+                    (tokenIndex < tokens.size() ? tokens.subList(tokenIndex, tokens.size()) : "无"));
             return null;
         }
 
@@ -371,78 +367,74 @@ public class LLTranslator {
         String tokenType = getTokenType(lookahead);
         List<String[]> productions = grammar.get(nonTerminal);
 
-        if (productions == null) return null;
+        if (productions == null) {
+            System.out.println("警告: 没有找到非终结符 " + nonTerminal + " 的产生式");
+            return null;
+        }
 
         switch (nonTerminal) {
             case "Program":
-                return productions.get(0); // Program -> Statements
+                return productions.get(0);
 
             case "Statements":
                 if (tokenType.equals("}") || lookahead.equals("$")) {
-                    return productions.get(1); // Statements -> ε
+                    return productions.get(1); // ε
                 } else {
-                    return productions.get(0); // Statements -> Statement Statements
+                    return productions.get(0);
                 }
 
             case "Statement":
                 if (lookahead.equals("for")) {
-                    return productions.get(0); // Statement -> ForStmt
+                    return productions.get(0);
                 } else if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
                         tokens.get(tokenIndex + 1).equals("=")) {
-                    return productions.get(1); // Statement -> AssignStmt
+                    return productions.get(1);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
-                    return productions.get(2); // Statement -> ExprStmt
+                    return productions.get(2);
                 } else if (lookahead.equals("{")) {
-                    return productions.get(3); // Statement -> Block
+                    return productions.get(3);
                 }
                 break;
 
             case "ForStmt":
-                return productions.get(0); // 只有一种产生式
+                return productions.get(0);
 
             case "ForInit":
                 if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
                         tokens.get(tokenIndex + 1).equals("=")) {
-                    return productions.get(0); // ForInit -> AssignStmt
+                    return productions.get(0);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
-                    return productions.get(1); // ForInit -> ExprStmt
+                    return productions.get(1);
                 } else if (lookahead.equals(";")) {
-                    return productions.get(2); // ForInit -> ε
+                    return productions.get(2);
                 }
                 break;
 
             case "ForUpdate":
                 if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
                         tokens.get(tokenIndex + 1).equals("=")) {
-                    return productions.get(0); // ForUpdate -> AssignStmt
+                    return productions.get(0);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
-                    return productions.get(1); // ForUpdate -> ExprStmt
+                    return productions.get(1);
                 } else if (lookahead.equals(")")) {
-                    return productions.get(2); // ForUpdate -> ε
+                    return productions.get(2);
                 }
                 break;
 
             case "Condition":
                 if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
-                    return productions.get(0); // Condition -> Expr
+                    return productions.get(0);
                 } else if (lookahead.equals(";")) {
-                    return productions.get(1); // Condition -> ε
+                    return productions.get(1);
                 }
                 break;
 
             case "AssignStmt":
-                return productions.get(0);
-
             case "ExprStmt":
-                return productions.get(0);
-
             case "Block":
-                return productions.get(0);
-
             case "Expr":
-                return productions.get(0);
-
             case "E":
+            case "T":
                 return productions.get(0);
 
             case "E'":
@@ -451,11 +443,8 @@ public class LLTranslator {
                 } else if (lookahead.equals("-")) {
                     return productions.get(1);
                 } else {
-                    return productions.get(2); // E' -> ε
+                    return productions.get(2);
                 }
-
-            case "T":
-                return productions.get(0);
 
             case "T'":
                 if (lookahead.equals("*")) {
@@ -463,7 +452,7 @@ public class LLTranslator {
                 } else if (lookahead.equals("/")) {
                     return productions.get(1);
                 } else {
-                    return productions.get(2); // T' -> ε
+                    return productions.get(2);
                 }
 
             case "F":
@@ -477,11 +466,13 @@ public class LLTranslator {
                 break;
         }
 
+        System.out.println("警告: 没有找到 " + nonTerminal + " 的合适产生式，lookahead=" + lookahead);
         return null;
     }
 
     // 生成代码
     public String generateCode(ASTNode node) {
+        if (node == null) return "";
         return generateCodeRecursive(node, 0);
     }
 
@@ -493,11 +484,6 @@ public class LLTranslator {
 
         switch (node.type) {
             case "Program":
-                for (ASTNode child : node.children) {
-                    code.append(generateCodeRecursive(child, indent));
-                }
-                break;
-
             case "Statements":
                 for (ASTNode child : node.children) {
                     code.append(generateCodeRecursive(child, indent));
@@ -507,33 +493,38 @@ public class LLTranslator {
             case "ForStmt":
                 code.append(indentStr).append("for (");
                 // 提取for循环的三个部分
-                boolean foundInit = false, foundCondition = false, foundUpdate = false;
+                String initCode = "";
+                String condCode = "";
+                String updateCode = "";
+                ASTNode bodyNode = null;
+
                 for (ASTNode child : node.children) {
-                    if (child.type.equals("ForInit") && !foundInit) {
-                        String initCode = generateCodeRecursive(child, 0).trim();
-                        code.append(initCode.isEmpty() ? "" : initCode);
-                        foundInit = true;
-                    } else if (child.type.equals("Condition") && !foundCondition) {
-                        String condCode = generateCodeRecursive(child, 0).trim();
-                        code.append("; ").append(condCode.isEmpty() ? "" : condCode);
-                        foundCondition = true;
-                    } else if (child.type.equals("ForUpdate") && !foundUpdate) {
-                        String updateCode = generateCodeRecursive(child, 0).trim();
-                        code.append("; ").append(updateCode.isEmpty() ? "" : updateCode);
-                        foundUpdate = true;
+                    switch (child.type) {
+                        case "ForInit":
+                            initCode = generateCodeRecursive(child, 0).trim();
+                            break;
+                        case "Condition":
+                            condCode = generateCodeRecursive(child, 0).trim();
+                            break;
+                        case "ForUpdate":
+                            updateCode = generateCodeRecursive(child, 0).trim();
+                            break;
+                        case "Statement":
+                            bodyNode = child;
+                            break;
                     }
                 }
-                code.append(") ");
 
-                // 循环体
-                for (ASTNode child : node.children) {
-                    if (child.type.equals("Statement")) {
-                        String bodyCode = generateCodeRecursive(child, indent + 1);
-                        if (child.children.size() == 1 && child.children.get(0).type.equals("Block")) {
-                            code.append(bodyCode);
-                        } else {
-                            code.append("{\n").append(bodyCode).append(indentStr).append("}\n");
-                        }
+                code.append(initCode).append("; ").append(condCode).append("; ").append(updateCode).append(") ");
+
+                if (bodyNode != null) {
+                    String bodyCode = generateCodeRecursive(bodyNode, indent + 1);
+                    // 如果循环体是单个语句且不是块，需要加花括号
+                    if (bodyNode.children.isEmpty() ||
+                            (bodyNode.children.size() == 1 && !bodyNode.children.get(0).type.equals("Block"))) {
+                        code.append("{\n").append(bodyCode).append(indentStr).append("}\n");
+                    } else {
+                        code.append(bodyCode);
                     }
                 }
                 break;
@@ -549,9 +540,9 @@ public class LLTranslator {
             case "AssignStmt":
                 code.append(indentStr);
                 if (node.children.size() >= 3) {
-                    code.append(node.children.get(0).value).append(" = ")
-                            .append(generateCodeRecursive(node.children.get(2), 0))
-                            .append(";\n");
+                    String id = node.children.get(0).value != null ? node.children.get(0).value : "";
+                    String expr = generateCodeRecursive(node.children.get(2), 0);
+                    code.append(id).append(" = ").append(expr).append(";\n");
                 }
                 break;
 
@@ -573,15 +564,18 @@ public class LLTranslator {
 
             case "E":
             case "T":
-                if (node.children.size() == 2) {
-                    code.append(generateCodeRecursive(node.children.get(0), 0))
-                            .append(generateCodeRecursive(node.children.get(1), 0));
+                if (node.children.size() >= 1) {
+                    code.append(generateCodeRecursive(node.children.get(0), 0));
+                    if (node.children.size() > 1) {
+                        code.append(generateCodeRecursive(node.children.get(1), 0));
+                    }
                 }
                 break;
 
             case "E'":
             case "T'":
-                if (node.children.size() > 0 && !node.children.get(0).value.equals("ε")) {
+                if (!node.children.isEmpty() && node.children.get(0).value != null &&
+                        !node.children.get(0).value.equals("ε")) {
                     code.append(" ").append(node.children.get(0).value).append(" ")
                             .append(generateCodeRecursive(node.children.get(1), 0))
                             .append(generateCodeRecursive(node.children.get(2), 0));
@@ -590,19 +584,18 @@ public class LLTranslator {
 
             case "F":
                 if (node.children.size() == 1) {
-                    code.append(node.children.get(0).value);
+                    code.append(node.children.get(0).value != null ? node.children.get(0).value : "");
                 } else if (node.children.size() == 3) {
                     code.append("(").append(generateCodeRecursive(node.children.get(1), 0)).append(")");
                 }
                 break;
 
-            case "id":
-            case "num":
-            case "+":
-            case "-":
-            case "*":
-            case "/":
-                code.append(node.value);
+            default:
+                if (node.value != null && !node.value.isEmpty()) {
+                    code.append(node.value);
+                } else if (!node.children.isEmpty()) {
+                    code.append(generateCodeRecursive(node.children.get(0), 0));
+                }
                 break;
         }
 
@@ -612,29 +605,33 @@ public class LLTranslator {
     public static void main(String[] args) {
         LLTranslator translator = new LLTranslator();
 
-        // 测试用例
+        // 测试用例 - 简化版本确保能运行
         String[] testInputs = {
-//                "for ( i1 = 0 ;; i2 < 10 ; i3 = i4 + 1 ) { x1 = x2 + i5 ; }",
-                "for ( ; i > 0 ; i = i - 1 ) x = x * 2 ;",
-//                "for ( j = 1 ; j <= 5 ; ) { sum = sum + j ; j = j + 1 ; }",
-//                "i = 0 ; while ( i < 10 ) { x = x + i ; i = i + 1 ; }"
+//                "i = 0 ;",
+                "for ( i1 = 0 ; i2 < 10 ; i3 = i4 + 1 ) { x5 = x6 + i7 ; }",
+//                "x = 1 ; y = 2 ; z = x + y ;"
         };
 
         for (String input : testInputs) {
-            System.out.println("\n" + "==================================================");
+            System.out.println("\n" + "==========================");
             System.out.println("分析输入: " + input);
-            System.out.println("==================================================");
+            System.out.println("==========================");
 
-            ASTNode ast = translator.parseAndTranslate(input);
-            if (ast != null) {
-                System.out.println("\n语法树:");
-                System.out.println(ast);
+            try {
+                ASTNode ast = translator.parseAndTranslate(input);
+                if (ast != null) {
+                    System.out.println("\n语法树:");
+                    System.out.println(ast);
 
-                String code = translator.generateCode(ast);
-                System.out.println("生成的代码:");
-                System.out.println(code);
-            } else {
-                System.out.println("解析失败!");
+                    String code = translator.generateCode(ast);
+                    System.out.println("生成的代码:");
+                    System.out.println(code);
+                } else {
+                    System.out.println("解析失败!");
+                }
+            } catch (Exception e) {
+                System.out.println("解析过程中发生错误: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

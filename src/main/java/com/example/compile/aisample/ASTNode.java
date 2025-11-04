@@ -21,7 +21,9 @@ class ASTNode {
     }
 
     public void addChild(ASTNode child) {
-        children.add(child);
+        if (child != null) {
+            children.add(child);
+        }
     }
 
     @Override
@@ -35,7 +37,7 @@ class ASTNode {
             sb.append("  ");
         }
         sb.append(type);
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             sb.append(": ").append(value);
         }
         sb.append("\n");
