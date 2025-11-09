@@ -23,17 +23,10 @@ public class LLTranslator {
         ProgramList.add(Program);
         grammar.put("Program", ProgramList);
 
-        grammar.put("Program'", Arrays.asList(
-                new String[]{"Statement", "Program'"},
-                new String[]{"ε"}
-        ));
+        grammar.put("Program'", Arrays.asList(new String[]{"Statement", "Program'"}, new String[]{"ε"}));
 
         // Statement -> ForStmt | AssignStmt | ExprStmt
-        grammar.put("Statement", Arrays.asList(
-                new String[]{"ForStmt"},
-                new String[]{"AssignStmt"},
-                new String[]{"ExprStmt"}
-        ));
+        grammar.put("Statement", Arrays.asList(new String[]{"ForStmt"}, new String[]{"AssignStmt"}, new String[]{"ExprStmt"}));
 
         // ForStmt -> for ( ForInit ; ForCond ; ForUpdate ) Block
         String[] ForStmt = {"for", "(", "ForInit", ";", "ForCond", ";", "ForUpdate", ")", "Block"};
@@ -42,24 +35,13 @@ public class LLTranslator {
         grammar.put("ForStmt", ForStmtList);
 
         // ForInit -> AssignStmt | Expr | ε
-        grammar.put("ForInit", Arrays.asList(
-                new String[]{"AssignStmt"},
-                new String[]{"Expr"},
-                new String[]{"ε"}
-        ));
+        grammar.put("ForInit", Arrays.asList(new String[]{"AssignStmt"}, new String[]{"Expr"}, new String[]{"ε"}));
 
         // ForCond -> Expr | ε
-        grammar.put("ForCond", Arrays.asList(
-                new String[]{"Expr"},
-                new String[]{"ε"}
-        ));
+        grammar.put("ForCond", Arrays.asList(new String[]{"Expr"}, new String[]{"ε"}));
 
         // ForUpdate -> AssignStmt | Expr | ε
-        grammar.put("ForUpdate", Arrays.asList(
-                new String[]{"AssignStmt"},
-                new String[]{"Expr"},
-                new String[]{"ε"}
-        ));
+        grammar.put("ForUpdate", Arrays.asList(new String[]{"AssignStmt"}, new String[]{"Expr"}, new String[]{"ε"}));
 
         // AssignStmt -> id = Expr ;
         String[] AssignStmt = {"id", "=", "Expr", ";"};
@@ -85,10 +67,7 @@ public class LLTranslator {
         StatementsList.add(Statements);
         grammar.put("Statements", StatementsList);
 
-        grammar.put("Statements'", Arrays.asList(
-                new String[]{"Statement", "Statements'"},
-                new String[]{"ε"}
-        ));
+        grammar.put("Statements'", Arrays.asList(new String[]{"Statement", "Statements'"}, new String[]{"ε"}));
 
         // 表达式文法
         String[] Expr = {"LogicExpr"};
@@ -101,54 +80,30 @@ public class LLTranslator {
         LogicExprList.add(LogicExpr);
         grammar.put("LogicExpr", LogicExprList);
 
-        grammar.put("LogicExpr'", Arrays.asList(
-                new String[]{"&&", "CompareExpr", "LogicExpr'"},
-                new String[]{"||", "CompareExpr", "LogicExpr'"},
-                new String[]{"ε"}
-        ));
+        grammar.put("LogicExpr'", Arrays.asList(new String[]{"&&", "CompareExpr", "LogicExpr'"}, new String[]{"||", "CompareExpr", "LogicExpr'"}, new String[]{"ε"}));
 
         String[] CompareExpr = {"ArithExpr", "CompareExpr'"};
         List<String[]> CompareExprList = new ArrayList<>();
         CompareExprList.add(CompareExpr);
         grammar.put("CompareExpr", CompareExprList);
 
-        grammar.put("CompareExpr'", Arrays.asList(
-                new String[]{"<", "ArithExpr"},
-                new String[]{">", "ArithExpr"},
-                new String[]{"<=", "ArithExpr"},
-                new String[]{">=", "ArithExpr"},
-                new String[]{"==", "ArithExpr"},
-                new String[]{"!=", "ArithExpr"},
-                new String[]{"ε"}
-        ));
+        grammar.put("CompareExpr'", Arrays.asList(new String[]{"<", "ArithExpr"}, new String[]{">", "ArithExpr"}, new String[]{"<=", "ArithExpr"}, new String[]{">=", "ArithExpr"}, new String[]{"==", "ArithExpr"}, new String[]{"!=", "ArithExpr"}, new String[]{"ε"}));
 
         String[] ArithExpr = {"Term", "ArithExpr'"};
         List<String[]> ArithExprList = new ArrayList<>();
         ArithExprList.add(ArithExpr);
         grammar.put("ArithExpr", ArithExprList);
 
-        grammar.put("ArithExpr'", Arrays.asList(
-                new String[]{"+", "Term", "ArithExpr'"},
-                new String[]{"-", "Term", "ArithExpr'"},
-                new String[]{"ε"}
-        ));
+        grammar.put("ArithExpr'", Arrays.asList(new String[]{"+", "Term", "ArithExpr'"}, new String[]{"-", "Term", "ArithExpr'"}, new String[]{"ε"}));
 
         String[] Term = {"Factor", "Term'"};
         List<String[]> TermList = new ArrayList<>();
         TermList.add(Term);
         grammar.put("Term", TermList);
 
-        grammar.put("Term'", Arrays.asList(
-                new String[]{"*", "Factor", "Term'"},
-                new String[]{"/", "Factor", "Term'"},
-                new String[]{"ε"}
-        ));
+        grammar.put("Term'", Arrays.asList(new String[]{"*", "Factor", "Term'"}, new String[]{"/", "Factor", "Term'"}, new String[]{"ε"}));
 
-        grammar.put("Factor", Arrays.asList(
-                new String[]{"(", "Expr", ")"},
-                new String[]{"id"},
-                new String[]{"num"}
-        ));
+        grammar.put("Factor", Arrays.asList(new String[]{"(", "Expr", ")"}, new String[]{"id"}, new String[]{"num"}));
     }
 
     // 词法分析器
@@ -168,8 +123,7 @@ public class LLTranslator {
             }
 
             // 处理运算符和分隔符
-            if (isOperator(c) || c == '(' || c == ')' || c == '{' || c == '}' ||
-                    c == ';' || c == '=' || c == ',') {
+            if (isOperator(c) || c == '(' || c == ')' || c == '{' || c == '}' || c == ';' || c == '=' || c == ',') {
                 if (currentToken.length() > 0) {
                     tokens.add(currentToken.toString());
                     currentToken.setLength(0);
@@ -227,8 +181,7 @@ public class LLTranslator {
     private String getTokenType(String token) {
         if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) {
             return "operator";
-        } else if (token.equals("<") || token.equals(">") || token.equals("<=") ||
-                token.equals(">=") || token.equals("==") || token.equals("!=")) {
+        } else if (token.equals("<") || token.equals(">") || token.equals("<=") || token.equals(">=") || token.equals("==") || token.equals("!=")) {
             return "relop";
         } else if (token.equals("&&") || token.equals("||")) {
             return "logop";
@@ -267,23 +220,18 @@ public class LLTranslator {
         this.stack = new Stack<>();
         this.tokens = tokenize(input);
         this.tokenIndex = 0;
-
         System.out.println("Tokens: " + tokens);
-
         // 初始化栈
         stack.push("$");
         stack.push("Program");
-
+        List<String> p = Arrays.asList(new String[]{"Program", "Program'", "Statement", "Statements", "ForStmt", "for", "ForInit", "ForCond", "ForUpdate", "Block", "AssignStmt", "Expr", "ExprStmt"});
         ASTNode root = new ASTNode("Program");
         Stack<ASTNode> nodeStack = new Stack<>();
         nodeStack.push(root);
-
         while (!stack.isEmpty()) {
             Object top = stack.pop();
             String currentToken = tokenIndex < tokens.size() ? tokens.get(tokenIndex) : "$";
-
             System.out.println("栈: " + stack + ", 栈顶: " + top + ", 当前token: " + currentToken);
-
             if (top.equals("$")) {
                 if (tokenIndex >= tokens.size()) {
                     break;
@@ -292,7 +240,6 @@ public class LLTranslator {
                     return null;
                 }
             }
-
             // 处理AST节点
             if (top instanceof ASTNode) {
                 ASTNode node = (ASTNode) top;
@@ -303,20 +250,60 @@ public class LLTranslator {
                 }
                 continue;
             }
-
             String symbol = (String) top;
-
             if (isTerminal(symbol)) {
                 if (matchTerminal(symbol, currentToken)) {
                     System.out.println("  匹配: " + symbol + " == " + currentToken);
-
                     if (!symbol.equals("ε")) {
-                        // 创建叶子节点
-                        ASTNode leaf = new ASTNode(symbol, currentToken);
-                        if (!nodeStack.isEmpty()) {
-                            nodeStack.peek().addChild(leaf);
+                        if (";".equals(symbol)) {
+                            ASTNode peek = nodeStack.peek();
+                            if ("Expr".equals(peek.type)) {
+                                nodeStack.pop();
+                                peek = nodeStack.peek();
+                                if ("AssignStmt".equals(peek.type) || "ForCond".equals(peek.type)) {
+                                    nodeStack.pop();
+                                }
+                                peek = nodeStack.peek();
+                                if ("Statement".equals(peek.type)) {
+                                    nodeStack.pop();
+                                }
+                                tokenIndex++;
+                            } else if ("ForInit".equals(peek.type)) {
+                                nodeStack.pop();
+                                ASTNode leaf = new ASTNode(symbol, currentToken);
+                                if (!nodeStack.isEmpty()) {
+                                    nodeStack.peek().addChild(leaf);
+                                }
+                                tokenIndex++;
+                            }
+                        } else if (")".equals(symbol)) {
+                            ASTNode peek = nodeStack.peek();
+                            if ("ForUpdate".equals(peek.type)) {
+                                nodeStack.pop();
+                                ASTNode leaf = new ASTNode(symbol, currentToken);
+                                if (!nodeStack.isEmpty()) {
+                                    nodeStack.peek().addChild(leaf);
+                                }
+                                tokenIndex++;
+                            }
+                        } else if ("}".equals(symbol)) {
+                            ASTNode peek = nodeStack.peek();
+                            if ("Statements".equals(peek.type)) {
+                                nodeStack.pop();
+                                ASTNode leaf = new ASTNode(symbol, currentToken);
+                                if (!nodeStack.isEmpty()) {
+                                    nodeStack.peek().addChild(leaf);
+                                }
+                                tokenIndex++;
+                            }
+                        } else {
+                            // 创建叶子节点
+                            ASTNode leaf = new ASTNode(symbol, currentToken);
+                            if (!nodeStack.isEmpty()) {
+                                nodeStack.peek().addChild(leaf);
+                            }
+                            tokenIndex++;
                         }
-                        tokenIndex++;
                     }
                 } else {
                     error("期望 " + symbol + " 但找到 " + currentToken);
@@ -327,11 +314,11 @@ public class LLTranslator {
                 String[] production = selectProduction(symbol, currentToken);
                 if (production != null) {
                     System.out.println("  应用产生式: " + symbol + " -> " + Arrays.toString(production));
-
                     // 创建非终结符节点
                     ASTNode node = new ASTNode(symbol);
-                    nodeStack.push(node);
-
+                    if (p.contains(node.type)) {
+                        nodeStack.push(node);
+                    }
                     // 逆序压栈
                     for (int i = production.length - 1; i >= 0; i--) {
                         String symbolToPush = production[i];
@@ -339,16 +326,16 @@ public class LLTranslator {
                             stack.push(symbolToPush);
                         }
                     }
-
                     // 压入节点本身，用于构建AST
-                    stack.push(node);
+                    if (p.contains(node.type)) {
+                        stack.push(node);
+                    }
                 } else {
                     error("没有合适的产生式: " + symbol + " with lookahead " + currentToken);
                     return null;
                 }
             }
         }
-
         if (tokenIndex == tokens.size()) {
             System.out.println("✓ 分析成功!");
             return root;
@@ -359,14 +346,7 @@ public class LLTranslator {
     }
 
     private boolean isTerminal(String symbol) {
-        return !grammar.containsKey(symbol) ||
-                symbol.equals("id") || symbol.equals("num") ||
-                symbol.equals("+") || symbol.equals("-") || symbol.equals("*") || symbol.equals("/") ||
-                symbol.equals("<") || symbol.equals(">") || symbol.equals("<=") || symbol.equals(">=") ||
-                symbol.equals("==") || symbol.equals("!=") || symbol.equals("&&") || symbol.equals("||") ||
-                symbol.equals("=") || symbol.equals("(") || symbol.equals(")") ||
-                symbol.equals("{") || symbol.equals("}") || symbol.equals(";") ||
-                symbol.equals("for") || symbol.equals("ε");
+        return !grammar.containsKey(symbol) || symbol.equals("id") || symbol.equals("num") || symbol.equals("+") || symbol.equals("-") || symbol.equals("*") || symbol.equals("/") || symbol.equals("<") || symbol.equals(">") || symbol.equals("<=") || symbol.equals(">=") || symbol.equals("==") || symbol.equals("!=") || symbol.equals("&&") || symbol.equals("||") || symbol.equals("=") || symbol.equals("(") || symbol.equals(")") || symbol.equals("{") || symbol.equals("}") || symbol.equals(";") || symbol.equals("for") || symbol.equals("ε");
     }
 
     private boolean matchTerminal(String expected, String actual) {
@@ -443,8 +423,7 @@ public class LLTranslator {
             case "Statement":
                 if (lookahead.equals("for")) {
                     return productions.get(0);
-                } else if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
-                        tokens.get(tokenIndex + 1).equals("=")) {
+                } else if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() && tokens.get(tokenIndex + 1).equals("=")) {
                     return productions.get(1);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
                     return productions.get(2);
@@ -455,8 +434,7 @@ public class LLTranslator {
                 return productions.get(0);
 
             case "ForInit":
-                if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
-                        tokens.get(tokenIndex + 1).equals("=")) {
+                if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() && tokens.get(tokenIndex + 1).equals("=")) {
                     return productions.get(0);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
                     return productions.get(1);
@@ -474,8 +452,7 @@ public class LLTranslator {
                 break;
 
             case "ForUpdate":
-                if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() &&
-                        tokens.get(tokenIndex + 1).equals("=")) {
+                if (tokenType.equals("id") && tokenIndex + 1 < tokens.size() && tokens.get(tokenIndex + 1).equals("=")) {
                     return productions.get(0);
                 } else if (tokenType.equals("id") || tokenType.equals("num") || lookahead.equals("(")) {
                     return productions.get(1);
@@ -568,8 +545,7 @@ public class LLTranslator {
 
     private void error(String message) {
         System.out.println("❌ 错误: " + message);
-        System.out.println("当前位置: tokenIndex=" + tokenIndex + ", tokens=" +
-                (tokenIndex < tokens.size() ? tokens.get(tokenIndex) : "EOF"));
+        System.out.println("当前位置: tokenIndex=" + tokenIndex + ", tokens=" + (tokenIndex < tokens.size() ? tokens.get(tokenIndex) : "EOF"));
     }
 
     // 生成代码
@@ -643,9 +619,7 @@ public class LLTranslator {
                 break;
 
             case "ExprStmt":
-                code.append(indentStr)
-                        .append(generateCodeRecursive(node.children.get(0), 0))
-                        .append(";\n");
+                code.append(indentStr).append(generateCodeRecursive(node.children.get(0), 0)).append(";\n");
                 break;
 
             case "Block":
@@ -675,8 +649,7 @@ public class LLTranslator {
             case "ArithExpr'":
             case "Term'":
                 if (!node.children.isEmpty() && !node.children.get(0).value.equals("ε")) {
-                    code.append(" ").append(node.children.get(0).value).append(" ")
-                            .append(generateCodeRecursive(node.children.get(1), 0));
+                    code.append(" ").append(node.children.get(0).value).append(" ").append(generateCodeRecursive(node.children.get(1), 0));
                     if (node.children.size() > 2) {
                         code.append(generateCodeRecursive(node.children.get(2), 0));
                     }
@@ -705,8 +678,7 @@ public class LLTranslator {
         LLTranslator translator = new LLTranslator();
 
         // 测试用例
-        String[] testInputs = {
-                "for ( i1 = 0 ; i2 < 10 ; i3 = i4 + 1; ) { x5 = x6 + i7 ; }",
+        String[] testInputs = {"for ( i1 = 0 + 1 + 2 * 3 - 4 ;; i2 < 10 ; i3 = i4 + 1; ) { x5 = x6 + i7 ; }",
 //                "for ( ; i > 0 ; i = i - 1 ) { }",
 //                "for ( j = 1 ; j <= 5 ; j = j + 1 ) { sum = sum + j ; }",
 //                "i = 0 ; for ( ; i < 10 ; i = i + 1 ) { print(i) ; }"

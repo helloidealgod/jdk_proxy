@@ -2,19 +2,23 @@ package com.example.compile.aisample;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 // 语法树节点类
 class ASTNode {
+    String id;
     String type;
     String value;
     List<ASTNode> children;
 
     public ASTNode(String type) {
+        this.id = UUID.randomUUID().toString();
         this.type = type;
         this.children = new ArrayList<>();
     }
 
     public ASTNode(String type, String value) {
+        this.id = UUID.randomUUID().toString();
         this.type = type;
         this.value = value;
         this.children = new ArrayList<>();
