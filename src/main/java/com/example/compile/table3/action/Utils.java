@@ -96,30 +96,30 @@ public class Utils {
     }
 
     public static String doAction(String top, String symbol, String token) {
-        if ("{Es}".equals(top)) {
-            syntax = new SyntaxE();
-            stack.pop();
-        } else if ("{Ee}".equals(top)) {
-            syntax.execute("{Ee}");
-            syntaxList.add(syntax);
-            syntax = null;
-            stack.pop();
-        } else if ("{Es'}".equals(top)) {
-            syntax.execute(top);
-            stack.pop();
-        } else if ("{Ee'}".equals(top)) {
-            syntax.execute(top);
-            stack.pop();
-        } else if ("{TypS}".equals(top)) {
-            syntax = new SyntaxTyp();
-            stack.pop();
-        } else if ("{TypE}".equals(top)) {
-            syntaxList.add(syntax);
-            syntax = null;
-            stack.pop();
-        } else {
-            stack.pop();
-        }
+//        if ("{Es}".equals(top)) {
+//            syntax = new SyntaxE();
+//            stack.pop();
+//        } else if ("{Ee}".equals(top)) {
+//            syntax.execute("{Ee}");
+//            syntaxList.add(syntax);
+//            syntax = null;
+//            stack.pop();
+//        } else if ("{Es'}".equals(top)) {
+//            syntax.execute(top);
+//            stack.pop();
+//        } else if ("{Ee'}".equals(top)) {
+//            syntax.execute(top);
+//            stack.pop();
+//        } else if ("{TypS}".equals(top)) {
+//            syntax = new SyntaxTyp();
+//            stack.pop();
+//        } else if ("{TypE}".equals(top)) {
+//            syntaxList.add(syntax);
+//            syntax = null;
+//            stack.pop();
+//        } else {
+//            stack.pop();
+//        }
         return stack.getTop();
     }
 }

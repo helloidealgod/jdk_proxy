@@ -149,7 +149,6 @@ public class Main {
         return symbol;
     }
 
-    public static Syntax syntax;
     public static List<Syntax> syntaxList = new ArrayList<>();
 
     public static void translationUnit() throws IOException {
@@ -168,20 +167,12 @@ public class Main {
                 symbolLine.append(token);
                 System.out.println(token);
                 stack.pop();
-                syntax.execute(symbol, token);
                 String top = stack.getTop();
-                while (null != top && top.startsWith("{")) {
-                    top = Utils.doAction(top, symbol, token);
-                }
                 token = getToken();
                 stack.print();
             } else {
                 String top = stack.getTop();
                 stack.print();
-                //如果栈顶是do action 动作
-                while (null != top && top.startsWith("{")) {
-                    top = Utils.doAction(top, symbol, token);
-                }
                 if (top.equals(symbol)) {
                     continue;
                 }
