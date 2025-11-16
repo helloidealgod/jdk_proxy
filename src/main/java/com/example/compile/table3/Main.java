@@ -196,7 +196,11 @@ public class Main {
                         ASTNode leaf = new ASTNode(token);
                         nodeStack.peek().addChild(leaf);
                     } else if ("{endForBlock}".equals(top)) {
-                        nodeStack.peek();
+                        while (!"Block".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop Block
+                        nodeStack.pop();//pop for
                     } else if ("{ForstComma}".equals(top)) {
                         while (!"Forst".equals(nodeStack.peek().type)) {
                             nodeStack.pop();
@@ -212,6 +216,12 @@ public class Main {
                         nodeStack.peek().addChild(leaf);
                     }
                     top = stack.getTop();
+                } else if (";".equals(symbol) && "Stmt'".equals(top)) {
+                    while (!"Block".equals(nodeStack.peek().type)) {
+                        nodeStack.pop();
+                    }
+                } else if ("{".equals(token)) {
+                    
                 } else {
                     ASTNode leaf = new ASTNode(token);
                     nodeStack.peek().addChild(leaf);
@@ -254,7 +264,8 @@ public class Main {
                 //判断是否需要新建节点
                 if ("for".equals(top1) || "ForstList".equals(top1) || "Forst".equals(top1)
                         || "ForetList".equals(top1) || "Foret".equals(top1)
-                        || "Block".equals(top1) || "E".equals(top1)) {
+                        || "Block".equals(top1) || "E".equals(top1)
+                        || "Typ".equals(top1) || "Funcall".equals(top1)) {
                     ASTNode forNode = new ASTNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
