@@ -197,3 +197,31 @@ if(a>3){
 }
 
 1+4+(2-3)*a
+
+
+
+if(a > 0){
+    int a = 0;
+    b = a + 1;
+}else if( b < 0){
+    int a = 0;
+    b = a + 1;
+}else{
+    int a = 0;
+    b = a + 1;
+}
+while(a > 0+1+2){
+    int a = 0;
+    b = a + 1;
+}
+do{
+    int a = 0;
+    b = a + 1;
+}while(a > 0+1+2);
+
+int a;
+int b = 2;
+int c = 3 + 4;
+c = 3 + 4;
+a = func2(2,e);
+func2(2,e);

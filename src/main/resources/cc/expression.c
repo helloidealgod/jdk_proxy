@@ -1,15 +1,5 @@
-int var;
-int var = 1;
-func(1,2,3);
-int var = 1+2*3+fund(a,b,c);
-int fune(int f1,int f2,int f3){}
-
-while(a>3){
-}
-if(a>3){
-}else if(a>5){
-}else{
-}
-for(int i=0;i<10;i=i+1){
+for(int i=0,int j=1+(2+3)*5;i<10+j;i=i+1+(4+3)*5,j=j+2){
     int a = 0;
+    b = a + 1;
+    c = a + b;
 }

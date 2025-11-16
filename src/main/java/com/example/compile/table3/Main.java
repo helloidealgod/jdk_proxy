@@ -1,11 +1,8 @@
 package com.example.compile.table3;
 
-import com.example.compile.table3.action.Segment;
-import com.example.compile.table3.action.Utils;
 import com.example.compile.table3.constant.Constant;
 import com.example.compile.table3.stack.Stack;
 import com.example.compile.table3.tree.Syntax;
-import com.example.compile.table3.tree.impl.SyntaxE;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -156,6 +153,9 @@ public class Main {
         String token = getToken();
         StringBuilder symbolLine = new StringBuilder("");
         boolean isError = false;
+        ASTNode root = new ASTNode("Stmts");
+        java.util.Stack<ASTNode> nodeStack = new java.util.Stack<>();
+        nodeStack.push(root);
         do {
             symbol = tokenToSymbol(token);
             if ("$".equals(symbol) && stack.isEmpty()) {
@@ -163,16 +163,74 @@ public class Main {
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
-                stack.print();
+                //System.out.print("3--->");
+                //stack.print();
                 symbolLine.append(token);
                 System.out.println(token);
+                //匹配并出栈
                 stack.pop();
+                //判断是否是动作
                 String top = stack.getTop();
+                if (top.startsWith("{")) {
+                    //是动作，执行动作，弹出栈顶
+                    stack.pop();
+                    if ("{endForstList}".equals(top)) {
+                        while (!"ForstList".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop ForstList
+                        ASTNode leaf = new ASTNode(token);
+                        nodeStack.peek().addChild(leaf);
+                    } else if ("{endE}".equals(top)) {
+                        while (!"E".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop E
+                        ASTNode leaf = new ASTNode(token);
+                        nodeStack.peek().addChild(leaf);
+                    } else if ("{endForetList}".equals(top)) {
+                        while (!"ForetList".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop ForetList
+                        ASTNode leaf = new ASTNode(token);
+                        nodeStack.peek().addChild(leaf);
+                    } else if ("{endForBlock}".equals(top)) {
+                        nodeStack.peek();
+                    } else if ("{ForstComma}".equals(top)) {
+                        while (!"Forst".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop Forst
+                    } else if ("{ForetComma}".equals(top)) {
+                        while (!"Foret".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop Foret
+                    } else {
+                        ASTNode leaf = new ASTNode(token);
+                        nodeStack.peek().addChild(leaf);
+                    }
+                    top = stack.getTop();
+                } else {
+                    ASTNode leaf = new ASTNode(token);
+                    nodeStack.peek().addChild(leaf);
+                }
+                //判断是否需要新建节点
+                if ("for".equals(top) || "ForstList".equals(top) || "Forst".equals(top)
+                        || "ForetList".equals(top) || "Foret".equals(top)
+                        || "Block".equals(top) || "E".equals(top)) {
+                    ASTNode node = new ASTNode(top);
+                    nodeStack.peek().addChild(node);
+                    nodeStack.push(node);
+                }
                 token = getToken();
+                System.out.print("4--->");
                 stack.print();
             } else {
                 String top = stack.getTop();
-                stack.print();
+                //System.out.print("0--->");
+                //stack.print();
                 if (top.equals(symbol)) {
                     continue;
                 }
@@ -192,6 +250,16 @@ public class Main {
                         doPush(null == param ? null : param.split(","));
                     }
                 }
+                String top1 = stack.getTop();
+                //判断是否需要新建节点
+                if ("for".equals(top1) || "ForstList".equals(top1) || "Forst".equals(top1)
+                        || "ForetList".equals(top1) || "Foret".equals(top1)
+                        || "Block".equals(top1) || "E".equals(top1)) {
+                    ASTNode forNode = new ASTNode(top1);
+                    nodeStack.peek().addChild(forNode);
+                    nodeStack.push(forNode);
+                }
+                System.out.print("1--->");
                 stack.print();
             }
         }
