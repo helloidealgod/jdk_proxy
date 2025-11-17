@@ -232,7 +232,7 @@ public class Main {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop Foret
-                        }  else if ("{VdComma}".equals(top)) {
+                        } else if ("{VdComma}".equals(top)) {
                             while (!"Vd".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
@@ -250,6 +250,18 @@ public class Main {
                             }
                             nodeStack.pop();//pop Block
                             nodeStack.pop();//pop Typ
+                        } else if ("{EfComma}".equals(top)) {
+                            while (!"Ef".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop Ef
+                        } else if ("{endEList}".equals(top)) {
+                            while (!"EList".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop EList
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
                         } else {
                             ASTNode leaf = new ASTNode(token);
                             nodeStack.peek().addChild(leaf);
@@ -270,7 +282,8 @@ public class Main {
                 if ("for".equals(top) || "ForstList".equals(top) || "Forst".equals(top)
                         || "ForetList".equals(top) || "Foret".equals(top)
                         || "Block".equals(top) || "E".equals(top)
-                        || "VdList".equals(top)) {
+                        || "VdList".equals(top) || "EList".equals(top)
+                        || "Ef".equals(top)) {
                     ASTNode node = new ASTNode(top);
                     nodeStack.peek().addChild(node);
                     nodeStack.push(node);
@@ -309,7 +322,8 @@ public class Main {
                         || "Typ".equals(top1) || "Funcall".equals(top1)
                         || "while".equals(top1)
                         || "if".equals(top1) || "else".equals(top1)
-                        || "Vd".equals(top1)) {
+                        || "Vd".equals(top1)
+                        || "Ef".equals(top1)) {
                     ASTNode forNode = new ASTNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
