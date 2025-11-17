@@ -212,7 +212,27 @@ public class Main {
                         while (!"if".equals(nodeStack.peek().type)) {
                             nodeStack.pop();
                         }
-                        nodeStack.pop();//pop if
+                        //nodeStack.pop();//pop if
+                        String stackTop = stack.getTop();
+                        if ("{endIfStmt}".equals(stackTop)) {
+                            stack.pop();
+                            while (!"if".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop if
+                        }
+                    } else if ("{endElse}".equals(top)) {
+                        while (!"else".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        String stackTop = stack.getTop();
+                        if ("{endIfStmt}".equals(stackTop)) {
+                            stack.pop();
+                            while (!"if".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop if
+                        }
                     } else if ("{ForstComma}".equals(top)) {
                         while (!"Forst".equals(nodeStack.peek().type)) {
                             nodeStack.pop();
@@ -232,8 +252,8 @@ public class Main {
                     while (!"Block".equals(nodeStack.peek().type)) {
                         nodeStack.pop();
                     }
-                } else if ("{".equals(token)) {
-                    
+                } else if ("{".equals(token) || "else".equals(token)) {
+
                 } else {
                     ASTNode leaf = new ASTNode(token);
                     nodeStack.peek().addChild(leaf);
@@ -279,7 +299,7 @@ public class Main {
                         || "Block".equals(top1) || "E".equals(top1)
                         || "Typ".equals(top1) || "Funcall".equals(top1)
                         || "while".equals(top1)
-                        || "if".equals(top1)) {
+                        || "if".equals(top1) || "else".equals(top1)) {
                     ASTNode forNode = new ASTNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
