@@ -208,6 +208,11 @@ public class Main {
                         }
                         nodeStack.pop();//pop Block
                         nodeStack.pop();//pop while
+                    } else if ("{endIf}".equals(top)) {
+                        while (!"if".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop if
                     } else if ("{ForstComma}".equals(top)) {
                         while (!"Forst".equals(nodeStack.peek().type)) {
                             nodeStack.pop();
@@ -273,7 +278,8 @@ public class Main {
                         || "ForetList".equals(top1) || "Foret".equals(top1)
                         || "Block".equals(top1) || "E".equals(top1)
                         || "Typ".equals(top1) || "Funcall".equals(top1)
-                        || "while".equals(top1)) {
+                        || "while".equals(top1)
+                        || "if".equals(top1)) {
                     ASTNode forNode = new ASTNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
