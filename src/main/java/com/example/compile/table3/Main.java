@@ -262,6 +262,12 @@ public class Main {
                             nodeStack.pop();//pop EList
                             ASTNode leaf = new ASTNode(token);
                             nodeStack.peek().addChild(leaf);
+                        } else if ("{Funcall}".equals(top)) {
+                            ASTNode funcall = new ASTNode("Funcall");
+                            nodeStack.peek().addChild(funcall);
+                            nodeStack.push(funcall);
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
                         } else {
                             ASTNode leaf = new ASTNode(token);
                             nodeStack.peek().addChild(leaf);
