@@ -173,81 +173,71 @@ public class Main {
                 //判断是否是动作
                 String top = stack.getTop();
                 if (top.startsWith("{")) {
-                    //是动作，执行动作，弹出栈顶
-                    stack.pop();
-                    if ("{endForstList}".equals(top)) {
-                        while (!"ForstList".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop ForstList
-                        ASTNode leaf = new ASTNode(token);
-                        nodeStack.peek().addChild(leaf);
-                    } else if ("{endE}".equals(top)) {
-                        while (!"E".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop E
-                        ASTNode leaf = new ASTNode(token);
-                        nodeStack.peek().addChild(leaf);
-                    } else if ("{endForetList}".equals(top)) {
-                        while (!"ForetList".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop ForetList
-                        ASTNode leaf = new ASTNode(token);
-                        nodeStack.peek().addChild(leaf);
-                    } else if ("{endForBlock}".equals(top)) {
-                        while (!"Block".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop Block
-                        nodeStack.pop();//pop for
-                    } else if ("{endWhileBlock}".equals(top)) {
-                        while (!"Block".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop Block
-                        nodeStack.pop();//pop while
-                    } else if ("{endIf}".equals(top)) {
-                        while (!"if".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        //nodeStack.pop();//pop if
-                        String stackTop = stack.getTop();
-                        if ("{endIfStmt}".equals(stackTop)) {
-                            stack.pop();
+                    while (top.startsWith("{")) {
+                        //是动作，执行动作，弹出栈顶
+                        stack.pop();
+                        if ("{endForstList}".equals(top)) {
+                            while (!"ForstList".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop ForstList
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
+                        } else if ("{endE}".equals(top)) {
+                            while (!"E".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop E
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
+                        } else if ("{endForetList}".equals(top)) {
+                            while (!"ForetList".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop ForetList
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
+                        } else if ("{endForBlock}".equals(top)) {
+                            while (!"Block".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop Block
+                            nodeStack.pop();//pop for
+                        } else if ("{endWhileBlock}".equals(top)) {
+                            while (!"Block".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop Block
+                            nodeStack.pop();//pop while
+                        } else if ("{endIf}".equals(top)) {
+                            while (!"if".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                        } else if ("{endElse}".equals(top)) {
+                            while (!"else".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                        } else if ("{endIfStmt}".equals(top)) {
                             while (!"if".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop if
-                        }
-                    } else if ("{endElse}".equals(top)) {
-                        while (!"else".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        String stackTop = stack.getTop();
-                        if ("{endIfStmt}".equals(stackTop)) {
-                            stack.pop();
-                            while (!"if".equals(nodeStack.peek().type)) {
+                        } else if ("{ForstComma}".equals(top)) {
+                            while (!"Forst".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
-                            nodeStack.pop();//pop if
+                            nodeStack.pop();//pop Forst
+                        } else if ("{ForetComma}".equals(top)) {
+                            while (!"Foret".equals(nodeStack.peek().type)) {
+                                nodeStack.pop();
+                            }
+                            nodeStack.pop();//pop Foret
+                        } else {
+                            ASTNode leaf = new ASTNode(token);
+                            nodeStack.peek().addChild(leaf);
                         }
-                    } else if ("{ForstComma}".equals(top)) {
-                        while (!"Forst".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop Forst
-                    } else if ("{ForetComma}".equals(top)) {
-                        while (!"Foret".equals(nodeStack.peek().type)) {
-                            nodeStack.pop();
-                        }
-                        nodeStack.pop();//pop Foret
-                    } else {
-                        ASTNode leaf = new ASTNode(token);
-                        nodeStack.peek().addChild(leaf);
+                        top = stack.getTop();
                     }
-                    top = stack.getTop();
                 } else if (";".equals(symbol) && "Stmt'".equals(top)) {
                     while (!"Block".equals(nodeStack.peek().type)) {
                         nodeStack.pop();
