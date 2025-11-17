@@ -239,7 +239,7 @@ public class Main {
                         top = stack.getTop();
                     }
                 } else if (";".equals(symbol) && "Stmt'".equals(top)) {
-                    while (!"Block".equals(nodeStack.peek().type)) {
+                    while (!("Block".equals(nodeStack.peek().type) || "Stmts".equals(nodeStack.peek().type))) {
                         nodeStack.pop();
                     }
                 } else if ("{".equals(token) || "else".equals(token)) {
