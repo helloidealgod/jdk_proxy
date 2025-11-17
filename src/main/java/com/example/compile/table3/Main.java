@@ -159,6 +159,7 @@ public class Main {
         do {
             symbol = tokenToSymbol(token);
             if ("$".equals(symbol) && stack.isEmpty()) {
+                ASTNode peek = nodeStack.peek();
                 return;
             } else if (!symbol.equals("") && stack.isEmpty()) {
                 stack.push(topSym);
@@ -201,6 +202,12 @@ public class Main {
                         }
                         nodeStack.pop();//pop Block
                         nodeStack.pop();//pop for
+                    } else if ("{endWhileBlock}".equals(top)) {
+                        while (!"Block".equals(nodeStack.peek().type)) {
+                            nodeStack.pop();
+                        }
+                        nodeStack.pop();//pop Block
+                        nodeStack.pop();//pop while
                     } else if ("{ForstComma}".equals(top)) {
                         while (!"Forst".equals(nodeStack.peek().type)) {
                             nodeStack.pop();
@@ -265,7 +272,8 @@ public class Main {
                 if ("for".equals(top1) || "ForstList".equals(top1) || "Forst".equals(top1)
                         || "ForetList".equals(top1) || "Foret".equals(top1)
                         || "Block".equals(top1) || "E".equals(top1)
-                        || "Typ".equals(top1) || "Funcall".equals(top1)) {
+                        || "Typ".equals(top1) || "Funcall".equals(top1)
+                        || "while".equals(top1)) {
                     ASTNode forNode = new ASTNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
