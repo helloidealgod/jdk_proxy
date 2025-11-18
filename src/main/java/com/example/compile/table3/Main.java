@@ -278,7 +278,7 @@ public class Main {
                     nodeStack.peek().addChild(leaf);
                 }
                 //判断是否需要新建节点
-                if ("for".equals(top) || "ForstList".equals(top) || "Forst".equals(top)
+                if ("ForstList".equals(top) || "Forst".equals(top)
                         || "ForetList".equals(top) || "Foret".equals(top)
                         || "Block".equals(top) || "E".equals(top)
                         || "VdList".equals(top) || "EList".equals(top)
@@ -313,8 +313,10 @@ public class Main {
                 }
                 String top1 = stack.getTop();
                 //判断是否需要新建节点
-                if ("for".equals(top1) || "ForstList".equals(top1) || "Forst".equals(top1)
-                        || "ForetList".equals(top1) || "Foret".equals(top1)
+                if ("for".equals(top1)
+                        || "Forst".equals(top1)
+                        || "Foret".equals(top1)
+//                        || "ForstList".equals(top1) || "ForetList".equals(top1)
                         || "Block".equals(top1) || "E".equals(top1)
                         || "Typ".equals(top1) || "Funcall".equals(top1)
                         || "while".equals(top1)
