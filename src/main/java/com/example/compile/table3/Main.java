@@ -2,11 +2,8 @@ package com.example.compile.table3;
 
 import com.example.compile.table3.constant.Constant;
 import com.example.compile.table3.stack.Stack;
-import com.example.compile.table3.tree.Syntax;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.compile.table3.action.Utils.doPush;
 
@@ -146,8 +143,6 @@ public class Main {
         return symbol;
     }
 
-    public static List<Syntax> syntaxList = new ArrayList<>();
-
     public static void translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
@@ -161,11 +156,9 @@ public class Main {
             if ("$".equals(symbol) && stack.isEmpty()) {
                 ASTNode peek = nodeStack.peek();
                 return;
-            } else if (!symbol.equals("") && stack.isEmpty()) {
+            } else if (!"".equals(symbol) && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
-                //System.out.print("3--->");
-                //stack.print();
                 symbolLine.append(token);
                 System.out.println(token);
                 //匹配并出栈
@@ -182,21 +175,21 @@ public class Main {
                             }
                             nodeStack.pop();//pop ForstList
                             ASTNode leaf = new ASTNode(token);
-                            nodeStack.peek().addChild(leaf);
+                            nodeStack.peek().addChild(leaf);// push ;
                         } else if ("{endE}".equals(top)) {
                             while (!"E".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop E
                             ASTNode leaf = new ASTNode(token);
-                            nodeStack.peek().addChild(leaf);
+                            nodeStack.peek().addChild(leaf);// push ;
                         } else if ("{endForetList}".equals(top)) {
                             while (!"ForetList".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop ForetList
                             ASTNode leaf = new ASTNode(token);
-                            nodeStack.peek().addChild(leaf);
+                            nodeStack.peek().addChild(leaf);// push )
                         } else if ("{endForBlock}".equals(top)) {
                             while (!"Block".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
@@ -243,7 +236,7 @@ public class Main {
                             }
                             nodeStack.pop();//pop VdList
                             ASTNode leaf = new ASTNode(token);
-                            nodeStack.peek().addChild(leaf);
+                            nodeStack.peek().addChild(leaf);// push )
                         } else if ("{endFunction}".equals(top)) {
                             while (!"Block".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
@@ -261,7 +254,7 @@ public class Main {
                             }
                             nodeStack.pop();//pop EList
                             ASTNode leaf = new ASTNode(token);
-                            nodeStack.peek().addChild(leaf);
+                            nodeStack.peek().addChild(leaf);// push )
                         } else if ("{Funcall}".equals(top)) {
                             ASTNode funcall = new ASTNode("Funcall");
                             nodeStack.peek().addChild(funcall);
@@ -299,8 +292,6 @@ public class Main {
                 stack.print();
             } else {
                 String top = stack.getTop();
-                //System.out.print("0--->");
-                //stack.print();
                 if (top.equals(symbol)) {
                     continue;
                 }
@@ -312,9 +303,9 @@ public class Main {
                     String[] split = commands[i].split(" ");
                     String command = split[0];
                     String param = split.length > 1 ? split[1] : null;
-                    if (command.equals("error")) {
+                    if ("error".equals(command)) {
                         isError = true;
-                    } else if (command.equals("pop")) {
+                    } else if ("pop".equals(command)) {
                         stack.pop();
                     } else if (command.contains("push")) {
                         doPush(null == param ? null : param.split(","));
