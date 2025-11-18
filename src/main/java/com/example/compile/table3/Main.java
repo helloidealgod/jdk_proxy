@@ -385,7 +385,9 @@ public class Main {
                         } else if ("(".equalsIgnoreCase(node.children.get(1).type)) {
                             System.out.print("参数列表开始" + node.children.get(1).type);
                             //入参列表
-                            //explainAstNode(node.children.get(2));
+                            for(AstNode df : node.children.get(2).children){
+                                df.children.get(0).children.forEach(e -> System.out.print(e.type + " "));
+                            }
                             System.out.print(node.children.get(3).type + "参数列表结束");
                         }
                     }

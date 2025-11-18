@@ -30,4 +30,6 @@ int main(int argv1,int argv2,int argv3){
          c1 = a2 + b;
     }
     int a3 = func(1,2,func3(1,2));
+    func4(1,2);
+    func5();
 }
