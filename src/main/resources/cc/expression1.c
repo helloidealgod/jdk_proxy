@@ -225,3 +225,20 @@ int c = 3 + 4;
 c = 3 + 4;
 a = func2(2,e);
 func2(2,e);
+
+int[5] grades;
+int grades[5];
+
+struct Person {
+    char name[50];
+    int age;
+    float height;
+};
+
+struct Person person1;
+struct Person *ptr = &person1;
+ptr->age = 28;
+
+数组
+结构体
+指针

@@ -350,6 +350,7 @@ public class Main {
                     System.out.print("定义语句");
                     System.out.print("类型" + node.children.get(0).type);
                     System.out.print("名称" + node.children.get(1).type);
+                    //查表
                     if (3 <= node.children.size()) {
                         if ("=".equalsIgnoreCase(node.children.get(2).type)) {
                             System.out.print("赋值" + node.children.get(2).type);
@@ -357,6 +358,7 @@ public class Main {
                             System.out.print("表达式");
                             node.children.get(3).children.forEach(e -> System.out.print(e.type + " "));
                         } else if ("(".equalsIgnoreCase(node.children.get(2).type)) {
+                            //函数定义
                             System.out.print("参数列表开始" + node.children.get(2).type);
                             //参数定义列表
                             for (AstNode item : node.children.get(3).children) {
@@ -393,16 +395,18 @@ public class Main {
                     //初始化部分
                     node.children.get(2);
                     //条件部分
-                    node.children.get(4);
-                    //更新部分
-                    node.children.get(5);
+                    System.out.print("表达式");
+                    node.children.get(4).children.forEach(e -> System.out.print(e.type + " "));
                     //主体部分
                     explainAstNode(node.children.get(8));
+                    //更新部分
+                    node.children.get(6);
                     break;
                 case "if":
                     System.out.print("if语句：" + type);
                     //条件部分
-                    node.children.get(2);
+                    System.out.print("表达式");
+                    node.children.get(2).children.forEach(e -> System.out.print(e.type + " "));
                     //if主体部分
                     explainAstNode(node.children.get(4));
                     if (6 <= node.children.size()) {
@@ -413,9 +417,13 @@ public class Main {
                 case "while":
                     System.out.print("while语句：" + type);
                     //条件部分
-                    node.children.get(2);
+                    System.out.print("表达式");
+                    node.children.get(2).children.forEach(e -> System.out.print(e.type + " "));
                     //while主体部分
                     explainAstNode(node.children.get(4));
+                    break;
+                case "Block":
+                    explainAstNode(node);
                     break;
                 default:
                     System.out.println("类型：" + type);
