@@ -75,8 +75,9 @@ public class Main {
             File f = new File("");
             BufferedReader reader = new BufferedReader(new FileReader(f.getAbsolutePath() + "/src/main/resources/cc/expression.c"));
             pr = new PushbackReader(reader);
-            translationUnit();
+            AstNode astNode = translationUnit();
             pr.close();
+            explainAstNode(astNode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,19 +144,19 @@ public class Main {
         return symbol;
     }
 
-    public static void translationUnit() throws IOException {
+    public static AstNode translationUnit() throws IOException {
         String symbol = null;
         String token = getToken();
         StringBuilder symbolLine = new StringBuilder("");
         boolean isError = false;
-        ASTNode root = new ASTNode("Stmts");
-        java.util.Stack<ASTNode> nodeStack = new java.util.Stack<>();
+        AstNode root = new AstNode("Stmts");
+        java.util.Stack<AstNode> nodeStack = new java.util.Stack<>();
         nodeStack.push(root);
         do {
             symbol = tokenToSymbol(token);
             if ("$".equals(symbol) && stack.isEmpty()) {
-                ASTNode peek = nodeStack.peek();
-                return;
+                AstNode peek = nodeStack.peek();
+                return peek;
             } else if (!"".equals(symbol) && stack.isEmpty()) {
                 stack.push(topSym);
             } else if (compare(stack.getTop(), symbol)) {
@@ -174,21 +175,21 @@ public class Main {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop ForstList
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);// push ;
                         } else if ("{endE}".equals(top)) {
                             while (!"E".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop E
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);// push ;
                         } else if ("{endForetList}".equals(top)) {
                             while (!"ForetList".equals(nodeStack.peek().type)) {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop ForetList
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);// push )
                         } else if ("{endForBlock}".equals(top)) {
                             while (!"Block".equals(nodeStack.peek().type)) {
@@ -235,7 +236,7 @@ public class Main {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop VdList
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);// push )
                         } else if ("{endFunction}".equals(top)) {
                             while (!"Block".equals(nodeStack.peek().type)) {
@@ -253,16 +254,16 @@ public class Main {
                                 nodeStack.pop();
                             }
                             nodeStack.pop();//pop EList
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);// push )
                         } else if ("{Funcall}".equals(top)) {
-                            ASTNode funcall = new ASTNode("Funcall");
+                            AstNode funcall = new AstNode("Funcall");
                             nodeStack.peek().addChild(funcall);
                             nodeStack.push(funcall);
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);
                         } else {
-                            ASTNode leaf = new ASTNode(token);
+                            AstNode leaf = new AstNode(token);
                             nodeStack.peek().addChild(leaf);
                         }
                         top = stack.getTop();
@@ -274,7 +275,7 @@ public class Main {
                 } else if ("{".equals(token) || "else".equals(token)) {
 
                 } else {
-                    ASTNode leaf = new ASTNode(token);
+                    AstNode leaf = new AstNode(token);
                     nodeStack.peek().addChild(leaf);
                 }
                 //判断是否需要新建节点
@@ -283,7 +284,7 @@ public class Main {
                         || "Block".equals(top) || "E".equals(top)
                         || "VdList".equals(top) || "EList".equals(top)
                         || "Ef".equals(top)) {
-                    ASTNode node = new ASTNode(top);
+                    AstNode node = new AstNode(top);
                     nodeStack.peek().addChild(node);
                     nodeStack.push(node);
                 }
@@ -323,19 +324,102 @@ public class Main {
                         || "if".equals(top1) || "else".equals(top1)
                         || "Vd".equals(top1)
                         || "Ef".equals(top1)) {
-                    ASTNode forNode = new ASTNode(top1);
+                    AstNode forNode = new AstNode(top1);
                     nodeStack.peek().addChild(forNode);
                     nodeStack.push(forNode);
                 }
                 System.out.print("1--->");
                 stack.print();
             }
-        }
-        while (!isError);
+        } while (!isError);
         if (isError) {
             System.out.println("=======================error=======================");
             System.out.println("解析：" + symbolLine.toString() + " _" + token + "_");
             System.out.println("=======================error=======================");
+        }
+        return null;
+    }
+
+    public static void explainAstNode(AstNode astNode) {
+        for (int i = 0; i < astNode.children.size(); i++) {
+            System.out.print("\n语句" + i + "：");
+            AstNode node = astNode.children.get(i);
+            String type = node.type;
+            switch (type) {
+                case "Typ":
+                    System.out.print("定义语句");
+                    System.out.print("类型" + node.children.get(0).type);
+                    System.out.print("名称" + node.children.get(1).type);
+                    if (3 <= node.children.size()) {
+                        if ("=".equalsIgnoreCase(node.children.get(2).type)) {
+                            System.out.print("赋值" + node.children.get(2).type);
+                            //表达式
+                            System.out.print("表达式");
+                            node.children.get(3).children.forEach(e -> System.out.print(e.type + " "));
+                        } else if ("(".equalsIgnoreCase(node.children.get(2).type)) {
+                            System.out.print("参数列表开始" + node.children.get(2).type);
+                            //参数定义列表
+                            for (AstNode item : node.children.get(3).children) {
+                                System.out.println("参数定义:");
+                                for (AstNode vd : item.children) {
+                                    vd.children.forEach(e -> System.out.print(e.type + " "));
+                                }
+                            }
+                            System.out.print(node.children.get(4).type + "参数列表结束");
+                            System.out.print("函数体" + node.children.get(5).type);
+                            explainAstNode(node.children.get(5));
+                        }
+                    }
+                    break;
+                case "Funcall":
+                    System.out.print("调用语句");
+                    System.out.print("名称" + node.children.get(0).type);
+                    if (2 <= node.children.size()) {
+                        if ("=".equalsIgnoreCase(node.children.get(1).type)) {
+                            System.out.print("赋值" + node.children.get(1).type);
+                            //表达式
+                            System.out.print("表达式");
+                            node.children.get(2).children.forEach(e -> System.out.print(e.type + " "));
+                        } else if ("(".equalsIgnoreCase(node.children.get(1).type)) {
+                            System.out.print("参数列表开始" + node.children.get(1).type);
+                            //入参列表
+                            //explainAstNode(node.children.get(2));
+                            System.out.print(node.children.get(3).type + "参数列表结束");
+                        }
+                    }
+                    break;
+                case "for":
+                    System.out.print("for语句：" + type);
+                    //初始化部分
+                    node.children.get(2);
+                    //条件部分
+                    node.children.get(4);
+                    //更新部分
+                    node.children.get(5);
+                    //主体部分
+                    explainAstNode(node.children.get(8));
+                    break;
+                case "if":
+                    System.out.print("if语句：" + type);
+                    //条件部分
+                    node.children.get(2);
+                    //if主体部分
+                    explainAstNode(node.children.get(4));
+                    if (6 <= node.children.size()) {
+                        //else 部分
+                        explainAstNode(node.children.get(5));
+                    }
+                    break;
+                case "while":
+                    System.out.print("while语句：" + type);
+                    //条件部分
+                    node.children.get(2);
+                    //while主体部分
+                    explainAstNode(node.children.get(4));
+                    break;
+                default:
+                    System.out.println("类型：" + type);
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+int var1;
 int a = 0;
 b = a + 1;
 c = a + b;

@@ -2,29 +2,25 @@ package com.example.compile.table3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 // 语法树节点类
-class ASTNode {
-    String id;
+class AstNode {
     String type;
     String value;
-    List<ASTNode> children;
+    List<AstNode> children;
 
-    public ASTNode(String type) {
-        this.id = UUID.randomUUID().toString();
+    public AstNode(String type) {
         this.type = type;
         this.children = new ArrayList<>();
     }
 
-    public ASTNode(String type, String value) {
-        this.id = UUID.randomUUID().toString();
+    public AstNode(String type, String value) {
         this.type = type;
         this.value = value;
         this.children = new ArrayList<>();
     }
 
-    public void addChild(ASTNode child) {
+    public void addChild(AstNode child) {
         if (child != null) {
             children.add(child);
         }
@@ -45,7 +41,7 @@ class ASTNode {
             sb.append(": ").append(value);
         }
         sb.append("\n");
-        for (ASTNode child : children) {
+        for (AstNode child : children) {
             sb.append(child.toString(indent + 1));
         }
         return sb.toString();
