@@ -394,23 +394,24 @@ public class Main {
                     System.out.print("for语句：" + type);
                     //初始化部分
                     node.children.get(2);
-                    //条件部分
+                    //条件部分 标记位置
                     System.out.print("表达式");
                     node.children.get(4).children.forEach(e -> System.out.print(e.type + " "));
                     //主体部分
                     explainAstNode(node.children.get(8));
                     //更新部分
                     node.children.get(6);
+                    //跳转到条件开始
                     break;
                 case "if":
                     System.out.print("if语句：" + type);
                     //条件部分
                     System.out.print("表达式");
                     node.children.get(2).children.forEach(e -> System.out.print(e.type + " "));
-                    //if主体部分
+                    //if主体部分 标记开始
                     explainAstNode(node.children.get(4));
                     if (6 <= node.children.size()) {
-                        //else 部分
+                        //else 部分 标记开始
                         explainAstNode(node.children.get(5));
                     }
                     break;
@@ -421,6 +422,7 @@ public class Main {
                     node.children.get(2).children.forEach(e -> System.out.print(e.type + " "));
                     //while主体部分
                     explainAstNode(node.children.get(4));
+                    //跳转到条件开始
                     break;
                 case "Block":
                     explainAstNode(node);
