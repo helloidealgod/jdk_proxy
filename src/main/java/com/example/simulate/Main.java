@@ -9,6 +9,8 @@ public class Main {
     public static int DPL = 0x82;
     public static int DPH = 0x83;
 
+    public static int[] n = {0, 0x8, 0x10, 0x18};
+
     public static void main(String[] args) {
         PC = 4096;
         RAM[0] = (byte) 0x20;
@@ -31,28 +33,59 @@ public class Main {
     //4、根据指令更新PC
     public static void run() {
         byte b = RAM[PC];
-        int[] n = {0, 0x8, 0x10, 0x18};
+        if (0 < executeMov(b)) {
+            return;
+        }
+        if (0 < executeArith(b)) {
+            return;
+        }
+        if (0 < executeLogic(b)) {
+            return;
+        }
+        if (0 < executeCtrl(b)) {
+            return;
+        }
+        if (0 < executeBit(b)) {
+            return;
+        }
+    }
+
+    //1. 数据传送类指令
+    public static int executeMov(byte b) {
         int nIndex = 0;
         switch (b) {
+            // 指令格式	机器码	字节数	周期	说明
+            // MOV A, Rn	E8-EF	1	1	A←Rn
+            // MOV A, direct	E5 direct	2	1	A←(direct)
+            // MOV A, @Ri	E6-E7	1	1	A←(Ri)
+            // MOV A, #data	74 data	2	1	A←立即数
+            // MOV Rn, A	F8-FF	1	1	Rn←A
+            // MOV Rn, direct	A8-AF direct	2	2	Rn←(direct)
+            // MOV Rn, #data	78-7F data	2	1	Rn←立即数
+            // MOV direct, A	F5 direct	2	1	(direct)←A
+            // MOV direct, Rn	88-8F direct	2	2	(direct)←Rn
+            // MOV direct, @Ri	86-87 direct	2	2	(direct)←(Ri)
+            // MOV direct, #data	75 direct data	3	2	(direct)←立即数
+            // MOV @Ri, A	F6-F7	1	1	(Ri)←A
+            // MOV @Ri, direct	A6-A7 direct	2	2	(Ri)←(direct)
+            // MOV @Ri, #data	76-77 data	2	1	(Ri)←立即数
+            // MOV DPTR, #data16	90 dataH dataL	3	2	DPTR←16位立即数
+            // MOVC A, @A+DPTR	93	1	2	A←(A+DPTR)查表
+            // MOVC A, @A+PC	83	1	2	A←(A+PC)查表
+            // MOVX A, @Ri	E2-E3	1	2	A←外部RAM(Ri)
+            // MOVX A, @DPTR	E0	1	2	A←外部RAM(DPTR)
+            // MOVX @Ri, A	F2-F3	1	2	外部RAM(Ri)←A
+            // MOVX @DPTR, A	F0	1	2	外部RAM(DPTR)←A
+            // PUSH direct	C0 direct	2	2	压栈
+            // POP direct	D0 direct	2	2	出栈
+            // XCH A, Rn	C8-CF	1	1	A↔Rn
+            // XCH A, direct	C5 direct	2	1	A↔(direct)
+            // XCH A, @Ri	C6-C7	1	1	A↔(Ri)
+            // XCHD A, @Ri	D6-D7	1	1	A低4位↔(Ri)低4位
+            // SWAP A	C4	1	1	A高4位与低4位交换
+
             //助记符	操作数			机器码	字节数	周期数
-            //MOV		A,Rn			E8~EF	1		1
-            case (byte) 0xE8:
-            case (byte) 0xE9:
-            case (byte) 0xEA:
-            case (byte) 0xEB:
-            case (byte) 0xEC:
-            case (byte) 0xED:
-            case (byte) 0xEE:
-            case (byte) 0xEF:
-                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
-                RAM[ACC] = RAM[n[nIndex] + (b & 0xFF - 0xE8)];
-                PC += 1;
-                break;
-            //MOV		A,#data			74		2		1
-            case (byte) 0x74:
-                RAM[ACC] = RAM[PC + 1];
-                PC += 2;
-                break;
+
             // MOV		Rn,A			F8~FF	1		1
             case (byte) 0xF8:
             case (byte) 0xF9:
@@ -105,6 +138,41 @@ public class Main {
                 RAM[ACC] = RAM[RAM[ACC] + RAM[DPL] + RAM[DPH]];
                 PC += 1;
                 break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    public static int executeArith(byte b) {
+//            2. 算术运算类指令
+//            指令格式	机器码	字节数	周期	说明
+//            ADD A, Rn	28-2F	1	1	A←A+Rn
+//            ADD A, direct	25 direct	2	1	A←A+(direct)
+//            ADD A, @Ri	26-27	1	1	A←A+(Ri)
+//            ADD A, #data	24 data	2	1	A←A+立即数
+//            ADDC A, Rn	38-3F	1	1	A←A+Rn+CY
+//            ADDC A, direct	35 direct	2	1	A←A+(direct)+CY
+//            ADDC A, @Ri	36-37	1	1	A←A+(Ri)+CY
+//            ADDC A, #data	34 data	2	1	A←A+立即数+CY
+//            SUBB A, Rn	98-9F	1	1	A←A-Rn-CY
+//            SUBB A, direct	95 direct	2	1	A←A-(direct)-CY
+//            SUBB A, @Ri	96-97	1	1	A←A-(Ri)-CY
+//            SUBB A, #data	94 data	2	1	A←A-立即数-CY
+//            INC A	04	1	1	A←A+1
+//            INC Rn	08-0F	1	1	Rn←Rn+1
+//            INC direct	05 direct	2	1	(direct)←(direct)+1
+//            INC @Ri	06-07	1	1	(Ri)←(Ri)+1
+//            INC DPTR	A3	1	2	DPTR←DPTR+1
+//            DEC A	14	1	1	A←A-1
+//            DEC Rn	18-1F	1	1	Rn←Rn-1
+//            DEC direct	15 direct	2	1	(direct)←(direct)-1
+//            DEC @Ri	16-17	1	1	(Ri)←(Ri)-1
+//            MUL AB	A4	1	4	A×B，积高8位在B，低8位在A
+//            DIV AB	84	1	4	A÷B，商在A，余数在B
+//            DA A	D4	1	1	十进制调整
+        int nIndex = 0;
+        switch (b) {
             // 算术运算类指令
             // 助记符	操作数			机器码	字节数	周期数
             // ADD		A,Rn			28~2F	1		1
@@ -179,6 +247,41 @@ public class Main {
                 RAM[n[nIndex] + (b & 0xFF - 0x18)] -= 1;
                 PC += 1;
                 break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    public static int executeLogic(byte b) {
+//            3. 逻辑运算类指令
+//            指令格式	机器码	字节数	周期	说明
+//            ANL A, Rn	58-5F	1	1	A←A∧Rn
+//            ANL A, direct	55 direct	2	1	A←A∧(direct)
+//            ANL A, @Ri	56-57	1	1	A←A∧(Ri)
+//            ANL A, #data	54 data	2	1	A←A∧立即数
+//            ANL direct, A	52 direct	2	1	(direct)←(direct)∧A
+//            ANL direct, #data	53 direct data	3	2	(direct)←(direct)∧立即数
+//            ORL A, Rn	48-4F	1	1	A←A∨Rn
+//            ORL A, direct	45 direct	2	1	A←A∨(direct)
+//            ORL A, @Ri	46-47	1	1	A←A∨(Ri)
+//            ORL A, #data	44 data	2	1	A←A∨立即数
+//            ORL direct, A	42 direct	2	1	(direct)←(direct)∨A
+//            ORL direct, #data	43 direct data	3	2	(direct)←(direct)∨立即数
+//            XRL A, Rn	68-6F	1	1	A←A⊕Rn
+//            XRL A, direct	65 direct	2	1	A←A⊕(direct)
+//            XRL A, @Ri	66-67	1	1	A←A⊕(Ri)
+//            XRL A, #data	64 data	2	1	A←A⊕立即数
+//            XRL direct, A	62 direct	2	1	(direct)←(direct)⊕A
+//            XRL direct, #data	63 direct data	3	2	(direct)←(direct)⊕立即数
+//            CLR A	E4	1	1	A←0
+//            CPL A	F4	1	1	A←按位取反
+//            RL A	23	1	1	A循环左移
+//            RLC A	33	1	1	A带CY循环左移
+//            RR A	03	1	1	A循环右移
+//            RRC A	13	1	1	A带CY循环右移
+        int nIndex = 0;
+        switch (b) {
             // 逻辑运算类指令
             // 助记符	操作数			机器码	字节数	周期数
             // ANL		A,Rn			58~5F	1		1
@@ -245,6 +348,39 @@ public class Main {
                 RAM[ACC] = (byte) (RAM[ACC] ^ 0xFF);
                 PC += 1;
                 break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    public static int executeCtrl(byte b) {
+//            4. 控制转移类指令
+//            指令格式	机器码	字节数	周期	说明
+//            ACALL addr11	xxx1 0001 addr7-0	2	2	绝对调用
+//            LCALL addr16	12 addrH addrL	3	2	长调用
+//            RET	22	1	2	子程序返回
+//            RETI	32	1	2	中断返回
+//            AJMP addr11	xxx0 0001 addr7-0	2	2	绝对跳转
+//            LJMP addr16	02 addrH addrL	3	2	长跳转
+//            SJMP rel	80 rel	2	2	短跳转(-128~+127)
+//            JMP @A+DPTR	73	1	2	间接跳转
+//            JZ rel	60 rel	2	2	A=0跳转
+//            JNZ rel	70 rel	2	2	A≠0跳转
+//            JC rel	40 rel	2	2	CY=1跳转
+//            JNC rel	50 rel	2	2	CY=0跳转
+//            JB bit, rel	20 bit rel	3	2	位=1跳转
+//            JNB bit, rel	30 bit rel	3	2	位=0跳转
+//            JBC bit, rel	10 bit rel	3	2	位=1跳转并清0
+//            CJNE A, direct, rel	B5 direct rel	3	2	比较不相等跳转
+//            CJNE A, #data, rel	B4 data rel	3	2	比较不相等跳转
+//            CJNE Rn, #data, rel	B8-BF data rel	3	2	比较不相等跳转
+//            CJNE @Ri, #data, rel	B6-B7 data rel	3	2	比较不相等跳转
+//            DJNZ Rn, rel	D8-DF rel	2	2	Rn减1不为0跳转
+//            DJNZ direct, rel	D5 direct rel	3	2	(direct)减1不为0跳转
+//            NOP	00	1	1	空操作
+        int nIndex = 0;
+        switch (b) {
             // 控制转移类指令
             // 助记符	操作数			机器码	字节数	周期数
             // JMP		@A+DPTR			82		1		2
@@ -288,6 +424,28 @@ public class Main {
             case (byte) 0x88:
                 PC += 1;
                 break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    public static int executeBit(byte b) {
+//            5. 位操作类指令
+//            指令格式	机器码	字节数	周期	说明
+//            CLR C	C3	1	1	CY←0
+//            CLR bit	C2 bit	2	1	bit←0
+//            SETB C	D3	1	1	CY←1
+//            SETB bit	D2 bit	2	1	bit←1
+//            CPL C	B3	1	1	CY←~CY
+//            CPL bit	B2 bit	2	1	bit←~bit
+//            ANL C, bit	82 bit	2	2	CY←CY∧bit
+//            ANL C, /bit	B0 bit	2	2	CY←CY∧~bit
+//            ORL C, bit	72 bit	2	2	CY←CY∨bit
+//            ORL C, /bit	A0 bit	2	2	CY←CY∨~bit
+//            MOV C, bit	A2 bit	2	1	CY←bit
+//            MOV bit, C	92 bit	2	2	bit←CY
+        switch (b) {
             // 位操作类指令
             // 助记符	操作数			机器码	字节数	周期数
             // CLR		C				C3		1		1 CY = 0
@@ -325,7 +483,8 @@ public class Main {
                 PC += 3;
                 break;
             default:
-                break;
+                return 0;
         }
+        return 1;
     }
 }
