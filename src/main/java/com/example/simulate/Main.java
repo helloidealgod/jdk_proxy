@@ -56,12 +56,48 @@ public class Main {
         switch (b) {
             // 指令格式	机器码	字节数	周期	说明
             // MOV A, Rn	E8-EF	1	1	A←Rn
+            case (byte) 0xE8:
+            case (byte) 0xE9:
+            case (byte) 0xEA:
+            case (byte) 0xEB:
+            case (byte) 0xEC:
+            case (byte) 0xED:
+            case (byte) 0xEE:
+            case (byte) 0xEF:
+                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
+                RAM[ACC] = RAM[n[nIndex] + (b & 0xFF - 0xE8)];
+                PC += 1;
+                break;
             // MOV A, direct	E5 direct	2	1	A←(direct)
             // MOV A, @Ri	E6-E7	1	1	A←(Ri)
             // MOV A, #data	74 data	2	1	A←立即数
             // MOV Rn, A	F8-FF	1	1	Rn←A
+            case (byte) 0xF8:
+            case (byte) 0xF9:
+            case (byte) 0xFA:
+            case (byte) 0xFB:
+            case (byte) 0xFC:
+            case (byte) 0xFD:
+            case (byte) 0xFE:
+            case (byte) 0xFF:
+                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
+                RAM[n[nIndex] + (b & 0xFF - 0xF8)] = RAM[ACC];
+                PC += 1;
+                break;
             // MOV Rn, direct	A8-AF direct	2	2	Rn←(direct)
             // MOV Rn, #data	78-7F data	2	1	Rn←立即数
+            case (byte) 0x78:
+            case (byte) 0x79:
+            case (byte) 0x7A:
+            case (byte) 0x7B:
+            case (byte) 0x7C:
+            case (byte) 0x7D:
+            case (byte) 0x7E:
+            case (byte) 0x7F:
+                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
+                RAM[n[nIndex] + (b & 0xFF - 0xF8)] = RAM[PC + 1];
+                PC += 2;
+                break;
             // MOV direct, A	F5 direct	2	1	(direct)←A
             // MOV direct, Rn	88-8F direct	2	2	(direct)←Rn
             // MOV direct, @Ri	86-87 direct	2	2	(direct)←(Ri)
@@ -86,32 +122,7 @@ public class Main {
 
             //助记符	操作数			机器码	字节数	周期数
 
-            // MOV		Rn,A			F8~FF	1		1
-            case (byte) 0xF8:
-            case (byte) 0xF9:
-            case (byte) 0xFA:
-            case (byte) 0xFB:
-            case (byte) 0xFC:
-            case (byte) 0xFD:
-            case (byte) 0xFE:
-            case (byte) 0xFF:
-                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
-                RAM[n[nIndex] + (b & 0xFF - 0xF8)] = RAM[ACC];
-                PC += 1;
-                break;
-            // MOV		Rn,#data		78~7F	2		1
-            case (byte) 0x78:
-            case (byte) 0x79:
-            case (byte) 0x7A:
-            case (byte) 0x7B:
-            case (byte) 0x7C:
-            case (byte) 0x7D:
-            case (byte) 0x7E:
-            case (byte) 0x7F:
-                nIndex = (byte) (RAM[PSW] & 0x0C) >> 2;
-                RAM[n[nIndex] + (b & 0xFF - 0xF8)] = RAM[PC + 1];
-                PC += 2;
-                break;
+
             // MOV		direct,A		F5		2		1 direct：8位直接寻址地址，00H~FFH或SFR。
             case (byte) 0xF5:
                 RAM[PC + 1] = RAM[ACC];
