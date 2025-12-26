@@ -14,7 +14,7 @@ public class Assembly {
         for (AssemblyDto assemblyDto : commands) {
             System.out.print(String.format("0x%04X: ", assemblyDto.getAddress()));
             for (Byte machineCode : assemblyDto.getMachineCodes()) {
-                System.out.print(String.format("%X ", machineCode));
+                System.out.print(String.format("%02X ", machineCode));
             }
             for (String cmd : assemblyDto.getCommands()) {
                 System.out.print(cmd + " ");
@@ -105,16 +105,75 @@ public class Assembly {
             System.out.print(command + " ");
         }
         System.out.println();
+        String token = "";
+        List<Byte> dataBytes = new ArrayList<>();
         if (commands.size() > 1) {
             rowIndex = Constant.getRowIndex(commands.get(0));
             for (int i = 1; i < commands.size(); i++) {
-                colIndex = Constant.getColIndex(commands.get(i));
+                //字符串转token #data16(2 byte)、#data(1 byte)、/bit(1 byte)、bit(1 byte)、direct(1 byte)、rel(1 byte)
+                if (commands.get(i).startsWith("#")) {
+                    if (commands.get(i).endsWith("H")) {
+                        if (4 == commands.get(i).length()) {
+                            token = "#data";//#00H
+                            byte[] bytes = hexStringToByteArray(commands.get(i));
+                            for (byte b : bytes) {
+                                dataBytes.add(b);
+                            }
+                        } else if (6 == commands.get(i).length()) {
+                            token = "#data16";//#0000H
+                            byte[] bytes = hexStringToByteArray(commands.get(i));
+                            for (byte b : bytes) {
+                                dataBytes.add(b);
+                            }
+                        }
+                    }
+                } else if (commands.get(i).startsWith("/")) {
+                    token = "/bit";
+                } else if (commands.get(i).endsWith("H")) {
+                    if (3 == commands.get(i).length()) {
+                        token = "direct";//00H
+                        if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                            token = "rel";//00H
+                            if (rowIndex == Constant.getRowIndex("MOV")
+                                    && "C".equalsIgnoreCase(commands.get(commands.size() - 1))) {
+                                token = "bit";
+                            }
+                        }
+                        if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                            token = "bit";
+                        }
+                        byte[] bytes = hexStringToByteArray(commands.get(i));
+                        for (byte b : bytes) {
+                            dataBytes.add(b);
+                        }
+                    }
+                } else if (commands.get(i).matches("^[-+]?\\d+$")) {
+                    token = "direct";
+                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                        token = "rel";
+                        if (rowIndex == Constant.getRowIndex("MOV")
+                                && "C".equalsIgnoreCase(commands.get(commands.size() - 1))) {
+                            token = "bit";
+                        }
+                    }
+                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                        token = "bit";
+                    }
+                    Integer value = Integer.valueOf(commands.get(i));
+                    dataBytes.add((byte) (value & 0xff));
+                } else {
+                    token = commands.get(i);
+                }
+                colIndex = Constant.getColIndex(token);
                 rowIndex = Constant.stateMap[rowIndex][colIndex];
             }
             if (-1 == rowIndex) {
-                System.out.println("错误：" + commands.get(0));
+                System.out.println("错误1：" + commands.get(0));
             } else {
                 machineCodes.add((byte) ((byte) rowIndex & 0xff));
+                if (!dataBytes.isEmpty()) {
+                    machineCodes.addAll(dataBytes);
+                }
             }
         } else {
             if ("NOP".equalsIgnoreCase(commands.get(0))) {
@@ -126,15 +185,37 @@ public class Assembly {
             }
         }
         for (Byte machineCode : machineCodes) {
-            System.out.print(String.format("%X ", machineCode));
+            System.out.print(String.format("%02X ", machineCode));
         }
-        int codeLengthIndex = Constant.getCodeLengthIndex(machineCodes.get(0));
+        int codeLengthIndex = Constant.getCodeLengthIndex(machineCodes.get(0) & 0xff);
         if (0 <= codeLengthIndex && codeLengthIndex < Constant.codeLengthMap.length) {
             return Constant.codeLengthMap[codeLengthIndex][1];
         } else {
-            System.out.println("错误：" + commands.get(0));
+            System.out.println("错误2：codeLengthIndex=" + codeLengthIndex);
         }
         return 1;
+    }
+
+    public static int charToValue(char c) {
+        int value = Character.digit(c, 16);
+        if (value < 0) {
+            throw new IllegalArgumentException("无效的十六进制字符: '" + c + "'");
+        }
+        return value;
+    }
+
+    /**
+     * 十六进制字符串转字节数组
+     */
+    public static byte[] hexStringToByteArray(String hex) {
+        String s = hex.replaceAll("[#H]", "");
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((charToValue(s.charAt(i)) << 4)
+                    + charToValue(s.charAt(i + 1)));
+        }
+        return data;
     }
 
     public static void updateAddress(AssemblyDto assemblyDto) {
