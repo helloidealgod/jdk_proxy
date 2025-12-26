@@ -8,7 +8,7 @@ public class Assembly {
 
     public static void main(String[] args) throws IOException {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
-        translate(commands);
+        //translate(commands);
     }
 
     public static List<AssemblyDto> getCommands(String filePath) {
@@ -22,15 +22,12 @@ public class Assembly {
             String line;
             AssemblyDto assemblyDto = null;
             while ((line = bufferedReader.readLine()) != null) {
+                System.out.println("\n" + line);
                 //将注释内容是过滤掉
-                if (line.contains("#")) {
-                    line = line.substring(0, line.indexOf("#"));
-                } else if (line.contains("/")) {
-                    line = line.substring(0, line.indexOf("#"));
-                } else if (line.contains(";")) {
+                if (line.contains(";")) {
                     line = line.substring(0, line.indexOf(";"));
                 }
-                System.out.println(line);
+                //System.out.println(line);
                 String[] split = line.split("[, ;]");
                 for (int i = 0; i < split.length; i++) {
                     if ("org".equalsIgnoreCase(split[i])) {
@@ -50,6 +47,7 @@ public class Assembly {
                                 assemblyDto.setCommands(new ArrayList<>());
                             }
                             assemblyDto.getCommands().add(split[i]);
+                            System.out.print(split[i] + " ");
                         }
                     }
                 }
@@ -81,15 +79,38 @@ public class Assembly {
             List<String> commands = assemblyDto.getCommands();
             List<Byte> machineCodes = new ArrayList<>();
             Integer codes = translateCommand(commands, machineCodes);
+            assemblyDto.setMachineCodes(machineCodes);
             address += codes;
         }
     }
 
     public static Integer translateCommand(List<String> commands, List<Byte> machineCodes) {
-        for (String cmd : commands) {
-
+        int rowIndex = -1;
+        int colIndex = 0;
+        if (commands.size() > 1) {
+            rowIndex = Constant.getRowIndex(commands.get(0));
+            for (int i = 1; i < commands.size(); i++) {
+                colIndex = Constant.getColIndex(commands.get(i));
+                rowIndex = Constant.stateMap[rowIndex][colIndex];
+            }
+            if (-1 == rowIndex) {
+                System.out.println("错误：" + commands.get(0));
+            } else {
+                machineCodes.add((byte) ((byte) rowIndex & 0xff));
+            }
+        } else {
+            if ("NOP".equalsIgnoreCase(commands.get(0))) {
+                machineCodes.add((byte) 0x00);
+            } else if ("RET".equalsIgnoreCase(commands.get(0))) {
+                machineCodes.add((byte) 0x22);
+            } else if ("RETI".equalsIgnoreCase(commands.get(0))) {
+                machineCodes.add((byte) 0x32);
+            }
         }
         return 1;
+    }
+
+    public static void updateAddress(AssemblyDto assemblyDto) {
     }
 
     public static void out2File(AssemblyDto assemblyDto) {
