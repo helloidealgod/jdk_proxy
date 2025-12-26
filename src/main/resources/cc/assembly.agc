@@ -1,8 +1,8 @@
 org 0
-ADD A,#E1H  ;ADD A,#data;	24
+main:   ADD A,#E1H  ;ADD A,#data;	24
 ;ADD A,@R0;	26
 ;ADD A,@R1;	27
-ADD A,F2H   ;ADD A,direct;	25
+main1:   ADD A,F2H   ;ADD A,direct;	25
 ADD A,34    ;ADD A,direct;	25
 
 
@@ -93,7 +93,7 @@ ANL 23H,#32H    ;ANL direct,#data;	52
 ;INC R5;	D
 ;INC R6;	E
 ;INC R7;	F
-;JB bit,rel;	20
+JB bit,23H  ;JB bit,rel;	20
 ;JBC bit,rel;	10
 ;JC rel;	40
 ;JMP @A+DPTR;	73
@@ -101,8 +101,8 @@ ANL 23H,#32H    ;ANL direct,#data;	52
 ;JNC rel;	50
 ;JNZ rel;	70
 ;JZ rel;	60
-;LCALL addr16;	12
-;LJMP addr16;	2
+LCALL 1618H;LCALL addr16;	12
+LJMP 5432H;LJMP addr16;	2
 ;MOV @R0,#data;	76
 ;MOV @R1,#data;	77
 ;MOV @R0,A;	F6

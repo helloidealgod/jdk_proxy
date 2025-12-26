@@ -53,7 +53,16 @@ public class Assembly {
                             continue;
                         }
                         if (0 == i && split[i].endsWith(":")) {
-                            assemblyDto.setMarkName(split[i].substring(0, split[i].length() - 1));
+                            //查看标黄是否已存在
+                            final int fi = i;
+                            if (assemblyDtos.stream().anyMatch(assemblyDto1 -> assemblyDto1.getMarkName().equalsIgnoreCase(
+                                    split[fi].substring(0, split[fi].length() - 1)
+                            ))) {
+                                System.out.println("标号重复：" + split[fi].substring(0, split[fi].length() - 1));
+                                break;
+                            } else {
+                                assemblyDto.setMarkName(split[i].substring(0, split[i].length() - 1));
+                            }
                         } else {
                             if (null == assemblyDto.getCommands()) {
                                 assemblyDto.setCommands(new ArrayList<>());
@@ -146,6 +155,12 @@ public class Assembly {
                         for (byte b : bytes) {
                             dataBytes.add(b);
                         }
+                    } else if (5 == commands.get(i).length()) {
+                        token = "addr16";
+                        byte[] bytes = hexStringToByteArray(commands.get(i));
+                        for (byte b : bytes) {
+                            dataBytes.add(b);
+                        }
                     }
                 } else if (commands.get(i).matches("^[-+]?\\d+$")) {
                     token = "direct";
@@ -161,6 +176,13 @@ public class Assembly {
                     }
                     Integer value = Integer.valueOf(commands.get(i));
                     dataBytes.add((byte) (value & 0xff));
+                } else if (commands.get(i).startsWith("_")) {
+                    token = "rel";
+                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                        token = "addr16";
+                    } else {
+
+                    }
                 } else {
                     token = commands.get(i);
                 }
