@@ -10,18 +10,17 @@ public class Assembly {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
         System.out.println("===================================================");
         translate(commands);
-//        for (AssemblyDto assemblyDto : commands) {
-//            List<String> commands1 = assemblyDto.getCommands();
-//            for (String command : commands1) {
-//                System.out.print(command + " ");
-//            }
-//            System.out.println();
-//            List<Byte> machineCodes = assemblyDto.getMachineCodes();
-//            for (Byte machineCode : machineCodes) {
-//                System.out.println(String.format("%X ", machineCode));
-//            }
-//            System.out.println();
-//        }
+        System.out.println("===================================================");
+        for (AssemblyDto assemblyDto : commands) {
+            System.out.print(String.format("0x%04X: ", assemblyDto.getAddress()));
+            for (Byte machineCode : assemblyDto.getMachineCodes()) {
+                System.out.print(String.format("%X ", machineCode));
+            }
+            for (String cmd : assemblyDto.getCommands()) {
+                System.out.print(cmd + " ");
+            }
+            System.out.println();
+        }
     }
 
     public static List<AssemblyDto> getCommands(String filePath) {
@@ -91,9 +90,10 @@ public class Assembly {
             assemblyDto.setAddress(address);
             List<String> commands = assemblyDto.getCommands();
             List<Byte> machineCodes = new ArrayList<>();
-            Integer codes = translateCommand(commands, machineCodes);
+            Integer codeLength = translateCommand(commands, machineCodes);
             assemblyDto.setMachineCodes(machineCodes);
-            address += codes;
+            assemblyDto.setCommandLength(codeLength);
+            address += codeLength;
         }
     }
 
@@ -114,7 +114,6 @@ public class Assembly {
             if (-1 == rowIndex) {
                 System.out.println("错误：" + commands.get(0));
             } else {
-                //System.out.println(rowIndex);
                 machineCodes.add((byte) ((byte) rowIndex & 0xff));
             }
         } else {
@@ -128,6 +127,12 @@ public class Assembly {
         }
         for (Byte machineCode : machineCodes) {
             System.out.print(String.format("%X ", machineCode));
+        }
+        int codeLengthIndex = Constant.getCodeLengthIndex(machineCodes.get(0));
+        if (0 <= codeLengthIndex && codeLengthIndex < Constant.codeLengthMap.length) {
+            return Constant.codeLengthMap[codeLengthIndex][1];
+        } else {
+            System.out.println("错误：" + commands.get(0));
         }
         return 1;
     }
