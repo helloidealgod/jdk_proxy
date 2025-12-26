@@ -13,6 +13,7 @@ public class Assembly {
         System.out.println("===================================================");
         translate(commands);
         updateLankMark(commands);
+        out2File(commands, "/src/main/resources/cc/assembly.out");
         System.out.println("===================================================");
         for (AssemblyDto assemblyDto : commands) {
             System.out.print(String.format("0x%04X: ", assemblyDto.getAddress()));
@@ -27,6 +28,7 @@ public class Assembly {
             }
             System.out.println();
         }
+        printHex("/src/main/resources/cc/assembly.out");
     }
 
     public static List<AssemblyDto> getCommands(String filePath) {
@@ -267,6 +269,49 @@ public class Assembly {
         }
     }
 
-    public static void out2File(AssemblyDto assemblyDto) {
+    public static void out2File(List<AssemblyDto> assemblyDtoList, String filePath) {
+        File f = new File("");
+        try (FileOutputStream fos = new FileOutputStream(f.getAbsolutePath() + filePath)) {
+            for (AssemblyDto item : assemblyDtoList) {
+                List<Byte> bytes = item.getMachineCodes();
+                for (Byte b : bytes) {
+                    fos.write(b);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void printHex(String filePath) throws IOException {
+        File f = new File("");
+        try (FileInputStream fis = new FileInputStream(f.getAbsolutePath() + filePath)) {
+            int bytesRead;
+            byte[] buffer = new byte[16];
+            long offset = 0;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                // 输出偏移地址
+                System.out.printf("%08X: ", offset);
+                // 输出十六进制
+                for (int i = 0; i < 16; i++) {
+                    if (i < bytesRead) {
+                        System.out.printf("%02X ", buffer[i]);
+                    } else {
+                        System.out.print("   "); // 补空格对齐
+                    }
+                    if (i == 7) {
+                        System.out.print(" "); // 每8个字节加空格
+                    }
+                }
+                System.out.print(" |");
+                // 输出ASCII字符
+                for (int i = 0; i < bytesRead; i++) {
+                    char c = (char) buffer[i];
+                    System.out.print((c >= 32 && c < 127) ? c : '.');
+                }
+                System.out.println("|");
+                offset += bytesRead;
+            }
+        }
     }
 }
