@@ -8,7 +8,20 @@ public class Assembly {
 
     public static void main(String[] args) throws IOException {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
-        //translate(commands);
+        System.out.println("===================================================");
+        translate(commands);
+//        for (AssemblyDto assemblyDto : commands) {
+//            List<String> commands1 = assemblyDto.getCommands();
+//            for (String command : commands1) {
+//                System.out.print(command + " ");
+//            }
+//            System.out.println();
+//            List<Byte> machineCodes = assemblyDto.getMachineCodes();
+//            for (Byte machineCode : machineCodes) {
+//                System.out.println(String.format("%X ", machineCode));
+//            }
+//            System.out.println();
+//        }
     }
 
     public static List<AssemblyDto> getCommands(String filePath) {
@@ -87,6 +100,11 @@ public class Assembly {
     public static Integer translateCommand(List<String> commands, List<Byte> machineCodes) {
         int rowIndex = -1;
         int colIndex = 0;
+        System.out.println();
+        for (String command : commands) {
+            System.out.print(command + " ");
+        }
+        System.out.println();
         if (commands.size() > 1) {
             rowIndex = Constant.getRowIndex(commands.get(0));
             for (int i = 1; i < commands.size(); i++) {
@@ -96,6 +114,7 @@ public class Assembly {
             if (-1 == rowIndex) {
                 System.out.println("错误：" + commands.get(0));
             } else {
+                //System.out.println(rowIndex);
                 machineCodes.add((byte) ((byte) rowIndex & 0xff));
             }
         } else {
@@ -106,6 +125,9 @@ public class Assembly {
             } else if ("RETI".equalsIgnoreCase(commands.get(0))) {
                 machineCodes.add((byte) 0x32);
             }
+        }
+        for (Byte machineCode : machineCodes) {
+            System.out.print(String.format("%X ", machineCode));
         }
         return 1;
     }
