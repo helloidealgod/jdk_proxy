@@ -6,7 +6,7 @@ _loop:   ADD A,F2H   ;ADD A,direct;	25
     ADD A,34    ;ADD A,direct;	25
     JB 01H,_loop    ;JB bit,rel;	20
 
-
+org 400H
 ;ADD A,R0;	28
 ;ADD A,R1;	29
 ;ADD A,R2;	2A

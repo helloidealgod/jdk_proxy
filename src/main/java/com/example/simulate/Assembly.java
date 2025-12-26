@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Assembly {
 
@@ -51,7 +50,11 @@ public class Assembly {
                 String[] split = line.split("[, ;]");
                 for (int i = 0; i < split.length; i++) {
                     if ("org".equalsIgnoreCase(split[i])) {
-                        address = Integer.parseInt(split[i + 1]);
+                        if (split[i + 1].endsWith("H")) {
+                            address = hexStringToInt(split[i + 1]);
+                        } else {
+                            address = Integer.parseInt(split[i + 1]);
+                        }
                         break;
                     } else {
                         if (null == assemblyDto) {
@@ -104,7 +107,11 @@ public class Assembly {
         }
         Integer address = assemblyDtos.get(0).getAddress();
         for (AssemblyDto assemblyDto : assemblyDtos) {
-            assemblyDto.setAddress(address);
+            if (null == assemblyDto.getAddress()) {
+                assemblyDto.setAddress(address);
+            } else {
+                address = assemblyDto.getAddress();
+            }
             List<String> commands = assemblyDto.getCommands();
             List<Byte> machineCodes = new ArrayList<>();
             Integer codeLength = translateCommand(commands, machineCodes);
@@ -240,8 +247,17 @@ public class Assembly {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((charToValue(s.charAt(i)) << 4)
-                    + charToValue(s.charAt(i + 1)));
+            data[i / 2] = (byte) ((charToValue(s.charAt(i)) << 4) + charToValue(s.charAt(i + 1)));
+        }
+        return data;
+    }
+
+    public static int hexStringToInt(String hex) {
+        String s = hex.replaceAll("[#H]", "");
+        int len = s.length();
+        int data = charToValue(s.charAt(0));
+        for (int i = 1; i < len; i++) {
+            data = (data << 4) + charToValue(s.charAt(i));
         }
         return data;
     }
@@ -271,11 +287,22 @@ public class Assembly {
 
     public static void out2File(List<AssemblyDto> assemblyDtoList, String filePath) {
         File f = new File("");
+        int address = 0;
         try (FileOutputStream fos = new FileOutputStream(f.getAbsolutePath() + filePath)) {
-            for (AssemblyDto item : assemblyDtoList) {
-                List<Byte> bytes = item.getMachineCodes();
-                for (Byte b : bytes) {
-                    fos.write(b);
+            AssemblyDto assemblyDto = assemblyDtoList.get(assemblyDtoList.size() - 1);
+            int maxAddress = assemblyDto.getAddress() + assemblyDto.getCmdByteLength();
+            int index = 0;
+            for (address = 0; address < maxAddress; ) {
+                if (address < assemblyDtoList.get(index).getAddress()) {
+                    fos.write(0x00);
+                    address++;
+                } else {
+                    List<Byte> bytes = assemblyDtoList.get(index).getMachineCodes();
+                    for (Byte b : bytes) {
+                        fos.write(b);
+                    }
+                    address += bytes.size();
+                    index++;
                 }
             }
         } catch (IOException e) {
