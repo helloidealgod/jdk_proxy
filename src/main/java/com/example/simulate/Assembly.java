@@ -22,8 +22,8 @@ public class Assembly {
             for (String cmd : assemblyDto.getCommands()) {
                 System.out.print(cmd + " ");
             }
-            if(null != assemblyDto.getMarkName()){
-                System.out.print(" " + assemblyDto.getMarkName());
+            if (null != assemblyDto.getMarkName()) {
+                System.out.print(" :" + assemblyDto.getMarkName());
             }
             System.out.println();
         }
@@ -249,15 +249,19 @@ public class Assembly {
             if (item.getCmdByteLength() > item.getMachineCodes().size()) {
                 //需要替换的标号
                 String markName = item.getCommands().get(item.getCommands().size() - 1);
-                List<AssemblyDto> target = assemblyDto.stream().filter(x -> null != x.getMarkName()
-                        && x.getMarkName().equalsIgnoreCase(markName)).collect(Collectors.toList());
-                Integer address = target.get(0).getAddress();
-                if ("LJMP".equalsIgnoreCase(item.getCommands().get(0)) || "LCALL".equalsIgnoreCase(item.getCommands().get(0))) {
-                    item.getMachineCodes().add(0, (byte) ((address >> 8) & 0xff));
-                    item.getMachineCodes().add(1, (byte) (address & 0xff));
+                if (markName.startsWith("_")) {
+                    List<AssemblyDto> target = assemblyDto.stream().filter(x -> null != x.getMarkName()
+                            && x.getMarkName().equalsIgnoreCase(markName)).collect(Collectors.toList());
+                    Integer address = target.get(0).getAddress();
+                    if ("LJMP".equalsIgnoreCase(item.getCommands().get(0)) || "LCALL".equalsIgnoreCase(item.getCommands().get(0))) {
+                        item.getMachineCodes().add(0, (byte) ((address >> 8) & 0xff));
+                        item.getMachineCodes().add(1, (byte) (address & 0xff));
+                    } else {
+                        int rel = address - item.getAddress();
+                        item.getMachineCodes().add((byte) (rel & 0xff));
+                    }
                 } else {
-                    int rel = address - item.getAddress();
-                    item.getMachineCodes().add((byte) (rel & 0xff));
+                    System.out.println("错误3：");
                 }
             }
         }

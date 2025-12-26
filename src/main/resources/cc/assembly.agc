@@ -4,7 +4,7 @@ _main:   ADD A,#E1H  ;ADD A,#data;	24
 
 _loop:   ADD A,F2H   ;ADD A,direct;	25
     ADD A,34    ;ADD A,direct;	25
-    JB bit,_loop    ;JB bit,rel;	20
+    JB 01H,_loop    ;JB bit,rel;	20
 
 
 ;ADD A,R0;	28
@@ -94,7 +94,7 @@ ANL 23H,#32H    ;ANL direct,#data;	52
 ;INC R5;	D
 ;INC R6;	E
 ;INC R7;	F
-JB bit,23H  ;JB bit,rel;	20
+JB 45H,23H  ;JB bit,rel;	20
 ;JBC bit,rel;	10
 ;JC rel;	40
 ;JMP @A+DPTR;	73
