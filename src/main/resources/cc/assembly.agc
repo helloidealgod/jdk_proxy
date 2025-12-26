@@ -184,7 +184,8 @@ MOV DPTR,#1234H    ;MOV DPTR,#data16;	90
 ;ORL A,R6;	4E
 ;ORL A,R7;	4F
 ;ORL C,/bit;	A0
-;ORL C,bit;	72
+ORL C, 7    ;ORL C,bit;	72
+ORL C,07H   ;ORL C,bit;	72
 ;ORL direct,#data;	42
 ;POP direct;	D0
 ;PUSH direct;	C0
