@@ -4,21 +4,21 @@ import java.util.List;
 
 public class AssemblyDto {
     private Integer address;
-    private Integer commandLength;
     private String markName;
     private List<String> commands;
     private List<Byte> machineCodes;
+    private Integer cmdByteLength;
 
     public Integer getAddress() {
         return address;
     }
 
-    public Integer getCommandLength() {
-        return commandLength;
+    public Integer getCmdByteLength() {
+        return cmdByteLength;
     }
 
-    public void setCommandLength(Integer commandLength) {
-        this.commandLength = commandLength;
+    public void setCmdByteLength(Integer cmdByteLength) {
+        this.cmdByteLength = cmdByteLength;
     }
 
     public void setAddress(Integer address) {

@@ -1,9 +1,10 @@
 org 0
-main:   ADD A,#E1H  ;ADD A,#data;	24
-;ADD A,@R0;	26
-;ADD A,@R1;	27
-main1:   ADD A,F2H   ;ADD A,direct;	25
-ADD A,34    ;ADD A,direct;	25
+LJMP _main;
+_main:   ADD A,#E1H  ;ADD A,#data;	24
+
+_loop:   ADD A,F2H   ;ADD A,direct;	25
+    ADD A,34    ;ADD A,direct;	25
+    JB bit,_loop    ;JB bit,rel;	20
 
 
 ;ADD A,R0;	28

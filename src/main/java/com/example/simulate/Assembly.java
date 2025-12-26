@@ -3,6 +3,8 @@ package com.example.simulate;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Assembly {
 
@@ -10,6 +12,7 @@ public class Assembly {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
         System.out.println("===================================================");
         translate(commands);
+        updateLankMark(commands);
         System.out.println("===================================================");
         for (AssemblyDto assemblyDto : commands) {
             System.out.print(String.format("0x%04X: ", assemblyDto.getAddress()));
@@ -18,6 +21,9 @@ public class Assembly {
             }
             for (String cmd : assemblyDto.getCommands()) {
                 System.out.print(cmd + " ");
+            }
+            if(null != assemblyDto.getMarkName()){
+                System.out.print(" " + assemblyDto.getMarkName());
             }
             System.out.println();
         }
@@ -55,8 +61,8 @@ public class Assembly {
                         if (0 == i && split[i].endsWith(":")) {
                             //查看标黄是否已存在
                             final int fi = i;
-                            if (assemblyDtos.stream().anyMatch(assemblyDto1 -> assemblyDto1.getMarkName().equalsIgnoreCase(
-                                    split[fi].substring(0, split[fi].length() - 1)
+                            if (assemblyDtos.stream().anyMatch(assemblyDto1 -> null != assemblyDto1.getMarkName()
+                                    && assemblyDto1.getMarkName().equalsIgnoreCase(split[fi].substring(0, split[fi].length() - 1)
                             ))) {
                                 System.out.println("标号重复：" + split[fi].substring(0, split[fi].length() - 1));
                                 break;
@@ -101,7 +107,7 @@ public class Assembly {
             List<Byte> machineCodes = new ArrayList<>();
             Integer codeLength = translateCommand(commands, machineCodes);
             assemblyDto.setMachineCodes(machineCodes);
-            assemblyDto.setCommandLength(codeLength);
+            assemblyDto.setCmdByteLength(codeLength);
             address += codeLength;
         }
     }
@@ -180,8 +186,6 @@ public class Assembly {
                     token = "rel";
                     if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
                         token = "addr16";
-                    } else {
-
                     }
                 } else {
                     token = commands.get(i);
@@ -240,7 +244,23 @@ public class Assembly {
         return data;
     }
 
-    public static void updateAddress(AssemblyDto assemblyDto) {
+    public static void updateLankMark(List<AssemblyDto> assemblyDto) {
+        for (AssemblyDto item : assemblyDto) {
+            if (item.getCmdByteLength() > item.getMachineCodes().size()) {
+                //需要替换的标号
+                String markName = item.getCommands().get(item.getCommands().size() - 1);
+                List<AssemblyDto> target = assemblyDto.stream().filter(x -> null != x.getMarkName()
+                        && x.getMarkName().equalsIgnoreCase(markName)).collect(Collectors.toList());
+                Integer address = target.get(0).getAddress();
+                if ("LJMP".equalsIgnoreCase(item.getCommands().get(0)) || "LCALL".equalsIgnoreCase(item.getCommands().get(0))) {
+                    item.getMachineCodes().add(0, (byte) ((address >> 8) & 0xff));
+                    item.getMachineCodes().add(1, (byte) (address & 0xff));
+                } else {
+                    int rel = address - item.getAddress();
+                    item.getMachineCodes().add((byte) (rel & 0xff));
+                }
+            }
+        }
     }
 
     public static void out2File(AssemblyDto assemblyDto) {
