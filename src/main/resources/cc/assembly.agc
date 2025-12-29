@@ -7,38 +7,38 @@ _loop:   ADD A,F2H   ;ADD A,direct;	25
     JB 01H,_loop    ;JB bit,rel;	20
 
 org 400H
-;ADD A,R0;	28
-;ADD A,R1;	29
-;ADD A,R2;	2A
-;ADD A,R3;	2B
-;ADD A,R4;	2C
-;ADD A,R5;	2D
-;ADD A,R6;	2E
-;ADD A,R7;	2F
+ADD A,R0;	28
+ADD A,R1;	29
+ADD A,R2;	2A
+ADD A,R3;	2B
+ADD A,R4;	2C
+ADD A,R5;	2D
+ADD A,R6;	2E
+ADD A,R7;	2F
 ADDC A,#3EH    ;ADDC A,#data;	34
-;ADDC A,@R0;	36
-;ADDC A,@R1;	37
-;ADDC A,direct;	35
-;ADDC A,R0;	38
-;ADDC A,R1;	39
-;ADDC A,R2;	3A
-;ADDC A,R3;	3B
-;ADDC A,R4;	3C
-;ADDC A,R5;	3D
-;ADDC A,R6;	3E
-;ADDC A,R7;	3F
-;ANL A,#data;	54
-;ANL A,@R0;	56
-;ANL A,@R1;	57
+ADDC A,@R0;	36
+ADDC A,@R1;	37
+ADDC A,36H;ADDC A,direct;	35
+ADDC A,R0;	38
+ADDC A,R1;	39
+ADDC A,R2;	3A
+ADDC A,R3;	3B
+ADDC A,R4;	3C
+ADDC A,R5;	3D
+ADDC A,R6;	3E
+ADDC A,R7;	3F
+ANL A,#55H;ANL A,#data;	54
+ANL A,@R0;	56
+ANL A,@R1;	57
 ;ANL A,direct;	55
-;ANL A,R0;	58
-;ANL A,R1;	59
-;ANL A,R2;	5A
-;ANL A,R3;	5B
-;ANL A,R4;	5C
-;ANL A,R5;	5D
-;ANL A,R6;	5E
-;ANL A,R7;	5F
+ANL A,R0;	58
+ANL A,R1;	59
+ANL A,R2;	5A
+ANL A,R3;	5B
+ANL A,R4;	5C
+ANL A,R5;	5D
+ANL A,R6;	5E
+ANL A,R7;	5F
 ;ANL C,/bit;	B0
 ;ANL C,bit;	82
 ANL 23H,#32H    ;ANL direct,#data;	52
@@ -54,25 +54,25 @@ ANL 23H,#32H    ;ANL direct,#data;	52
 ;CJNE R5,#data,rel;	BD
 ;CJNE R6,#data,rel;	BE
 ;CJNE R7,#data,rel;	BF
-;CLR A;	E4
-;CLR bit;	C2
-;CLR C;	C3
-;CPL A;	F4
+CLR A;	E4
+CLR c3H;CLR bit;	C2
+CLR C;	C3
+CPL A;	F4
 ;CPL bit;	B2
-;DA A;	D4
-;DEC @R0;	16
-;DEC @R1;	17
-;DEC A;	14
-;DEC direct;	15
-;DEC R0;	18
-;DEC R1;	19
-;DEC R2;	1A
-;DEC R3;	1B
-;DEC R4;	1C
-;DEC R5;	1D
-;DEC R6;	1E
-;DEC R7;	1F
-;DIV AB;	84
+DA A;	D4
+DEC @R0;	16
+DEC @R1;	17
+DEC A;	14
+DEC 16H;DEC direct;	15
+DEC R0;	18
+DEC R1;	19
+DEC R2;	1A
+DEC R3;	1B
+DEC R4;	1C
+DEC R5;	1D
+DEC R6;	1E
+DEC R7;	1F
+DIV AB;	84
 ;DJNZ R0,rel;	D8
 ;DJNZ R1,rel;	D9
 ;DJNZ R2,rel;	DA
@@ -81,19 +81,19 @@ ANL 23H,#32H    ;ANL direct,#data;	52
 ;DJNZ R5,rel;	DD
 ;DJNZ R6,rel;	DE
 ;DJNZ R7,rel;	DF
-;INC @R0;	6
-;INC @R1;	7
-;INC A;	4
+INC @R0;	6
+INC @R1;	7
+INC A;	4
 ;INC direct;	5
-;INC DPTR;	A3
-;INC R0;	8
-;INC R1;	9
-;INC R2;	A
-;INC R3;	B
-;INC R4;	C
-;INC R5;	D
-;INC R6;	E
-;INC R7;	F
+INC DPTR;	A3
+INC R0;	8
+INC R1;	9
+INC R2;	A
+INC R3;	B
+INC R4;	C
+INC R5;	D
+INC R6;	E
+INC R7;	F
 JB 45H,23H  ;JB bit,rel;	20
 ;JBC bit,rel;	10
 ;JC rel;	40
@@ -138,106 +138,106 @@ LJMP 5432H;LJMP addr16;	2
 ;MOV direct,R7;	8F
 ;MOV direct,direct;	85
 MOV DPTR,#1234H    ;MOV DPTR,#data16;	90
-;MOV R0,#data;	78
-;MOV R1,#data;	79
-;MOV R2,#data;	7A
-;MOV R3,#data;	7B
-;MOV R4,#data;	7C
-;MOV R5,#data;	7D
-;MOV R6,#data;	7E
-;MOV R7,#data;	7F
-;MOV R0,A;	F8
-;MOV R1,A;	F9
-;MOV R2,A;	FA
-;MOV R3,A;	FB
-;MOV R4,A;	FC
-;MOV R5,A;	FD
-;MOV R6,A;	FE
-;MOV R7,A;	FF
-;MOV R0,direct;	A8
-;MOV R1,direct;	A9
-;MOV R2,direct;	AA
-;MOV R3,direct;	AB
-;MOV R4,direct;	AC
-;MOV R5,direct;	AD
-;MOV R6,direct;	AE
-;MOV R7,direct;	AF
-;MOVC A,@A+DPTR;	93
-;MOVC A,@A+PC;	83
-;MOVX @DPTR,A;	F0
-;MOVX @R0,A;	F2
-;MOVX @R1,A;	F3
-;MOVX A,@DPTR;	E0
-;MOVX A,@R0;	E2
-;MOVX A,@R1;	E3
-;MUL AB;	A4
-;NOP;	0
-;ORL A,#data;	44
-;ORL A,@R0;	46
-;ORL A,@R1;	47
-;ORL A,direct;	45
-;ORL A,R0;	48
-;ORL A,R1;	49
-;ORL A,R2;	4A
-;ORL A,R3;	4B
-;ORL A,R4;	4C
-;ORL A,R5;	4D
-;ORL A,R6;	4E
-;ORL A,R7;	4F
+MOV R0,#66H ;MOV R0,#data;	78
+MOV R1,#66H ;MOV R1,#data;	79
+MOV R2,#66H ;MOV R2,#data;	7A
+MOV R3,#66H ;MOV R3,#data;	7B
+MOV R4,#66H ;MOV R4,#data;	7C
+MOV R5,#66H ;MOV R5,#data;	7D
+MOV R6,#66H ;MOV R6,#data;	7E
+MOV R7,#66H ;MOV R7,#data;	7F
+MOV R0,A;	F8
+MOV R1,A;	F9
+MOV R2,A;	FA
+MOV R3,A;	FB
+MOV R4,A;	FC
+MOV R5,A;	FD
+MOV R6,A;	FE
+MOV R7,A;	FF
+MOV R0,99H;  MOV R0,direct;	A8
+MOV R1,9AH;  MOV R1,direct;	A9
+MOV R2,9BH;  MOV R2,direct;	AA
+MOV R3,9CH;  MOV R3,direct;	AB
+MOV R4,9DH;  MOV R4,direct;	AC
+MOV R5,9EH;  MOV R5,direct;	AD
+MOV R6,9FH;  MOV R6,direct;	AE
+MOV R7,98H;  MOV R7,direct;	AF
+MOVC A,@A+DPTR;	93
+MOVC A,@A+PC;	83
+MOVX @DPTR,A;	F0
+MOVX @R0,A;	F2
+MOVX @R1,A;	F3
+MOVX A,@DPTR;	E0
+MOVX A,@R0;	E2
+MOVX A,@R1;	E3
+MUL AB;	A4
+NOP;	0
+ORL A,#45H;    ORL A,#data;	44
+ORL A,@R0;	46
+ORL A,@R1;	47
+ORL A,46H;   ORL A,direct;	45
+ORL A,R0;	48
+ORL A,R1;	49
+ORL A,R2;	4A
+ORL A,R3;	4B
+ORL A,R4;	4C
+ORL A,R5;	4D
+ORL A,R6;	4E
+ORL A,R7;	4F
 ;ORL C,/bit;	A0
 ORL C, 7    ;ORL C,bit;	72
 ORL C,07H   ;ORL C,bit;	72
-;ORL direct,#data;	42
-;POP direct;	D0
-;PUSH direct;	C0
-;RET;	22
-;RETI;	32
-;RL A;	23
-;RLC A;	33
-;RR A;	3
-;RRC A;	13
-;SETB bit;	D2
-;SETB C;	D3
+ORL 43H,#44H;	42
+POP D1H;POP direct;	D0
+PUSH C1H;PUSH direct;	C0
+RET;	22
+RETI;	32
+RL A;	23
+RLC A;	33
+RR A;	3
+RRC A;	13
+SETB 03H    ;SETB bit;	D2
+SETB C;	D3
 SJMP -2    ;SJMP rel;	80
-;SUBB  A,#data;	94
-;SUBB  A,@R0;	96
-;SUBB  A,@R1;	97
-;SUBB  A,direct;	95
-;SUBB  A,R0;	98
-;SUBB  A,R1;	99
-;SUBB  A,R2;	9A
-;SUBB  A,R3;	9B
-;SUBB  A,R4;	9C
-;SUBB  A,R5;	9D
-;SUBB  A,R6;	9E
-;SUBB  A,R7;	9F
-;SWAP A;	C4
-;XCH A,@R0;	C6
-;XCH A,@R1;	C7
-;XCH A,direct;	C5
-;XCH A,R0;	C8
-;XCH A,R1;	C9
-;XCH A,R2;	CA
-;XCH A,R3;	CB
-;XCH A,R4;	CC
-;XCH A,R5;	CD
-;XCH A,R6;	CE
-;XCH A,R7;	CF
-;XCHD A,@R0;	D6
-;XCHD A,@R1;	D7
-;XRL A,#data;	64
-;XRL A,@R0;	66
-;XRL A,@R1;	67
-;XRL A,direct;	65
-;XRL A,R0;	68
-;XRL A,R1;	69
-;XRL A,R2;	6A
-;XRL A,R3;	6B
-;XRL A,R4;	6C
-;XRL A,R5;	6D
-;XRL A,R6;	6E
-;XRL A,R7;	6F
-;XRL direct,#data;	62
+SUBB  A,#95H;SUBB  A,#data;	94
+SUBB  A,@R0;	96
+SUBB  A,@R1;	97
+SUBB  A,96H ;SUBB  A,direct;	95
+SUBB  A,R0;	98
+SUBB  A,R1;	99
+SUBB  A,R2;	9A
+SUBB  A,R3;	9B
+SUBB  A,R4;	9C
+SUBB  A,R5;	9D
+SUBB  A,R6;	9E
+SUBB  A,R7;	9F
+SWAP A;	C4
+XCH A,@R0;	C6
+XCH A,@R1;	C7
+XCH A,C6H;XCH A,direct;	C5
+XCH A,R0;	C8
+XCH A,R1;	C9
+XCH A,R2;	CA
+XCH A,R3;	CB
+XCH A,R4;	CC
+XCH A,R5;	CD
+XCH A,R6;	CE
+XCH A,R7;	CF
+XCHD A,@R0;	D6
+XCHD A,@R1;	D7
+XRL A,#65H  ;XRL A,#data;	64
+XRL A,@R0;	66
+XRL A,@R1;	67
+XRL A,66H   ;XRL A,direct;	65
+XRL A,R0;	68
+XRL A,R1;	69
+XRL A,R2;	6A
+XRL A,R3;	6B
+XRL A,R4;	6C
+XRL A,R5;	6D
+XRL A,R6;	6E
+XRL A,R7;	6F
+XRL 64H,#63H ;XRL direct,#data;	62
 
 .byte 0908H
 .byte 0A08H
