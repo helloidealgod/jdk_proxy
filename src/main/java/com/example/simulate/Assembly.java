@@ -24,15 +24,16 @@ public class Assembly {
         out2File(commands, "/src/main/resources/cc/assembly.out");
         System.out.println("===================================================");
         for (AssemblyDto assemblyDto : commands) {
-            System.out.printf("0x%04X: ", assemblyDto.getAddress());
+            System.out.printf("%6s 0x%04X: ", null == assemblyDto.getMarkName() ? "" : assemblyDto.getMarkName(),
+                    assemblyDto.getAddress());
             for (Byte machineCode : assemblyDto.getMachineCodes()) {
                 System.out.printf("%02X ", machineCode);
             }
+            int size = assemblyDto.getMachineCodes().size();
+            int width = size == 4 ? 2 : size == 3 ? 4 : size == 2 ? 7 : 10;
+            System.out.printf("%" + width + "s", ";");
             for (String cmd : assemblyDto.getCommands()) {
                 System.out.print(cmd + " ");
-            }
-            if (null != assemblyDto.getMarkName()) {
-                System.out.print(" :" + assemblyDto.getMarkName());
             }
             System.out.println();
         }
@@ -177,8 +178,14 @@ public class Assembly {
                             } else if (6 == commands.get(i).length()) {
                                 token = "#data16";//#0000H
                                 byte[] bytes = hexStringToByteArray(commands.get(i));
-                                for (byte b : bytes) {
-                                    dataBytes.add(b);
+                                if (IS_LITTLE_ENDIAN) {
+                                    for (int j = bytes.length - 1; j >= 0; j--) {
+                                        dataBytes.add(bytes[j]);
+                                    }
+                                } else {
+                                    for (byte b : bytes) {
+                                        dataBytes.add(b);
+                                    }
                                 }
                             }
                         }
@@ -204,8 +211,14 @@ public class Assembly {
                         } else if (5 == commands.get(i).length()) {
                             token = "addr16";
                             byte[] bytes = hexStringToByteArray(commands.get(i));
-                            for (byte b : bytes) {
-                                dataBytes.add(b);
+                            if (IS_LITTLE_ENDIAN) {
+                                for (int j = bytes.length - 1; j >= 0; j--) {
+                                    dataBytes.add(bytes[j]);
+                                }
+                            } else {
+                                for (byte b : bytes) {
+                                    dataBytes.add(b);
+                                }
                             }
                         }
                     } else if (commands.get(i).matches("^[-+]?\\d+$")) {
@@ -238,13 +251,7 @@ public class Assembly {
                 } else {
                     machineCodes.add((byte) ((byte) rowIndex & 0xff));
                     if (!dataBytes.isEmpty()) {
-                        if (IS_LITTLE_ENDIAN) {
-                            for (int i = dataBytes.size() - 1; i >= 0; i--) {
-                                machineCodes.add(dataBytes.get(i));
-                            }
-                        } else {
-                            machineCodes.addAll(dataBytes);
-                        }
+                        machineCodes.addAll(dataBytes);
                     }
                 }
             }

@@ -30,7 +30,7 @@ ADDC A,R7;	3F
 ANL A,#55H;ANL A,#data;	54
 ANL A,@R0;	56
 ANL A,@R1;	57
-;ANL A,direct;	55
+ANL A,56H   ;ANL A,direct;	55
 ANL A,R0;	58
 ANL A,R1;	59
 ANL A,R2;	5A
@@ -42,11 +42,11 @@ ANL A,R7;	5F
 ;ANL C,/bit;	B0
 ;ANL C,bit;	82
 ANL 23H,#32H    ;ANL direct,#data;	52
-;CJNE @R0,#data,rel;	B6
+CJNE @R0,#B7H,b8H   ;CJNE @R0,#data,rel;	B6
 ;CJNE @R1,#data,rel;	B7
-;CJNE A,#data,rel;	B4
+CJNE A,#B5H,b6H ;CJNE A,#data,rel;	B4
 ;CJNE A,direct,rel;	B5
-;CJNE R0,#data,rel;	B8
+CJNE R0,#B9H,BAH   ;CJNE R0,#data,rel;	B8
 ;CJNE R1,#data,rel;	B9
 ;CJNE R2,#data,rel;	BA
 ;CJNE R3,#data,rel;	BB
