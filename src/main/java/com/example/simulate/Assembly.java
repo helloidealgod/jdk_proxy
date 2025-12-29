@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author jiangxiankun
+ */
 public class Assembly {
     //小端存储模式（Little-Endian）
     /**
      * 小端（Little-Endian）：低字节存储在低地址，高字节存储在高地址。
      * 大端（Big-Endian）：高字节存储在低地址，低字节存储在高地址。
      */
-    public static final boolean isLittleEndian = true;
+    public static final boolean IS_LITTLE_ENDIAN = true;
 
     public static void main(String[] args) throws IOException {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
@@ -21,9 +24,9 @@ public class Assembly {
         out2File(commands, "/src/main/resources/cc/assembly.out");
         System.out.println("===================================================");
         for (AssemblyDto assemblyDto : commands) {
-            System.out.print(String.format("0x%04X: ", assemblyDto.getAddress()));
+            System.out.printf("0x%04X: ", assemblyDto.getAddress());
             for (Byte machineCode : assemblyDto.getMachineCodes()) {
-                System.out.print(String.format("%02X ", machineCode));
+                System.out.printf("%02X ", machineCode);
             }
             for (String cmd : assemblyDto.getCommands()) {
                 System.out.print(cmd + " ");
@@ -147,10 +150,10 @@ public class Assembly {
                             dataBytes.add(b);
                         }
                     } else if (commands.get(1).matches("^[-+]?\\d+$")) {
-                        Integer value = Integer.valueOf(commands.get(1));
+                        int value = Integer.parseInt(commands.get(1));
                         dataBytes.add((byte) (value & 0xff));
                     }
-                    if (isLittleEndian) {
+                    if (IS_LITTLE_ENDIAN) {
                         for (int i = dataBytes.size() - 1; i >= 0; i--) {
                             machineCodes.add(dataBytes.get(i));
                         }
@@ -217,7 +220,7 @@ public class Assembly {
                         if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
                             token = "bit";
                         }
-                        Integer value = Integer.valueOf(commands.get(i));
+                        int value = Integer.parseInt(commands.get(i));
                         dataBytes.add((byte) (value & 0xff));
                     } else if (commands.get(i).startsWith("_")) {
                         token = "rel";
@@ -235,7 +238,7 @@ public class Assembly {
                 } else {
                     machineCodes.add((byte) ((byte) rowIndex & 0xff));
                     if (!dataBytes.isEmpty()) {
-                        if (isLittleEndian) {
+                        if (IS_LITTLE_ENDIAN) {
                             for (int i = dataBytes.size() - 1; i >= 0; i--) {
                                 machineCodes.add(dataBytes.get(i));
                             }
@@ -255,7 +258,7 @@ public class Assembly {
             }
         }
         for (Byte machineCode : machineCodes) {
-            System.out.print(String.format("%02X ", machineCode));
+            System.out.printf("%02X ", machineCode);
         }
         int codeLengthIndex = Constant.getCodeLengthIndex(machineCodes.get(0) & 0xff);
         if (0 <= codeLengthIndex && codeLengthIndex < Constant.codeLengthMap.length) {
@@ -307,8 +310,13 @@ public class Assembly {
                             && x.getMarkName().equalsIgnoreCase(markName)).collect(Collectors.toList());
                     Integer address = target.get(0).getAddress();
                     if ("LJMP".equalsIgnoreCase(item.getCommands().get(0)) || "LCALL".equalsIgnoreCase(item.getCommands().get(0))) {
-                        item.getMachineCodes().add(0, (byte) ((address >> 8) & 0xff));
-                        item.getMachineCodes().add(1, (byte) (address & 0xff));
+                        if (IS_LITTLE_ENDIAN) {
+                            item.getMachineCodes().add((byte) (address & 0xff));
+                            item.getMachineCodes().add((byte) ((address >> 8) & 0xff));
+                        } else {
+                            item.getMachineCodes().add((byte) ((address >> 8) & 0xff));
+                            item.getMachineCodes().add((byte) (address & 0xff));
+                        }
                     } else {
                         int rel = address - item.getAddress();
                         item.getMachineCodes().add((byte) (rel & 0xff));
