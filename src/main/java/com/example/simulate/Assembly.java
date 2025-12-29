@@ -6,10 +6,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Assembly {
+    //小端存储模式（Little-Endian）
+    /**
+     * 小端（Little-Endian）：低字节存储在低地址，高字节存储在高地址。
+     * 大端（Big-Endian）：高字节存储在低地址，低字节存储在高地址。
+     */
+    public static final boolean isLittleEndian = true;
 
     public static void main(String[] args) throws IOException {
         List<AssemblyDto> commands = getCommands("/src/main/resources/cc/assembly.agc");
-        System.out.println("===================================================");
+        //System.out.println("===================================================");
         translate(commands);
         updateLankMark(commands);
         out2File(commands, "/src/main/resources/cc/assembly.out");
@@ -27,6 +33,7 @@ public class Assembly {
             }
             System.out.println();
         }
+        System.out.println("===================================================\n");
         printHex("/src/main/resources/cc/assembly.out");
     }
 
@@ -41,12 +48,10 @@ public class Assembly {
             String line;
             AssemblyDto assemblyDto = null;
             while ((line = bufferedReader.readLine()) != null) {
-                System.out.println("\n" + line);
-                //将注释内容是过滤掉
+                //将注释内容过滤掉
                 if (line.contains(";")) {
                     line = line.substring(0, line.indexOf(";"));
                 }
-                //System.out.println(line);
                 String[] split = line.split("[, ;]");
                 for (int i = 0; i < split.length; i++) {
                     if ("org".equalsIgnoreCase(split[i])) {
@@ -79,7 +84,6 @@ public class Assembly {
                                 assemblyDto.setCommands(new ArrayList<>());
                             }
                             assemblyDto.getCommands().add(split[i]);
-                            System.out.print(split[i] + " ");
                         }
                     }
                 }
@@ -146,7 +150,13 @@ public class Assembly {
                         Integer value = Integer.valueOf(commands.get(1));
                         dataBytes.add((byte) (value & 0xff));
                     }
-                    machineCodes.addAll(dataBytes);
+                    if (isLittleEndian) {
+                        for (int i = dataBytes.size() - 1; i >= 0; i--) {
+                            machineCodes.add(dataBytes.get(i));
+                        }
+                    } else {
+                        machineCodes.addAll(dataBytes);
+                    }
                     return dataBytes.size();
                 }
             } else {
@@ -225,7 +235,13 @@ public class Assembly {
                 } else {
                     machineCodes.add((byte) ((byte) rowIndex & 0xff));
                     if (!dataBytes.isEmpty()) {
-                        machineCodes.addAll(dataBytes);
+                        if (isLittleEndian) {
+                            for (int i = dataBytes.size() - 1; i >= 0; i--) {
+                                machineCodes.add(dataBytes.get(i));
+                            }
+                        } else {
+                            machineCodes.addAll(dataBytes);
+                        }
                     }
                 }
             }
