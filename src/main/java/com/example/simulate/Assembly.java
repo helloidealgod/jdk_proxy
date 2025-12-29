@@ -132,32 +132,73 @@ public class Assembly {
         String token = "";
         List<Byte> dataBytes = new ArrayList<>();
         if (commands.size() > 1) {
-            rowIndex = Constant.getRowIndex(commands.get(0));
-            for (int i = 1; i < commands.size(); i++) {
-                //字符串转token #data16(2 byte)、#data(1 byte)、/bit(1 byte)、bit(1 byte)、direct(1 byte)、rel(1 byte)
-                if (commands.get(i).startsWith("#")) {
-                    if (commands.get(i).endsWith("H")) {
-                        if (4 == commands.get(i).length()) {
-                            token = "#data";//#00H
+            if (commands.get(0).startsWith(".")) {
+                //.asciiz "Hello, World!\n"     # 自动null终止
+                //.ascii "Hello"                # 无null终
+                //.byte 0                       # 手动添加null
+                if (".byte".equalsIgnoreCase(commands.get(0))) {
+                    if (commands.get(1).endsWith("H")) {
+                        byte[] bytes = hexStringToByteArray(commands.get(1));
+                        for (byte b : bytes) {
+                            dataBytes.add(b);
+                        }
+                    } else if (commands.get(1).matches("^[-+]?\\d+$")) {
+                        Integer value = Integer.valueOf(commands.get(1));
+                        dataBytes.add((byte) (value & 0xff));
+                    }
+                    machineCodes.addAll(dataBytes);
+                    return dataBytes.size();
+                }
+            } else {
+                rowIndex = Constant.getRowIndex(commands.get(0));
+                for (int i = 1; i < commands.size(); i++) {
+                    //字符串转token #data16(2 byte)、#data(1 byte)、/bit(1 byte)、bit(1 byte)、direct(1 byte)、rel(1 byte)
+                    if (commands.get(i).startsWith("#")) {
+                        if (commands.get(i).endsWith("H")) {
+                            if (4 == commands.get(i).length()) {
+                                token = "#data";//#00H
+                                byte[] bytes = hexStringToByteArray(commands.get(i));
+                                for (byte b : bytes) {
+                                    dataBytes.add(b);
+                                }
+                            } else if (6 == commands.get(i).length()) {
+                                token = "#data16";//#0000H
+                                byte[] bytes = hexStringToByteArray(commands.get(i));
+                                for (byte b : bytes) {
+                                    dataBytes.add(b);
+                                }
+                            }
+                        }
+                    } else if (commands.get(i).startsWith("/")) {
+                        token = "/bit";
+                    } else if (commands.get(i).endsWith("H")) {
+                        if (3 == commands.get(i).length()) {
+                            token = "direct";//00H
+                            if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                                token = "rel";//00H
+                                if (rowIndex == Constant.getRowIndex("MOV")
+                                        && "C".equalsIgnoreCase(commands.get(commands.size() - 1))) {
+                                    token = "bit";
+                                }
+                            }
+                            if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                                token = "bit";
+                            }
                             byte[] bytes = hexStringToByteArray(commands.get(i));
                             for (byte b : bytes) {
                                 dataBytes.add(b);
                             }
-                        } else if (6 == commands.get(i).length()) {
-                            token = "#data16";//#0000H
+                        } else if (5 == commands.get(i).length()) {
+                            token = "addr16";
                             byte[] bytes = hexStringToByteArray(commands.get(i));
                             for (byte b : bytes) {
                                 dataBytes.add(b);
                             }
                         }
-                    }
-                } else if (commands.get(i).startsWith("/")) {
-                    token = "/bit";
-                } else if (commands.get(i).endsWith("H")) {
-                    if (3 == commands.get(i).length()) {
-                        token = "direct";//00H
+                    } else if (commands.get(i).matches("^[-+]?\\d+$")) {
+                        token = "direct";
                         if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
-                            token = "rel";//00H
+                            token = "rel";
                             if (rowIndex == Constant.getRowIndex("MOV")
                                     && "C".equalsIgnoreCase(commands.get(commands.size() - 1))) {
                                 token = "bit";
@@ -166,48 +207,26 @@ public class Assembly {
                         if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
                             token = "bit";
                         }
-                        byte[] bytes = hexStringToByteArray(commands.get(i));
-                        for (byte b : bytes) {
-                            dataBytes.add(b);
-                        }
-                    } else if (5 == commands.get(i).length()) {
-                        token = "addr16";
-                        byte[] bytes = hexStringToByteArray(commands.get(i));
-                        for (byte b : bytes) {
-                            dataBytes.add(b);
-                        }
-                    }
-                } else if (commands.get(i).matches("^[-+]?\\d+$")) {
-                    token = "direct";
-                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                        Integer value = Integer.valueOf(commands.get(i));
+                        dataBytes.add((byte) (value & 0xff));
+                    } else if (commands.get(i).startsWith("_")) {
                         token = "rel";
-                        if (rowIndex == Constant.getRowIndex("MOV")
-                                && "C".equalsIgnoreCase(commands.get(commands.size() - 1))) {
-                            token = "bit";
+                        if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
+                            token = "addr16";
                         }
+                    } else {
+                        token = commands.get(i);
                     }
-                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
-                        token = "bit";
-                    }
-                    Integer value = Integer.valueOf(commands.get(i));
-                    dataBytes.add((byte) (value & 0xff));
-                } else if (commands.get(i).startsWith("_")) {
-                    token = "rel";
-                    if (-1 == Constant.stateMap[rowIndex][Constant.getColIndex(token)]) {
-                        token = "addr16";
-                    }
-                } else {
-                    token = commands.get(i);
+                    colIndex = Constant.getColIndex(token);
+                    rowIndex = Constant.stateMap[rowIndex][colIndex];
                 }
-                colIndex = Constant.getColIndex(token);
-                rowIndex = Constant.stateMap[rowIndex][colIndex];
-            }
-            if (-1 == rowIndex) {
-                System.out.println("错误1：" + commands.get(0));
-            } else {
-                machineCodes.add((byte) ((byte) rowIndex & 0xff));
-                if (!dataBytes.isEmpty()) {
-                    machineCodes.addAll(dataBytes);
+                if (-1 == rowIndex) {
+                    System.out.println("错误1：" + commands.get(0));
+                } else {
+                    machineCodes.add((byte) ((byte) rowIndex & 0xff));
+                    if (!dataBytes.isEmpty()) {
+                        machineCodes.addAll(dataBytes);
+                    }
                 }
             }
         } else {

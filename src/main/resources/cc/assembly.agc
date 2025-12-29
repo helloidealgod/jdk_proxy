@@ -238,3 +238,9 @@ SJMP -2    ;SJMP rel;	80
 ;XRL A,R6;	6E
 ;XRL A,R7;	6F
 ;XRL direct,#data;	62
+
+.byte 0908H
+.byte 0A08H
+.byte 1BH
+.byte 96
+.byte 2CH
