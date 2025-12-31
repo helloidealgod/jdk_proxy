@@ -1,0 +1,437 @@
+Apollo Guidance Computer (AGC) 的技术参数：
+
+内存：4KB RAM + 72KB ROM
+处理速度：1MHz
+重量：32公斤
+功耗：55瓦
+
+; 阿波罗11号指令集实现
+; 指令格式：操作码（3位）+ 操作数（12位）
+; 操作码定义：
+; 000 - 加法（ADD）
+; 001 - 减法（SUB）
+; 010 - 逻辑与（AND）
+; 011 - 逻辑或（OR）
+; 100 - 移位左（LSL）
+; 101 - 移位右（LSR）
+; 110 - 跳转（JMP）
+; 111 - 存储/加载（STA/LDA）
+; 操作数为内存地址（12位）
+; 示例指令：
+; 000 000000000000 ; ADD 0x0000
+; 001 000000000001 ; SUB 0x0001
+; 110 000000000010 ; JMP 0x0010
+12位 =   4K
+15位 =  32K
+16位 =  64K
+17位 = 128K
+
+80C51单片机的指令集包含111条指令，分为数据传送、算术运算、逻辑运算、控制转移和位操作五大类。以下是关键指令及其机器码：
+数据传送类指令
+助记符	操作数			机器码	字节数	周期数
+MOV		A,Rn			E8~EF	1		1
+MOV		A,#data			74		2		1
+MOV		Rn,A			F8~FF	1		1
+MOV		Rn,#data		78~7F	2		1
+MOV		direct,A		F5		2		1
+MOV		A,direct		E5		2		1
+MOV		DPTR,#data16	90		3		1
+MOVX	A,@DPTR			E0		1		2
+MOVC	A,@A+DPTR		93		1		2
+算术运算类指令
+助记符	操作数			机器码	字节数	周期数
+ADD		A,Rn			28~2F	1		1
+ADD		A,#data			74		2		1
+SUBB	A,Rn			98~9F	1		1
+SUBB	A,#data			84		2		1
+INC		A				04		1		1
+INC		Rn				0C~13	1		1
+DEC		A				14		1		1
+DEC		Rn				1C~1F	1		1
+逻辑运算类指令
+助记符	操作数			机器码	字节数	周期数
+ANL		A,Rn			58~5F	1		1
+ANL		A,#data			54		2		1
+ORL		A,Rn			48~4F	1		1
+ORL		A,#data			44		2		1
+XRL		A,Rn			68~6F	1		1
+XRL		A,#data			64		2		1
+CLR		A				0C		1		2
+CPL		A				0D		1		1
+控制转移类指令
+助记符	操作数			机器码	字节数	周期数
+JMP		@A+DPTR			82		1		2
+JZ		rel				80		2		2
+JNZ		rel				81		2		2
+CJNE	A,#data,rel		85		3		2
+DJNZ	Rn,rel			90~97	3		2
+ACALL	addr11			12		2		2
+LCALL	addr16			11		3		2
+RET						88		1		2
+位操作类指令
+助记符	操作数			机器码	字节数	周期数
+CLR		C				18		1		1
+SETB	C				19		1		1
+CPL		C				1A		1		1
+JB		bit,rel			83		3		2
+JNB		bit,rel			84		3		2
+
+说明
+Rn 表示寄存器（R0-R7），direct 表示直接寻址（00H-FFH），#data 表示立即数（00H-FFH），#data16 表示16位立即数（0000H-FFFFH）。
+rel 表示相对地址（-128~127），addr11 表示11位地址（0000H-07FFH），addr16 表示16位地址（0000H-FFFFH）。
+机器周期数（周期数）表示指令执行时间，单位为机器周期（12MHz时1机器周期=1us）。
+
+一、数据传送类指令
+这类指令主要用于数据在寄存器、内存和I/O端口之间的传输，是编程中最常用的部分。
+
+1. 一般传送指令
+MOV A, Rn：将寄存器Rn的内容传送到累加器A，机器码为E8~EF。
+MOV A, #data：将立即数data传送到A，机器码为74。
+MOV Rn, A：将A的内容传送到寄存器Rn，机器码为F8~FF。
+MOV direct, A：将A的内容传送到直接寻址单元，机器码为F5。
+MOV DPTR, #data16：将16位立即数data16传送到数据指针DPTR，机器码为90。
+2. 特殊传送指令
+MOVX A, @DPTR：从外部RAM读取数据到A，机器码为E0。
+MOVC A, @A+DPTR：从程序存储器读取数据到A，机器码为93。
+二、算术运算类指令
+用于执行加减乘除等算术操作，所有操作数都通过累加器A传递。
+
+ADD A, Rn：将A与Rn的内容相加，结果存回A，机器码为28~2F。
+ADDC A, #data：将A与立即数data相加，结果存回A，机器码为74。
+SUBB A, Rn：将A减去Rn的内容，结果存回A，机器码为98~9F。
+MUL AB：将A与B的内容相乘，结果存回A和B，机器码为D0。
+三、逻辑运算类指令
+用于执行与、或、非等逻辑操作，结果也存回A。
+
+ANL A, Rn：将A与Rn的内容进行逻辑与，结果存回A，机器码为58~5F。
+ORL A, #data：将A与立即数data进行逻辑或，结果存回A，机器码为44。
+XRL A, Rn：将A与Rn的内容进行逻辑异或，结果存回A，机器码为68~6F。
+四、控制转移类指令
+用于实现程序跳转、子程序调用和返回等流程控制。
+
+JMP @A+DPTR：根据A和DPTR的内容跳转到目标地址，机器码为82。
+JZ rel：如果A为零，则跳转到相对地址rel，机器码为80。
+CJNE A, #data, rel：如果A不等于立即数data，则跳转到rel，机器码为85。
+ACALL addr11：调用子程序，机器码为12。
+RET：从子程序返回，机器码为88。
+五、位操作类指令
+用于对单个位进行操作，是80C51的特色之一。
+
+CLR C：清除进位标志C，机器码为18。
+SETB C：设置进位标志C，机器码为19。
+JB bit, rel：如果bit为1，则跳转到rel，机器码为83。
+JNB bit, rel：如果bit为0，则跳转到rel，机器码为84。
+六、指令执行时间
+单机器周期指令：共64条，如INC A。
+双机器周期指令：共45条，如MOV A, #data。
+四机器周期指令：共2条，如MUL AB。
+七、寻址方式
+立即寻址：操作数直接包含在指令中，如MOV A, #50H。
+直接寻址：操作数通过地址直接访问，如MOV A, 40H。
+寄存器寻址：操作数通过寄存器访问，如MOV A, R0。
+寄存器间接寻址：操作数通过寄存器间接访问，如MOV A, @R0。
+八、指令编码
+单字节指令：共49条，如INC A。
+双字节指令：共45条，如MOV A, #50H。
+三字节指令：共17条，如MOV 40H, #50H。
+九、指令系统特点
+执行时间短：单机器周期指令64条，双机器周期指令45条，四机器周期指令2条。
+指令编码字节少：单字节指令49条，双字节指令45条，三字节指令17条。
+位操作指令丰富：共17条，如CLR C。
+十、指令助记符符号说明
+Rn：工作寄存器，R0~R7。
+#data：8位立即数，00H~FFH。
+direct：8位直接寻址地址，00H~FFH或SFR。
+@Ri：寄存器间接寻址，Ri为R0或R1。
+#data16：16位立即数。
+@DPTR：以DPTR为数据指针的间接寻址。
+bit：位地址。
+adr11：11位目标地址。
+addr16：16位目标地址。
+rel：8位带符号地址相对偏移量。
+$：当前指令的地址。
+十一、指令系统应用
+数据传送：用于片内、片外数据存储器和程序存储器之间的数据传送。
+算术运算：包括加法、减法、乘法和除法。
+逻辑运算：包括逻辑与、或、非和移位操作。
+位处理：包括位传送、位置1与清0、位逻辑操作。
+十二、指令系统设计
+执行时间：单机器周期指令57条，双机器周期指令52条，四机器周期指令2条。
+指令编码：单字节指令49条，双字节指令45条，三字节指令17条。
+位操作指令：共17条，如CLR C。
+十三、指令系统总结
+80C51指令系统共111条指令，按功能分为数据传送、算术运算、逻辑运算、位操作和控制转移五类。其特点是执行时间短、指令编码字节少、位操作指令丰富。指令系统设计注重高效性和灵活性，适用于各种嵌入式应用。
+
+一、通用寄存器（R0-R7）
+作用：用于临时存储数据，是CPU运算的“工作台”。
+结构：共4组（R0-R7），每组8个，通过PSW的RS1、RS0位选择当前组。
+特点：访问速度快，适合频繁操作的数据。
+二、特殊功能寄存器（SFR）
+SFR是控制单片机的核心，共21个，按功能分类如下：
+1. 程序控制类
+程序计数器（PC）：16位，存放下一条指令地址，自动+1。
+程序状态字（PSW）：8位，存标志位（如CY、OV），影响程序流程。
+2. 数据运算类
+累加器（ACC）：8位，存放操作数或运算结果，是算术逻辑单元（ALU）的输入/输出。
+B寄存器：8位，用于乘除运算，存乘数或余数。
+3. 存储管理类
+数据指针（DPTR）：16位，指向外部数据存储器。
+堆栈指针（SP）：8位，指示堆栈顶位置。
+4. 中断控制类
+中断允许寄存器（IE）：控制中断使能。
+中断优先级寄存器（IP）：设置中断优先级。
+5. 定时器/串口类
+定时器控制寄存器（TCON）：控制定时器启动/停止。
+串行口控制寄存器（SCON）：配置串口工作模式。
+6. I/O口类
+P0-P3口：控制I/O口输入/输出。
+三、位寻址区
+范围：内部RAM的20H-2FH，共16字节（128位）。
+特点：支持位操作（如置1、清0），常用于控制标志位。
+四、寄存器功能速查表
+寄存器名	功能	位地址	说明
+ACC	累加器	无	运算核心
+PSW	程序状态字	无	存标志位
+DPTR	数据指针	无	指向外部RAM
+SP	堆栈指针	无	指示堆栈顶
+IE	中断允许	无	控制中断使能
+IP	中断优先级	无	设置中断优先级
+TCON	定时器控制	无	控制定时器
+SCON	串口控制	无	配置串口模式
+P0-P3	I/O口	无	控制I/O口
+五、寄存器应用场景
+通用寄存器：频繁数据操作（如循环变量）。
+SFR：配置中断、定时器、串口等。
+位寻址区：控制标志位（如按键状态）。
+六、注意事项
+SFR不可位操作：如DPTR、SP等。
+位寻址区可字节/位操作：如20H-2FH。
+
+
+
+通用工作寄存器（R0–R7）
+数量：8个（R0、R1、...、R7）
+组织方式：分为4个寄存器组（Bank 0–Bank 3），每组8个寄存器，通过PSW中的RS1、RS0位选择当前使用的寄存器组。
+地址：在内部RAM的00H–1FH区域（Bank 0: 00H–07H, Bank 1: 08H–0FH, Bank 2: 10H–17H, Bank 3: 18H–1FH）。
+2. 特殊功能寄存器（SFR）
+位于内部RAM的80H–FFH区域，共21个（标准8051），部分增强型号有更多。重要SFR包括：
+
+（1）累加器（ACC）地址：0E0H
+
+8位寄存器，用于算术运算、逻辑运算和数据传输。
+
+（2）B寄存器 地址：0F0H
+
+主要用于乘除法（MUL AB、DIV AB），也可作为通用寄存器。
+
+（3）程序状态字（PSW）地址：0D0H
+
+8位标志寄存器：
+CY（PSW.7）：进位/借位标志
+AC（PSW.6）：辅助进位标志（BCD运算）
+F0（PSW.5）：用户标志位0
+RS1、RS0（PSW.4、PSW.3）：寄存器组选择位
+OV（PSW.2）：溢出标志
+P（PSW.0）：奇偶标志（ACC中1的个数为奇数则置1）
+
+（4）数据指针（DPTR）
+16位寄存器，由DPH（83H）和DPL（82H）组成。
+
+用于访问外部存储器和查表操作。
+
+（5）堆栈指针（SP）地址：81H
+
+8位寄存器，指向内部RAM的栈顶地址，复位后初始值为07H。
+
+（6）I/O端口寄存器
+P0（80H）、P1（90H）、P2（0A0H）、P3（0B0H）
+
+对应4个8位I/O端口。
+
+（7）串行通信控制寄存器
+SCON（98H）：串行口控制寄存器
+
+SBUF（99H）：串行数据缓冲器
+
+（8）定时器/计数器寄存器
+TCON（88H）：定时器控制寄存器
+
+TMOD（89H）：定时器模式寄存器
+
+TH0、TL0（8CH、8AH）：定时器0高/低字节
+
+TH1、TL1（8DH、8BH）：定时器1高/低字节
+
+（9）中断控制寄存器
+IE（0A8H）：中断允许控制寄存器
+
+IP（0B8H）：中断优先级控制寄存器
+
+（10）电源控制寄存器（PCON）地址：87H
+包含节能模式控制位（如IDL、PD）和串口波特率加倍位（SMOD）。
+
+3. 程序计数器（PC）
+16位寄存器，不属于SFR，不可直接访问。
+存放下一条要执行的指令地址。
+
+4. 位寻址寄存器
+部分SFR支持位寻址（地址可被8整除的SFR）：
+ACC、B、PSW、IP、IE、SCON、TCON、P0–P3等。
+位地址范围：00H–7FH（对应SFR中的可寻址位）。
+
+5. 内部RAM中的可位寻址区
+内部RAM地址20H–2FH的16字节（共128位）支持位寻址。
+位地址：00H–7FH（与SFR的位地址连续但不同区域）。
+
+总结表（关键SFR）
+寄存器	地址		功能说明
+ACC		0E0H	累加器
+B		0F0H	B寄存器
+PSW		0D0H	程序状态字
+SP		81H		堆栈指针
+DPTR	82H/83H	数据指针（DPL/DPH）
+P0–P3	80H/90H/A0H/B0H	I/O端口寄存器
+IP		0B8H	中断优先级
+IE		0A8H	中断允许
+TMOD	89H	定时器模式
+TCON	88H	定时器控制
+TH0/TL0	8CH/8AH	定时器0高低字节
+TH1/TL1	8DH/8BH	定时器1高低字节
+SCON	98H	串口控制
+SBUF	99H	串口数据缓冲器
+PCON	87H	电源控制
+
+第一部分：RAM（数据存储器）
+RAM用于存放程序运行时的变量、堆栈、位数据等。80C51的RAM空间相对较小，分为两个主要部分：内部RAM 和外部RAM。
+
+1. 内部RAM（128/256字节）
+这是最核心、访问速度最快的数据存储区，使用MOV指令访问。
+
+A. 标准80C51（128字节，地址 00H - 7FH）
+
+地址范围	大小	功能/区域名称	特点
+00H - 1FH	32字节	寄存器组区	4组通用寄存器R0-R7（每组8字节）。由PSW中的RS1、RS0位选择当前组。
+20H - 2FH	16字节	位寻址区	这16个字节（共128位）的每一位都可以单独寻址（位地址：00H - 7FH）。这是80C51位操作能力的基础。
+30H - 7FH	80字节	通用数据缓冲区/堆栈区	用户变量存储区。堆栈（SP）也在此区域生长，需注意避免堆栈与数据冲突。
+
+四、汇编指令集及机器码
+1. 数据传送类指令
+指令格式	机器码	字节数	周期	说明
+MOV A, Rn	E8-EF	1	1	A←Rn
+MOV A, direct	E5 direct	2	1	A←(direct)
+MOV A, @Ri	E6-E7	1	1	A←(Ri)
+MOV A, #data	74 data	2	1	A←立即数
+MOV Rn, A	F8-FF	1	1	Rn←A
+MOV Rn, direct	A8-AF direct	2	2	Rn←(direct)
+MOV Rn, #data	78-7F data	2	1	Rn←立即数
+MOV direct, A	F5 direct	2	1	(direct)←A
+MOV direct, Rn	88-8F direct	2	2	(direct)←Rn
+MOV direct, @Ri	86-87 direct	2	2	(direct)←(Ri)
+MOV direct, #data	75 direct data	3	2	(direct)←立即数
+MOV @Ri, A	F6-F7	1	1	(Ri)←A
+MOV @Ri, direct	A6-A7 direct	2	2	(Ri)←(direct)
+MOV @Ri, #data	76-77 data	2	1	(Ri)←立即数
+MOV DPTR, #data16	90 dataH dataL	3	2	DPTR←16位立即数
+MOVC A, @A+DPTR	93	1	2	A←(A+DPTR)查表
+MOVC A, @A+PC	83	1	2	A←(A+PC)查表
+MOVX A, @Ri	E2-E3	1	2	A←外部RAM(Ri)
+MOVX A, @DPTR	E0	1	2	A←外部RAM(DPTR)
+MOVX @Ri, A	F2-F3	1	2	外部RAM(Ri)←A
+MOVX @DPTR, A	F0	1	2	外部RAM(DPTR)←A
+PUSH direct	C0 direct	2	2	压栈
+POP direct	D0 direct	2	2	出栈
+XCH A, Rn	C8-CF	1	1	A↔Rn
+XCH A, direct	C5 direct	2	1	A↔(direct)
+XCH A, @Ri	C6-C7	1	1	A↔(Ri)
+XCHD A, @Ri	D6-D7	1	1	A低4位↔(Ri)低4位
+SWAP A	C4	1	1	A高4位与低4位交换
+2. 算术运算类指令
+指令格式	机器码	字节数	周期	说明
+ADD A, Rn	28-2F	1	1	A←A+Rn
+ADD A, direct	25 direct	2	1	A←A+(direct)
+ADD A, @Ri	26-27	1	1	A←A+(Ri)
+ADD A, #data	24 data	2	1	A←A+立即数
+ADDC A, Rn	38-3F	1	1	A←A+Rn+CY
+ADDC A, direct	35 direct	2	1	A←A+(direct)+CY
+ADDC A, @Ri	36-37	1	1	A←A+(Ri)+CY
+ADDC A, #data	34 data	2	1	A←A+立即数+CY
+SUBB A, Rn	98-9F	1	1	A←A-Rn-CY
+SUBB A, direct	95 direct	2	1	A←A-(direct)-CY
+SUBB A, @Ri	96-97	1	1	A←A-(Ri)-CY
+SUBB A, #data	94 data	2	1	A←A-立即数-CY
+INC A	04	1	1	A←A+1
+INC Rn	08-0F	1	1	Rn←Rn+1
+INC direct	05 direct	2	1	(direct)←(direct)+1
+INC @Ri	06-07	1	1	(Ri)←(Ri)+1
+INC DPTR	A3	1	2	DPTR←DPTR+1
+DEC A	14	1	1	A←A-1
+DEC Rn	18-1F	1	1	Rn←Rn-1
+DEC direct	15 direct	2	1	(direct)←(direct)-1
+DEC @Ri	16-17	1	1	(Ri)←(Ri)-1
+MUL AB	A4	1	4	A×B，积高8位在B，低8位在A
+DIV AB	84	1	4	A÷B，商在A，余数在B
+DA A	D4	1	1	十进制调整
+3. 逻辑运算类指令
+指令格式	机器码	字节数	周期	说明
+ANL A, Rn	58-5F	1	1	A←A∧Rn
+ANL A, direct	55 direct	2	1	A←A∧(direct)
+ANL A, @Ri	56-57	1	1	A←A∧(Ri)
+ANL A, #data	54 data	2	1	A←A∧立即数
+ANL direct, A	52 direct	2	1	(direct)←(direct)∧A
+ANL direct, #data	53 direct data	3	2	(direct)←(direct)∧立即数
+ORL A, Rn	48-4F	1	1	A←A∨Rn
+ORL A, direct	45 direct	2	1	A←A∨(direct)
+ORL A, @Ri	46-47	1	1	A←A∨(Ri)
+ORL A, #data	44 data	2	1	A←A∨立即数
+ORL direct, A	42 direct	2	1	(direct)←(direct)∨A
+ORL direct, #data	43 direct data	3	2	(direct)←(direct)∨立即数
+XRL A, Rn	68-6F	1	1	A←A⊕Rn
+XRL A, direct	65 direct	2	1	A←A⊕(direct)
+XRL A, @Ri	66-67	1	1	A←A⊕(Ri)
+XRL A, #data	64 data	2	1	A←A⊕立即数
+XRL direct, A	62 direct	2	1	(direct)←(direct)⊕A
+XRL direct, #data	63 direct data	3	2	(direct)←(direct)⊕立即数
+CLR A	E4	1	1	A←0
+CPL A	F4	1	1	A←按位取反
+RL A	23	1	1	A循环左移
+RLC A	33	1	1	A带CY循环左移
+RR A	03	1	1	A循环右移
+RRC A	13	1	1	A带CY循环右移
+4. 控制转移类指令
+指令格式	机器码	字节数	周期	说明
+ACALL addr11	xxx1 0001 addr7-0	2	2	绝对调用
+LCALL addr16	12 addrH addrL	3	2	长调用
+RET	22	1	2	子程序返回
+RETI	32	1	2	中断返回
+AJMP addr11	xxx0 0001 addr7-0	2	2	绝对跳转
+LJMP addr16	02 addrH addrL	3	2	长跳转
+SJMP rel	80 rel	2	2	短跳转(-128~+127)
+JMP @A+DPTR	73	1	2	间接跳转
+JZ rel	60 rel	2	2	A=0跳转
+JNZ rel	70 rel	2	2	A≠0跳转
+JC rel	40 rel	2	2	CY=1跳转
+JNC rel	50 rel	2	2	CY=0跳转
+JB bit, rel	20 bit rel	3	2	位=1跳转
+JNB bit, rel	30 bit rel	3	2	位=0跳转
+JBC bit, rel	10 bit rel	3	2	位=1跳转并清0
+CJNE A, direct, rel	B5 direct rel	3	2	比较不相等跳转
+CJNE A, #data, rel	B4 data rel	3	2	比较不相等跳转
+CJNE Rn, #data, rel	B8-BF data rel	3	2	比较不相等跳转
+CJNE @Ri, #data, rel	B6-B7 data rel	3	2	比较不相等跳转
+DJNZ Rn, rel	D8-DF rel	2	2	Rn减1不为0跳转
+DJNZ direct, rel	D5 direct rel	3	2	(direct)减1不为0跳转
+NOP	00	1	1	空操作
+5. 位操作类指令
+指令格式	机器码	字节数	周期	说明
+CLR C	C3	1	1	CY←0
+CLR bit	C2 bit	2	1	bit←0
+SETB C	D3	1	1	CY←1
+SETB bit	D2 bit	2	1	bit←1
+CPL C	B3	1	1	CY←~CY
+CPL bit	B2 bit	2	1	bit←~bit
+ANL C, bit	82 bit	2	2	CY←CY∧bit
+ANL C, /bit	B0 bit	2	2	CY←CY∧~bit
+ORL C, bit	72 bit	2	2	CY←CY∨bit
+ORL C, /bit	A0 bit	2	2	CY←CY∨~bit
+MOV C, bit	A2 bit	2	1	CY←bit
+MOV bit, C	92 bit	2	2	bit←CY
