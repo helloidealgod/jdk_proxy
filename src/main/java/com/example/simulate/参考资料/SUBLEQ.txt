@@ -1,0 +1,8 @@
+1 指令机器：SUBLEQ（Subtract and branch if less than or equal to zero）
+指令形式：
+text
+SUBLEQ a, b, c
+Mem[b] = Mem[b] - Mem[a]
+如果结果 ≤ 0，则 PC = C，否则 PC = PC + 3（假设每条指令占 3 个地址单元）
+如果结果 ≤ 0，则跳转到地址 c，否则执行下一条指令。
+用这条指令可以模拟加载、存储、加法、跳转等所有操作。
