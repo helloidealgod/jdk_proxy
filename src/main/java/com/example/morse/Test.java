@@ -77,7 +77,7 @@ public class Test {
             for (; len > 0; len--) {
                 // code & 10000000
                 if ((code & 0x80) > 0) {
-                    System.out.print("— ");
+                    System.out.print("_ ");
                 } else {
                     System.out.print(". ");
                 }
@@ -97,7 +97,7 @@ public class Test {
             for (; len > 0; len--) {
                 // code & 10000000
                 if ((code & 0x80) > 0) {
-                    System.out.print("— ");
+                    System.out.print("_ ");
                 } else {
                     System.out.print(". ");
                 }
