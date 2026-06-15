@@ -1,8 +1,8 @@
 package com.example.morse;
 
 public class Test {
-    public final String[] letterCode = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."};
-    public final String[] numberCode = {"-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----."};
+    public static final String[] letterCode = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."};
+    public static final String[] numberCode = {"-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----."};
 
     public static final byte[] morse_table = {
             (byte) 0x48, // A
@@ -82,6 +82,12 @@ public class Test {
                     System.out.print(". ");
                 }
                 code = code << 1;
+            }
+            System.out.print(" ");
+            if (i < 26) {
+                System.out.print(letterCode[i]);
+            } else {
+                System.out.print(numberCode[i - 26]);
             }
             System.out.println("");
         }
