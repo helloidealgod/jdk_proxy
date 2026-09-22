@@ -2,8 +2,10 @@ package com.example.algorithms.coin;
 
 public class Main {
     public static void main(String[] args) {
-        int[] coinAmount = {1, 2, 5, 10, 20, 50, 100};
-        int amount = 1234;
+//        int[] coinAmount = {1, 2, 5, 10, 20, 50, 100};
+//        int amount = 1234;
+        int[] coinAmount = {186, 419, 83, 408};
+        int amount = 6249;
         int[] coins = new int[amount + 1];
         coins[0] = 0;
         for (int i = 1; i <= amount; i++) {

@@ -6,7 +6,7 @@ sbit MORSE_IN = P1^0;
 
 // 摩尔斯码表（点=0，划=1，结束=0xFF）
 code unsigned char morse_table[][8] = {
-    {0,1,0xFF},           // A .-
+    {0,1,0xFF},          // A .-
     {1,0,0,0,0xFF},      // B -...
     {1,0,1,0,0xFF},      // C -.-.
     {1,0,0,0xFF},        // D -..
