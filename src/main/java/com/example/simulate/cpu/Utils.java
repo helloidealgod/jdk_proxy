@@ -14,4 +14,17 @@ public class Utils {
         }
         return result;
     }
+
+    public static byte booleans2Byte(boolean[] b) {
+        byte result = 0;
+        for (int i = 7; i >= 0; i--) {
+            if ((b[i])) {
+                result += 1;
+            }
+            if (i > 0) {
+                result = (byte) (result << 1);
+            }
+        }
+        return result;
+    }
 }

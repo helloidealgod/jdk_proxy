@@ -1,6 +1,6 @@
 package com.example.simulate.cpu.chip;
 
-import com.example.simulate.cpu.gate.And;
+import com.example.simulate.cpu.Utils;
 
 public class DFlipFlop {
     public boolean[] Q;
@@ -36,5 +36,9 @@ public class DFlipFlop {
         for (int i = Q.length - 1; i >= 0; i--) {
             System.out.printf("%d ", Q[i] ? 1 : 0);
         }
+    }
+
+    public void printfn() {
+        System.out.printf("%d ", Utils.booleans2Byte(Q));
     }
 }
